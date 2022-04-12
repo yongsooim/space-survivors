@@ -12,8 +12,8 @@ const isDev = process.env.IS_DEV === 'true';
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1600,
+    height: 900,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
@@ -23,7 +23,7 @@ function createWindow() {
   // Open the DevTools.
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
   } else {
     // mainWindow.removeMenu();
     mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));

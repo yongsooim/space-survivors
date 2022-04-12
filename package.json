@@ -5,7 +5,8 @@
   "description": "Boilerplate Electron + Vite + Svelte",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build && npm run electron:start",
+    "start": "npm run dev",
+    "startBackup": "npm run build && npm run electron:start",
     "dev": "concurrently -k \"vite\" \"npm run electron:dev\"",
     "build": "vite build",
     "preview": "vite preview",
@@ -25,7 +26,7 @@
     "@types/concurrently": "^6.4.0",
     "concurrently": "^6.4.0",
     "cross-env": "^7.0.3",
-    "electron": "16.0.4",
+    "electron": "^16.2.2",
     "svelte": "^3.44.0",
     "svelte-check": "^2.2.7",
     "svelte-preprocess": "^4.9.8",
@@ -34,7 +35,12 @@
     "vite": "^2.7.0"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.0"
+    "@excaliburjs/dev-tools": "^0.25.3",
+    "@excaliburjs/plugin-aseprite": "^0.25.3",
+    "@excaliburjs/plugin-tiled": "^0.25.3",
+    "excalibur": "^0.25.3",
+    "electron-squirrel-startup": "^1.0.0",
+    "yarn": "^1.22.18"
   },
   "config": {
     "forge": {
