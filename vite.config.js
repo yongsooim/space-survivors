@@ -7,5 +7,8 @@ export default defineConfig({
   build: {
     outDir: 'app/build',
   },
-  plugins: [svelte()],
+  plugins: [],
+  server:{
+    hmr:true,
+  }
 });

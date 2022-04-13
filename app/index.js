@@ -16,14 +16,13 @@ function createWindow() {
     height: 900,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: true,
+      nodeIntegration: false,
     },
   });
 
   // Open the DevTools.
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');
-    //mainWindow.webContents.openDevTools();
   } else {
     // mainWindow.removeMenu();
     mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
@@ -39,7 +38,13 @@ app.whenReady().then(() => {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    require('electron-reload')(__dirname, {
+      electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
+    });
+
   });
+
+
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -50,3 +55,5 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+
