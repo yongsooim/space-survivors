@@ -1,3 +1,6 @@
+Boilerplate is copied from : 
+https://github.com/frontend-templates-world/svelte-ts-electron-vite
+
 # Svelte + TS + Vite
 
 This template should help get you started developing with Svelte and TypeScript in Vite.

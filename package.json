@@ -1,8 +1,8 @@
 {
-  "name": "vite-svelte-electron",
-  "version": "0.0.0",
+  "name": "space-oddity",
+  "version": "0.0.1",
   "main": "app/index.js",
-  "description": "Boilerplate Electron + Vite + Svelte",
+  "description": "Space Oddity Electron",
   "license": "MIT",
   "scripts": {
     "start": "npm run dev",
@@ -13,9 +13,18 @@
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "electron:dev": "cross-env IS_DEV=true electron-forge start",
     "electron:build": "electron-forge make",
-    "electron:package": "electron-forge package"
+    "electron:package": "electron-forge package",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "npm run lint -- --fix"
   },
   "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
     "@electron-forge/cli": "^6.0.0-beta.61",
     "@electron-forge/maker-deb": "^6.0.0-beta.61",
     "@electron-forge/maker-rpm": "^6.0.0-beta.61",
@@ -32,15 +41,15 @@
     "svelte-preprocess": "^4.9.8",
     "tslib": "^2.3.1",
     "typescript": "^4.4.4",
-    "vite": "^2.7.0"
+    "vite": "^2.7.0",
+    "yarn": "^1.22.18"
   },
   "dependencies": {
     "@excaliburjs/dev-tools": "^0.25.3",
     "@excaliburjs/plugin-aseprite": "^0.25.3",
     "@excaliburjs/plugin-tiled": "^0.25.3",
     "excalibur": "^0.25.3",
-    "electron-squirrel-startup": "^1.0.0",
-    "yarn": "^1.22.18"
+    "electron-squirrel-startup": "^1.0.0"
   },
   "config": {
     "forge": {
@@ -49,7 +58,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "vite_svelte_electron"
+            "name": "space_oddity"
           }
         },
         {
