@@ -1,52 +1,44 @@
-// electron/electron.js
 const path = require('path');
 const { app, BrowserWindow } = require('electron');
-
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  app.quit();
-}
-
-const isDev = process.env.IS_DEV === 'true';
-
+ 
+const isDev = process.env.IS_DEV == "true" ? true : false;
+ 
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1600,
-    height: 900,
+    width: 800,
+    height: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
-      nodeIntegration: false,
+      nodeIntegration: true,
     },
   });
-
+ 
+  // and load the index.html of the app.
+  // win.loadFile("index.html");
+  mainWindow.loadURL(
+    isDev
+      ? 'http://localhost:3000'
+      : `file://${path.join(__dirname, '../dist/index.html')}`
+  );
   // Open the DevTools.
   if (isDev) {
-    mainWindow.loadURL('http://localhost:3000');
-  } else {
-    // mainWindow.removeMenu();
-    mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
+    mainWindow.webContents.openDevTools();
   }
 }
-
+ 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow();
+  createWindow()
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
-    require('electron-reload')(__dirname, {
-      electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
-    });
-
-  });
-
-
+    if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  })
 });
-
+ 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
@@ -55,5 +47,4 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-
 

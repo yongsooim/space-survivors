@@ -1,83 +1,70 @@
 {
-  "name": "space-oddity",
-  "version": "0.0.1",
-  "main": "app/index.js",
-  "description": "Space Oddity Electron",
-  "license": "MIT",
+  "name": "template-ts-vite",
+  "version": "1.0.0",
+  "description": "Excalibur TypeScript template for Vite",
+  "main": "electron/electron.js",
   "scripts": {
-    "start": "npm run dev",
-    "startBackup": "npm run build && npm run electron:start",
-    "dev": "concurrently -k \"vite\" \"npm run electron:dev\"",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "electron:dev": "cross-env IS_DEV=true electron-forge start",
-    "electron:build": "electron-forge make",
-    "electron:package": "electron-forge package",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "npm run lint -- --fix"    
+    "start": "yarn electron:dev",
+    "build": "app:build",
+    "dev": "vite",
+    "serve": "vite preview",
+    "electron": "wait-on tcp:3000 && cross-env IS_DEV=true electron .",
+    "electron:pack": "electron-builder --dir",
+    "electron:dev": "concurrently -k \"cross-env BROWSER=none yarn dev\" \"yarn electron\"",
+    "electron:builder": "electron-builder",
+    "build:for:electron": "vue-tsc --noEmit && cross-env ELECTRON=true vite build",
+    "app:build": "yarn build:for:electron && yarn electron:builder"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/excaliburjs/template-ts-vite.git"
+  },
+  "keywords": [
+    "excalibur",
+    "excaliburjs",
+    "vite",
+    "game-engine"
+  ],
+  "author": "Erik Onarheim",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/excaliburjs/template-ts-vite/issues"
+  },
+  "homepage": "https://github.com/excaliburjs/template-ts-vite#readme",
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.61",
-    "@electron-forge/maker-deb": "^6.0.0-beta.61",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.61",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
-    "@electron-forge/maker-zip": "^6.0.0-beta.61",
-    "@sveltejs/vite-plugin-svelte": "^1.0.0-next.30",
-    "@tsconfig/svelte": "^2.0.1",
-    "@types/concurrently": "^6.4.0",
-    "@typescript-eslint/eslint-plugin": "^5.17.0",
-    "@typescript-eslint/parser": "^5.17.0",
-    "concurrently": "^6.4.0",
+    "concurrently": "^7.1.0",
     "cross-env": "^7.0.3",
-    "electron": "^16.2.2",
-    "electron-reload": "^2.0.0-alpha.1",
-    "electron-reloader": "^1.2.3",
-    "eslint": "^7.32.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.2.0",
-    "svelte": "^3.44.0",
-    "svelte-check": "^2.2.7",
-    "svelte-preprocess": "^4.9.8",
-    "tslib": "^2.3.1",
-    "typescript": "^4.4.4",
-    "vite": "^2.7.0",
-    "yarn": "^1.22.18"
+    "electron": "^18.0.4",
+    "electron-builder": "^23.0.3",
+    "excalibur": "0.25.3",
+    "typescript": "4.6.3",
+    "vite": "2.9.5",
+    "wait-on": "^6.0.1"
   },
   "dependencies": {
-    "@excaliburjs/dev-tools": "^0.25.3",
-    "@excaliburjs/plugin-aseprite": "^0.25.3",
-    "@excaliburjs/plugin-tiled": "^0.25.3",
-    "electron-squirrel-startup": "^1.0.0",
-    "excalibur": "^0.25.3"
+    "@excaliburjs/testing": "^0.25.0",
+    "@vitejs/plugin-vue": "^2.3.1",
+    "vue": "^3.2.33",
+    "vue-tsc": "^0.34.6"
   },
-  "config": {
-    "forge": {
-      "packagerConfig": {},
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "space_oddity"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
+  "build": {
+    "appId": "com.my-website.my-app",
+    "productName": "MyApp",
+    "copyright": "Copyright © 2019 ${author}",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist_electron"
     }
   }
 }
