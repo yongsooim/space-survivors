@@ -4,5 +4,3 @@ dist
 dist-ssr
 dist_electron
 *.local
-test/images/actual.png
-test/images/diff-*.png
