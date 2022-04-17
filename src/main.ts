@@ -1,8 +1,51 @@
-import { Engine, Loader, Color, DisplayMode, vec } from 'excalibur'
-import { Player } from './player/player'
-import { Resources } from './resources'
+import { Engine, Physics, Loader, Color, DisplayMode, vec , CollisionSystem, CollisionResolutionStrategy} from 'excalibur'
+import { input } from './input/input'
+import { player } from './player/player'
+import { Resources, tilemap } from './resource/resources'
+import { DevTool } from '@excaliburjs/dev-tools'
+import { Enemy } from './enemy/enemy'
 
-class Game extends Engine {
+Physics.collisionResolutionStrategy = CollisionResolutionStrategy.Arcade;
+
+Physics.enabled = true
+
+/**
+* Amount of overlap to tolerate in pixels
+*/
+Physics.slop = 0;
+ 
+/**
+ * Amount of positional overlap correction to apply each position iteration of the solver
+ * O - meaning no correction, 1 - meaning correct all overlap
+ */
+Physics.steeringFactor = 0;
+
+/**
+* Warm start set to true re-uses impulses from previous frames back in the solver
+*/
+Physics.warmStart = true;
+
+/**
+* By default bodies do not sleep
+*/
+Physics.bodiesCanSleepByDefault = true;
+
+/**
+* Surface epsilon is used to help deal with surface penetration
+*/
+Physics.surfaceEpsilon = 0.5;
+Physics.sleepEpsilon = 0.7;
+Physics.wakeThreshold = Physics.sleepEpsilon * 3;
+Physics.sleepBias = 2;
+
+
+/**
+ * Enable fast moving body checking, this enables checking for collision pairs via raycast for fast moving objects to prevent
+ * bodies from tunneling through one another.
+ */
+Physics.checkForFastBodies = false;
+
+ class Game extends Engine {
   constructor () {
     super({
       width: 1280,
@@ -10,15 +53,13 @@ class Game extends Engine {
       antialiasing: false,
       backgroundColor: Color.Black,
       suppressConsoleBootMessage: true,
-      displayMode: DisplayMode.FitScreen
+      displayMode: DisplayMode.FitScreen,
+      maxFps: 60
     })
   }
 
   initialize () {
-    const player = new Player()
-    this.add(player)
-
-    const loader = new Loader([Resources.Sword])
+    const loader = new Loader(Object.values(Resources))
 
     loader.backgroundColor = '#000000'
     // white dot string
@@ -40,9 +81,19 @@ class Game extends Engine {
       return buttonElement
     }
 
+    tilemap.scale = vec(10,10)
     this.start(loader)
+    game.add(tilemap)
+    game.add(player)
+    game.currentScene.add(input)
+    this.currentScene.camera.zoom = 0.3
+    // this.currentScene.camera.strategy.lockToActor(player)
+    this.currentScene.camera.strategy.elasticToActor(player, 0.6, 0.8)
+    console.log(this.currentScene.world.systemManager.get(CollisionSystem))
   }
 }
 
 export const game = new Game()
 game.initialize()
+
+//let devtool = new DevTool(game)
