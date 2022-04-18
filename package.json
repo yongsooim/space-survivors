@@ -32,6 +32,7 @@
     "@excaliburjs/plugin-tiled": "^0.25.3",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
+    "box2d-wasm": "^7.0.0",
     "concurrently": "^7.1.0",
     "cross-env": "^7.0.3",
     "electron": "^18.0.4",

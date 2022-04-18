@@ -1,9 +1,17 @@
-import { Engine, Physics, Loader, Color, DisplayMode, vec , CollisionSystem, CollisionResolutionStrategy} from 'excalibur'
+import { Engine, Physics, Loader, Color, DisplayMode, vec, CollisionSystem, CollisionResolutionStrategy } from 'excalibur'
 import { input } from './input/input'
 import { player } from './player/player'
 import { Resources, tilemap } from './resource/resources'
 import { DevTool } from '@excaliburjs/dev-tools'
 import { Enemy } from './enemy/enemy'
+
+/** worker test */
+const worker = new Worker(new URL('./worker/resolve.ts', import.meta.url), { type: 'module' })
+console.log("---------------EXECUTED ------------------");
+worker.addEventListener('message', (e) => {
+   console.log(e + ' received from worker')
+})
+worker.postMessage('message sent from main')
 
 Physics.collisionResolutionStrategy = CollisionResolutionStrategy.Arcade;
 
@@ -13,7 +21,7 @@ Physics.enabled = true
 * Amount of overlap to tolerate in pixels
 */
 Physics.slop = 0;
- 
+
 /**
  * Amount of positional overlap correction to apply each position iteration of the solver
  * O - meaning no correction, 1 - meaning correct all overlap
@@ -38,15 +46,14 @@ Physics.sleepEpsilon = 0.7;
 Physics.wakeThreshold = Physics.sleepEpsilon * 3;
 Physics.sleepBias = 2;
 
-
 /**
  * Enable fast moving body checking, this enables checking for collision pairs via raycast for fast moving objects to prevent
  * bodies from tunneling through one another.
  */
 Physics.checkForFastBodies = false;
 
- class Game extends Engine {
-  constructor () {
+class Game extends Engine {
+  constructor() {
     super({
       width: 1280,
       height: 960,
@@ -58,7 +65,7 @@ Physics.checkForFastBodies = false;
     })
   }
 
-  initialize () {
+  initialize() {
     const loader = new Loader(Object.values(Resources))
 
     loader.backgroundColor = '#000000'
@@ -76,12 +83,12 @@ Physics.checkForFastBodies = false;
       }
 
       buttonElement.id = 'fsbPlay'
-      buttonElement.textContent = '시작'
-      // buttonElement.textContent = 's'
+      //buttonElement.textContent = '시작'
+       buttonElement.textContent = 's'
       return buttonElement
     }
 
-    tilemap.scale = vec(10,10)
+    tilemap.scale = vec(10, 10)
     this.start(loader)
     game.add(tilemap)
     game.add(player)
@@ -89,7 +96,6 @@ Physics.checkForFastBodies = false;
     this.currentScene.camera.zoom = 0.3
     // this.currentScene.camera.strategy.lockToActor(player)
     this.currentScene.camera.strategy.elasticToActor(player, 0.6, 0.8)
-    console.log(this.currentScene.world.systemManager.get(CollisionSystem))
   }
 }
 

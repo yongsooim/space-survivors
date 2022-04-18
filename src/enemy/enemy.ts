@@ -4,16 +4,19 @@ import {
   autoAttackLifeTimeBulletSpeed,
 } from "../type/const";
 import { shipSprites8, projSprites } from "../resource/resources";
-import {
-  Actor,
-  vec,
-  Engine,
-  Sprite,
-  ActorArgs,
-  CollisionType,
-} from "excalibur";
+import { Actor,  vec,  Engine,  Sprite,  ActorArgs,  CollisionType } from "excalibur";
 import { player } from "../player/player";
 import { enemyGroup } from "../collisionGroups";
+
+
+/** worker test */
+const enemyWorker = new Worker(new URL('../worker/enemyCollide.ts', import.meta.url), { type: 'module' })
+console.log("---------------EXECUTED ------------------");
+enemyWorker.addEventListener('message', (e) => {
+   console.log(e + ' received from worker')
+})
+enemyWorker.postMessage('message sent from enemy main')
+
 
 let enemySprite = shipSprites8.getSprite(9, 0) as Sprite;
 
@@ -81,6 +84,13 @@ export class EnemyPool {
       vec(10, 10)
     );
     this.cursor++;
+
+    /** for worker test */
+    let trans =  new ArrayBuffer(10000000) // 10MB
+    trans = new TextEncoder().encode(JSON.stringify(this.enemyPool.map(v=>v.pos)))
+    let u8arr = new Uint8Array(trans)
+    enemyWorker.postMessage(u8arr)
+    /******* */
   }
 }
 
