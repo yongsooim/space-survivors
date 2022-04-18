@@ -5,7 +5,7 @@
   "main": "electron/electron.js",
   "scripts": {
     "start": "yarn electron:dev",
-    "build": "app:build",
+    "build": "yarn app:build",
     "dev": "vite --open",
     "serve": "vite preview",
     "electron": "wait-on tcp:3000 && cross-env IS_DEV=true electron .",
@@ -31,6 +31,7 @@
     "@excaliburjs/dev-tools": "^0.25.3",
     "@excaliburjs/plugin-aseprite": "^0.25.3",
     "@excaliburjs/plugin-tiled": "^0.25.3",
+    "@types/matter-js": "^0.17.7",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "concurrently": "^7.1.0",
@@ -49,11 +50,13 @@
     "vite-plugin-static-copy": "^0.4.4",
     "vite-plugin-top-level-await": "^0.0.4",
     "vite-plugin-wasm": "^0.0.2",
+    "vite-plugin-worker": "^1.0.5",
     "wait-on": "^6.0.1"
   },
   "dependencies": {
     "box2d-wasm": "^7.0.0",
-    "is-mobile": "^3.1.1"
+    "is-mobile": "^3.1.1",
+    "matter-js": "^0.18.0"
   },
   "build": {
     "appId": "SpaceSurvivors",

@@ -1,6 +1,7 @@
 {
   
   "compilerOptions": {
+    //"isolatedModules":true,
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
