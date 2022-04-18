@@ -1,19 +1,16 @@
-import {
-  autoAttackLifeTime,
-  numberOfAutoAttack,
-  autoAttackLifeTimeBulletSpeed,
-} from "../type/const";
+ import { autoAttackLifeTime,  numberOfAutoAttack,  autoAttackLifeTimeBulletSpeed } from "../type/const";
 import { shipSprites8, projSprites } from "../resource/resources";
-import { Actor,  vec,  Engine,  Sprite,  ActorArgs,  CollisionType } from "excalibur";
+import { Actor, vec, Engine, Sprite, ActorArgs, CollisionType } from "excalibur";
 import { player } from "../player/player";
 import { enemyGroup } from "../collisionGroups";
 
 
+
 /** worker test */
-const enemyWorker = new Worker(new URL('../worker/enemyCollide.ts', import.meta.url), { type: 'module' })
+const enemyWorker = new Worker(new URL('../worker/enemyCollide.ts', import.meta.url))
 console.log("---------------EXECUTED ------------------");
 enemyWorker.addEventListener('message', (e) => {
-   console.log(e + ' received from worker')
+  console.log(e + ' received from worker')
 })
 enemyWorker.postMessage('message sent from enemy main')
 
@@ -58,7 +55,7 @@ export class Enemy extends Actor {
 
 const numberOfMaximumEnemy = 1000;
 export class EnemyPool {
-  enemyPool = [] as Enemy[];
+  enemyPool = new Array<Enemy>(numberOfMaximumEnemy)
 
   _cursor = 0;
   set cursor(v: number) {
@@ -78,6 +75,7 @@ export class EnemyPool {
     }
   }
 
+  
   come(game: Engine) {
     game.add(this.enemyPool[this.cursor]);
     this.enemyPool[this.cursor].pos = game.screenToWorldCoordinates(
@@ -86,8 +84,7 @@ export class EnemyPool {
     this.cursor++;
 
     /** for worker test */
-    let trans =  new ArrayBuffer(10000000) // 10MB
-    trans = new TextEncoder().encode(JSON.stringify(this.enemyPool.map(v=>v.pos)))
+    let trans = new TextEncoder().encode(JSON.stringify(this.enemyPool.map(v => v.pos)))
     let u8arr = new Uint8Array(trans)
     enemyWorker.postMessage(u8arr)
     /******* */

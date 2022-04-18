@@ -1,9 +1,11 @@
+/// <reference types="box2d-wasm" />
 import { Engine, Physics, Loader, Color, DisplayMode, vec, CollisionSystem, CollisionResolutionStrategy } from 'excalibur'
 import { input } from './input/input'
 import { player } from './player/player'
 import { Resources, tilemap } from './resource/resources'
 import { DevTool } from '@excaliburjs/dev-tools'
 import { Enemy } from './enemy/enemy'
+
 
 /** worker test */
 const worker = new Worker(new URL('./worker/resolve.ts', import.meta.url), { type: 'module' })
