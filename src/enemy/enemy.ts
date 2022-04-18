@@ -4,15 +4,20 @@ import { Actor, vec, Engine, Sprite, ActorArgs, CollisionType } from "excalibur"
 import { player } from "../player/player";
 import { enemyGroup } from "../collisionGroups";
 
+import Box2DFactory from 'box2d-wasm'
 
-
-/** worker test */
-const enemyWorker = new Worker(new URL('../worker/enemyCollide.ts', import.meta.url))
-console.log("---------------EXECUTED ------------------");
-enemyWorker.addEventListener('message', (e) => {
-  console.log(e + ' received from worker')
-})
-enemyWorker.postMessage('message sent from enemy main')
+const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
+  ///
+   //By default, this looks for Box2D.wasm relative to public/build/bundle.js:
+   //@example (url, scriptDirectory) => `${scriptDirectory}${url}`
+   //But we want to look for Box2D.wasm relative to public/index.html instead.
+   //
+   locateFile: (url, scriptDirectory) => {
+     //console.log(url)
+     //console.log(scriptDirectory)
+    return './assets/' + url
+    }
+});
 
 
 let enemySprite = shipSprites8.getSprite(9, 0) as Sprite;
@@ -86,7 +91,7 @@ export class EnemyPool {
     /** for worker test */
     let trans = new TextEncoder().encode(JSON.stringify(this.enemyPool.map(v => v.pos)))
     let u8arr = new Uint8Array(trans)
-    enemyWorker.postMessage(u8arr)
+
     /******* */
   }
 }

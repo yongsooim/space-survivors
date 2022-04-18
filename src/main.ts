@@ -1,4 +1,3 @@
-/// <reference types="box2d-wasm" />
 import { Engine, Physics, Loader, Color, DisplayMode, vec, CollisionSystem, CollisionResolutionStrategy } from 'excalibur'
 import { input } from './input/input'
 import { player } from './player/player'
@@ -7,13 +6,6 @@ import { DevTool } from '@excaliburjs/dev-tools'
 import { Enemy } from './enemy/enemy'
 
 
-/** worker test */
-const worker = new Worker(new URL('./worker/resolve.ts', import.meta.url), { type: 'module' })
-console.log("---------------EXECUTED ------------------");
-worker.addEventListener('message', (e) => {
-   console.log(e + ' received from worker')
-})
-worker.postMessage('message sent from main')
 
 Physics.collisionResolutionStrategy = CollisionResolutionStrategy.Arcade;
 

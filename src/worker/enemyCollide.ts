@@ -19,8 +19,12 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
      //@example (url, scriptDirectory) => `${scriptDirectory}${url}`
      //But we want to look for Box2D.wasm relative to public/index.html instead.
      //
-     locateFile: url => url
-     //Uncaught RuntimeError: Aborted(CompileError: WebAssembly.instantiate(): BufferSource argument is empty). Build with -s ASSERTIONS=1 for more info.
+     locateFile: (url, scriptDirectory) => {
+        console.log(url)
+        console.log(scriptDirectory)
+        console.log(scriptDirectory + '../assets/' + url)
+       return scriptDirectory + '../assets/' + url
+       }     //Uncaught RuntimeError: Aborted(CompileError: WebAssembly.instantiate(): BufferSource argument is empty). Build with -s ASSERTIONS=1 for more info.
 
   });
 

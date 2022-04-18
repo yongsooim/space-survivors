@@ -15,7 +15,8 @@
     "build:for:electron": "cross-env ELECTRON=true vite build",
     "app:build": "yarn build:for:electron && yarn electron:builder",
     "lint": "eslint src --ext .ts",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "rsw": "rsw"
   },
   "keywords": [
     "space-survivors",
@@ -43,12 +44,16 @@
     "eslint-plugin-promise": "^5.2.0",
     "excalibur": "0.25.3",
     "typescript": "4.6.3",
-    "wait-on": "^6.0.1",
-    "vite": "^2.9.5"
+    "vite": "^2.9.5",
+    "vite-plugin-rsw": "^2.0.2",
+    "vite-plugin-static-copy": "^0.4.4",
+    "vite-plugin-top-level-await": "^0.0.4",
+    "vite-plugin-wasm": "^0.0.2",
+    "wait-on": "^6.0.1"
   },
   "dependencies": {
-    "is-mobile": "^3.1.1",
-    "box2d-wasm": "^7.0.0"
+    "box2d-wasm": "^7.0.0",
+    "is-mobile": "^3.1.1"
   },
   "build": {
     "appId": "SpaceSurvivors",
