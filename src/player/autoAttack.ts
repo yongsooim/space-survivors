@@ -5,11 +5,10 @@ import { player } from './player'
 import { Enemy } from '../enemy/enemy'
 import { weaponCanCollideWith, weaponGroup } from '../collisionGroups'
 
-
 const lv1autoAttack = projSprites.getSprite(4, 0) as Sprite
 class AutoAttackBullet extends Actor {
   remainLifeTime = 0;
-  constructor(){
+  constructor () {
     super({
       width: 4,
       height: 4,
@@ -17,11 +16,12 @@ class AutoAttackBullet extends Actor {
       collisionGroup: weaponGroup,
       scale: vec(10, 10)
     })
-//    this.collider.useCircleCollider(4)
+    //    this.collider.useCircleCollider(4)
   }
-  onInitialize(){
-    this.on('precollision', (evt)=>{
-      if((evt.other as Enemy).type == 'enemy1'){
+
+  onInitialize () {
+    this.on('precollision', (evt) => {
+      if ((evt.other as Enemy).type == 'enemy1') {
         evt.other.kill()
         this.kill()
       }

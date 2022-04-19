@@ -5,49 +5,47 @@ import { Resources, tilemap } from './resource/resources'
 import { DevTool } from '@excaliburjs/dev-tools'
 import { Enemy } from './enemy/enemy'
 
-
-
-Physics.collisionResolutionStrategy = CollisionResolutionStrategy.Arcade;
+Physics.collisionResolutionStrategy = CollisionResolutionStrategy.Arcade
 
 Physics.enabled = true
 
 /**
 * Amount of overlap to tolerate in pixels
 */
-Physics.slop = 0;
+Physics.slop = 0
 
 /**
  * Amount of positional overlap correction to apply each position iteration of the solver
  * O - meaning no correction, 1 - meaning correct all overlap
  */
-Physics.steeringFactor = 0;
+Physics.steeringFactor = 0
 
 /**
 * Warm start set to true re-uses impulses from previous frames back in the solver
 */
-Physics.warmStart = true;
+Physics.warmStart = true
 
 /**
 * By default bodies do not sleep
 */
-Physics.bodiesCanSleepByDefault = true;
+Physics.bodiesCanSleepByDefault = true
 
 /**
 * Surface epsilon is used to help deal with surface penetration
 */
-Physics.surfaceEpsilon = 0.5;
-Physics.sleepEpsilon = 0.7;
-Physics.wakeThreshold = Physics.sleepEpsilon * 3;
-Physics.sleepBias = 2;
+Physics.surfaceEpsilon = 0.5
+Physics.sleepEpsilon = 0.7
+Physics.wakeThreshold = Physics.sleepEpsilon * 3
+Physics.sleepBias = 2
 
 /**
  * Enable fast moving body checking, this enables checking for collision pairs via raycast for fast moving objects to prevent
  * bodies from tunneling through one another.
  */
-Physics.checkForFastBodies = false;
+Physics.checkForFastBodies = false
 
 class Game extends Engine {
-  constructor() {
+  constructor () {
     super({
       width: 1280,
       height: 960,
@@ -59,7 +57,7 @@ class Game extends Engine {
     })
   }
 
-  initialize() {
+  initialize () {
     const loader = new Loader(Object.values(Resources))
 
     loader.backgroundColor = '#000000'
@@ -77,8 +75,8 @@ class Game extends Engine {
       }
 
       buttonElement.id = 'fsbPlay'
-      //buttonElement.textContent = '시작'
-       buttonElement.textContent = 's'
+      // buttonElement.textContent = '시작'
+      buttonElement.textContent = 's'
       return buttonElement
     }
 
@@ -96,4 +94,4 @@ class Game extends Engine {
 export const game = new Game()
 game.initialize()
 
-//let devtool = new DevTool(game)
+// let devtool = new DevTool(game)

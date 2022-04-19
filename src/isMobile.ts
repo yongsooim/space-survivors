@@ -1,8 +1,7 @@
-import isMobile from "is-mobile"
+import isMobile from 'is-mobile'
 
-if(isMobile() == true){
-alert('ismobile')
-
+if (isMobile() == true) {
+  alert('ismobile')
 }
 
 // => false

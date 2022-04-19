@@ -81,7 +81,6 @@ const projSprites = SpriteSheet.fromImageSource({
   }
 })
 
-
 const miscSprites8 = SpriteSheet.fromImageSource({
   image: Resources.misc,
   grid: {
@@ -92,4 +91,4 @@ const miscSprites8 = SpriteSheet.fromImageSource({
   }
 })
 
-export { Resources, shipSprites16, shipSprites8 , projSprites, miscSprites8 }
+export { Resources, shipSprites16, shipSprites8, projSprites, miscSprites8 }

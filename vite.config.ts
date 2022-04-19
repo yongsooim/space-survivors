@@ -1,27 +1,16 @@
 import { defineConfig } from "vite";
 import topLevelAwait from "vite-plugin-top-level-await";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import wasm from 'vite-plugin-wasm'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      output: {
-        sourcemap: true,
-        format: "es",
-        //inlineDynamicImports: true,
-      },
-    },
-    commonjsOptions: {
-      dynamicRequireTargets: [
-        //  'src/worker/enemyCollide.ts',
-      ],
-    },
+  worker: {
+    format: 'es'
   },
   //base: process.env.ELECTRON=="true" ? './' : ".",
   base: process.env.ELECTRON == "true" ? "./" : "/",
   //base: process.env.ELECTRON == "true" ? "./" : "./",
-
   plugins: [
     topLevelAwait(),
     viteStaticCopy({

@@ -1,17 +1,16 @@
-import { Actor, vec, Engine, Sprite, ActorArgs, CollisionType, CollisionGroup, CollisionGroupManager, Text , Animation, AnimationStrategy} from 'excalibur'
+import { Actor, vec, Engine, Sprite, ActorArgs, CollisionType, CollisionGroup, CollisionGroupManager, Text, Animation, AnimationStrategy } from 'excalibur'
 import { miscSprites8, shipSprites16, projSprites } from '../resource/resources'
 import { Direction, input } from '../input/input'
 import { game } from '../main'
 import { AutoAttackPool } from './autoAttack'
-import { Enemy } from '../enemy/enemy'
+import { Enemy, EnemyPool, ep } from '../enemy/enemy'
 import { playersCanCollideWith, playerGroup } from '../collisionGroups'
-import { EnemyPool, ep } from '../enemy/enemy'
 
 const boom = new Animation({
   frames: [
-    {graphic: miscSprites8.getSprite(10, 6) as Sprite, duration : 150},
-    {graphic: miscSprites8.getSprite(11, 6) as Sprite, duration : 150},
-    {graphic: miscSprites8.getSprite(12, 6) as Sprite, duration : 150},
+    { graphic: miscSprites8.getSprite(10, 6) as Sprite, duration: 150 },
+    { graphic: miscSprites8.getSprite(11, 6) as Sprite, duration: 150 },
+    { graphic: miscSprites8.getSprite(12, 6) as Sprite, duration: 150 }
   ],
   strategy: AnimationStrategy.End
 })
@@ -34,7 +33,7 @@ export class Player extends Actor {
       pos: vec(150, 150),
       width: 12,
       height: 12,
-      collisionType:CollisionType.Passive,
+      collisionType: CollisionType.Passive,
       collisionGroup: playersCanCollideWith,
       scale: vec(10, 10)
     })
@@ -42,7 +41,7 @@ export class Player extends Actor {
   }
 
   onInitialize () {
-    this.graphics.layers.create({name:'boom', order:10})
+    this.graphics.layers.create({ name: 'boom', order: 10 })
     const myShip = shipSprites16.getSprite(2, 4) as Sprite
     this.graphics.use(myShip)
     this.on('pointerup', () => {
@@ -51,12 +50,11 @@ export class Player extends Actor {
     this.rotation = Math.PI
 
     this.on('precollision', (evt) => {
-      if((evt.other as Enemy).type ===  'enemy1'){
+      if ((evt.other as Enemy).type === 'enemy1') {
         boom.reset()
         this.graphics.layers.get('boom').use(boom).reset()
         evt.other.kill()
       }
-      
     })
   }
 
@@ -90,37 +88,35 @@ export class Player extends Actor {
       input.isDirectionPressed(Direction.DownLeft) ||
       input.isDirectionPressed(Direction.DownRight)
     ) {
-      this.vel.y += this.speed* delta
+      this.vel.y += this.speed * delta
     }
     if (
       input.isDirectionPressed(Direction.Left) ||
       input.isDirectionPressed(Direction.UpLeft) ||
       input.isDirectionPressed(Direction.DownLeft)
     ) {
-      this.vel.x -= this.speed* delta
+      this.vel.x -= this.speed * delta
     }
     if (
       input.isDirectionPressed(Direction.Right) ||
       input.isDirectionPressed(Direction.UpRight) ||
       input.isDirectionPressed(Direction.DownRight)
     ) {
-      this.vel.x += this.speed* delta
+      this.vel.x += this.speed * delta
     }
 
     this.enemyGenCounter -= delta
 
-    if(this.enemyGenCounter < 0) {
-      //temp.pos = player.pos.add(vec(-20, -20))
+    if (this.enemyGenCounter < 0) {
+      // temp.pos = player.pos.add(vec(-20, -20))
       this.enemyGenCounter = this.enemyGenInterval
       ep.come(game)
     }
-
   }
+
   counter = 0
-
-
 }
 
 export const player = new Player()
 
-const hpBar = new Text({text:'hp : 100'})
+const hpBar = new Text({ text: 'hp : 100' })
