@@ -107,6 +107,9 @@ export class Player extends Actor {
 
     this.enemyGenCounter -= delta
 
+    if(this.counter++ === 2000) {
+      this.enemyGenInterval = 500
+    }
     if (this.enemyGenCounter < 0) {
       // temp.pos = player.pos.add(vec(-20, -20))
       this.enemyGenCounter = this.enemyGenInterval

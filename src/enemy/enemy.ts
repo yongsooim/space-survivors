@@ -10,6 +10,16 @@ import Box2DFactory from 'box2d-wasm'
 
 const enemyWorker = new Worker()
 
+enemyWorker.onmessage = event => {
+  if (event.data) {
+    try {
+      console.log(JSON.parse(new TextDecoder().decode(event.data)))
+    } catch {
+      console.log('no json')
+    }
+  }
+}
+
 const enemySprite = shipSprites8.getSprite(9, 0) as Sprite
 
 const speed = 1200
@@ -40,12 +50,12 @@ export class Enemy extends Actor {
 
   counter = 0;
 
-  onInitialize () {
-    this.actions.meet(player, speed)
-    this.on('precollision', () => {
-      this.body.collisionType = CollisionType.Active
-    })
-  }
+  //onInitialize () {
+    //this.actions.meet(player, speed)
+    //this.on('precollision', () => {
+    //  this.body.collisionType = CollisionType.Active
+    //})
+  //}
 }
 
 const numberOfMaximumEnemy = 1000
@@ -75,6 +85,7 @@ export class EnemyPool {
     // this.enemyPool[0].pos.x = globalX
     // this.enemyPool[0].pos.y = globalY
 
+    if(this.cursor % 100 === 0 )    console.log(this.cursor)
     game.add(this.enemyPool[this.cursor])
     this.enemyPool[this.cursor].pos = game.screenToWorldCoordinates(vec(10, 10))
     this.cursor++
@@ -84,6 +95,7 @@ export class EnemyPool {
     const u8arr = new Uint8Array(trans)
 
     enemyWorker.postMessage(u8arr)
+    
     /** ***** */
   }
 }

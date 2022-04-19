@@ -7,7 +7,7 @@ import { Enemy } from './enemy/enemy'
 
 Physics.collisionResolutionStrategy = CollisionResolutionStrategy.Arcade
 
-Physics.enabled = true
+Physics.enabled = false
 
 /**
 * Amount of overlap to tolerate in pixels

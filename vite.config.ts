@@ -1,16 +1,13 @@
 import { defineConfig } from "vite";
 import topLevelAwait from "vite-plugin-top-level-await";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import wasm from 'vite-plugin-wasm'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   worker: {
     format: 'es'
   },
-  //base: process.env.ELECTRON=="true" ? './' : ".",
   base: process.env.ELECTRON == "true" ? "./" : "/",
-  //base: process.env.ELECTRON == "true" ? "./" : "./",
   plugins: [
     topLevelAwait(),
     viteStaticCopy({
@@ -23,7 +20,7 @@ export default defineConfig({
           src: "node_modules/box2d-wasm/dist/es/Box2D.simd.wasm",
           dest: "assets/",
         }
-        ]
-      })
-    ],
+      ]
+    })
+  ],
 });

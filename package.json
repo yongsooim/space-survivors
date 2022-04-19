@@ -32,7 +32,6 @@
     "@excaliburjs/dev-tools": "^0.25.3",
     "@excaliburjs/plugin-aseprite": "^0.25.3",
     "@excaliburjs/plugin-tiled": "^0.25.3",
-    "@types/matter-js": "^0.17.7",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "concurrently": "^7.1.0",
