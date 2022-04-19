@@ -1,6 +1,6 @@
 import isMobile from 'is-mobile'
 
-if (isMobile() == true) {
+if (isMobile() === true) {
   alert('ismobile')
 }
 

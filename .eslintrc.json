@@ -14,6 +14,7 @@
     "camelcase": "off",
     "no-unused-vars": "off",
     "dot-notation": "off",
+    "new-cap": "off",
     "indent": ["error", 2]
   }
 }

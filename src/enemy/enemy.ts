@@ -24,7 +24,7 @@ export class Enemy extends Actor {
       collisionType: CollisionType.Active
     })
     this.counter = initialCounter++
-    if (initialCounter == 120) {
+    if (initialCounter === 120) {
       initialCounter = 0
     }
 
@@ -43,7 +43,6 @@ export class Enemy extends Actor {
   onInitialize () {
     this.actions.meet(player, speed)
     this.on('precollision', () => {
-      this.collider.useBoxCollider
       this.body.collisionType = CollisionType.Active
     })
   }
@@ -77,15 +76,14 @@ export class EnemyPool {
     // this.enemyPool[0].pos.y = globalY
 
     game.add(this.enemyPool[this.cursor])
-    this.enemyPool[this.cursor].pos = game.screenToWorldCoordinates(
-      vec(10, 10)
-    )
+    this.enemyPool[this.cursor].pos = game.screenToWorldCoordinates(vec(10, 10))
     this.cursor++
 
     /** for worker test */
     const trans = new TextEncoder().encode(JSON.stringify(this.enemyPool.map(v => v.pos)))
     const u8arr = new Uint8Array(trans)
 
+    enemyWorker.postMessage(u8arr)
     /** ***** */
   }
 }

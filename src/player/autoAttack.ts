@@ -21,7 +21,7 @@ class AutoAttackBullet extends Actor {
 
   onInitialize () {
     this.on('precollision', (evt) => {
-      if ((evt.other as Enemy).type == 'enemy1') {
+      if ((evt.other as Enemy).type === 'enemy1') {
         evt.other.kill()
         this.kill()
       }
