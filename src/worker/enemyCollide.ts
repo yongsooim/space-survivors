@@ -10,12 +10,12 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
   // @example (url, scriptDirectory) => `${scriptDirectory}${url}`
   // But we want to look for Box2D.wasm relative to public/index.html instead.
   //
-  //locateFile: (url, scriptDirectory) => {
-  //  console.log('url in main  :  ' + url)
-  //  console.log('scriptDirectory in main  :  ' + scriptDirectory)
-  //  console.log('findng at in main  :  ./assets/' + url)
-  //  return '/assets/' + url
-  //}
+  locateFile: (url, scriptDirectory) => {
+    console.log('url in main  :  ' + url)
+    console.log('scriptDirectory in main  :  ' + scriptDirectory)
+    console.log('findng at in main  :  ./assets/' + url)
+    return '/assets/' + url
+  }
 })
 const { b2BodyDef, b2_dynamicBody, b2PolygonShape, b2Vec2, b2World } = box2D
 // in metres per second squared
