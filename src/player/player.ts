@@ -25,8 +25,6 @@ export class Player extends Actor {
   public direction = Direction.Up;
   public autoAttackInterval = 400; // ms
   public autoAttackCounter = this.autoAttackInterval;
-  public enemyGenInterval = 1;
-  public enemyGenCounter = this.enemyGenInterval;
 
   constructor () {
     super({
@@ -105,16 +103,6 @@ export class Player extends Actor {
       this.vel.x += this.speed * delta
     }
 
-    this.enemyGenCounter -= delta
-
-    if(this.counter++ === 2000) {
-      this.enemyGenInterval = 500
-    }
-    if (this.enemyGenCounter < 0) {
-      // temp.pos = player.pos.add(vec(-20, -20))
-      this.enemyGenCounter = this.enemyGenInterval
-      ep.come(game)
-    }
   }
 
   counter = 0

@@ -3,11 +3,11 @@ import { input } from './input/input'
 import { player } from './player/player'
 import { Resources, tilemap } from './resource/resources'
 import { DevTool } from '@excaliburjs/dev-tools'
-import { Enemy } from './enemy/enemy'
+import { Enemy, ep } from './enemy/enemy'
 
 Physics.collisionResolutionStrategy = CollisionResolutionStrategy.Arcade
 
-Physics.enabled = false
+Physics.enabled = true
 
 /**
 * Amount of overlap to tolerate in pixels
@@ -85,6 +85,7 @@ class Game extends Engine {
     game.add(tilemap)
     game.add(player)
     game.currentScene.add(input)
+    game.currentScene.add(ep)
     this.currentScene.camera.zoom = 0.3
     // this.currentScene.camera.strategy.lockToActor(player)
     this.currentScene.camera.strategy.elasticToActor(player, 0.6, 0.8)

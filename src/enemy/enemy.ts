@@ -1,103 +1,142 @@
-import { autoAttackLifeTime, numberOfAutoAttack, autoAttackLifeTimeBulletSpeed } from '../type/const'
-import { shipSprites8, projSprites } from '../resource/resources'
-import { Actor, vec, Engine, Sprite, ActorArgs, CollisionType, Entity } from 'excalibur'
-import { player } from '../player/player'
-import { enemyGroup } from '../collisionGroups'
+import {
+  autoAttackLifeTime,
+  numberOfAutoAttack,
+  autoAttackLifeTimeBulletSpeed,
+  enemyGenInterval,
+} from "../type/const";
+import { shipSprites8, projSprites } from "../resource/resources";
+import {
+  Actor,
+  vec,
+  Engine,
+  Sprite,
+  ActorArgs,
+  CollisionType,
+  Entity,
+} from "excalibur";
+import { player } from "../player/player";
+import { enemyGroup } from "../collisionGroups";
+import safeStringify from "fast-safe-stringify";
+import { numberOfEnemy1 } from "../type/const";
 
-import Worker from '../worker/enemyCollide?worker'
+import Worker from "../worker/enemyWorker?worker";
 
-import Box2DFactory from 'box2d-wasm'
+import Box2DFactory from "box2d-wasm";
 
-const enemyWorker = new Worker()
+const enemyWorker = new Worker();
 
-enemyWorker.onmessage = event => {
+enemyWorker.onmessage = (event) => {
   if (event.data) {
     try {
-      console.log(JSON.parse(new TextDecoder().decode(event.data)))
+      console.log(JSON.parse(new TextDecoder().decode(event.data)));
     } catch {
-      console.log('no json')
+      console.log(event.data);
+
+      for (let i = 0; i < 300; i++) {
+        ep.enemyPool[i].pos.x = event.data.x;
+        ep.enemyPool[i].pos.y = event.data.y;
+      }
     }
   }
-}
+};
 
-const enemySprite = shipSprites8.getSprite(9, 0) as Sprite
+const enemySprite = shipSprites8.getSprite(9, 0) as Sprite;
 
-const speed = 1200
-let initialCounter = 0
+const speed = 1200;
+let initialCounter = 0;
 
 export class Enemy extends Actor {
-  constructor () {
+  constructor() {
     // super()
     super({
       width: 8,
       height: 4,
-      collisionType: CollisionType.Active
-    })
-    this.counter = initialCounter++
+      collisionType: CollisionType.Active,
+    });
+    this.counter = initialCounter++;
     if (initialCounter === 120) {
-      initialCounter = 0
+      initialCounter = 0;
     }
 
-    this.graphics.use(enemySprite)
-    this.scale = vec(20, 20)
-    // this.actions.meet(player, speed);
+    this.graphics.use(enemySprite);
+    this.scale = vec(20, 20);
+    //this.actions.meet(player, speed);
     // this.actions.moveTo(player.pos, speed);
-    this.body.bounciness = 0
-    this.body.friction = 0
+    this.body.bounciness = 0;
+    this.body.friction = 0;
   }
 
-  type = 'enemy1';
+  type = "enemy1";
 
   counter = 0;
 
-  //onInitialize () {
-    //this.actions.meet(player, speed)
+  onInitialize() {
+    this.actions.meet(player, speed);
     //this.on('precollision', () => {
     //  this.body.collisionType = CollisionType.Active
     //})
-  //}
+  }
 }
 
-const numberOfMaximumEnemy = 1000
-export class EnemyPool {
-  enemyPool = new Array<Enemy>(numberOfMaximumEnemy)
+export class EnemyPool extends Entity {
+  enemyPool = new Array<Enemy>(numberOfEnemy1);
 
   _cursor = 0;
-  set cursor (v: number) {
-    if (v >= numberOfMaximumEnemy) {
-      this._cursor = 0
+  set cursor(v: number) {
+    if (v >= numberOfEnemy1) {
+      this._cursor = 0;
     } else {
-      this._cursor = v
+      this._cursor = v;
     }
   }
 
-  get cursor () {
-    return this._cursor
+  get cursor() {
+    return this._cursor;
   }
 
-  constructor () {
-    for (let i = 0; i < numberOfMaximumEnemy; i++) {
-      this.enemyPool[i] = new Enemy()
+  constructor() {
+    super();
+    for (let i = 0; i < numberOfEnemy1; i++) {
+      this.enemyPool[i] = new Enemy();
     }
   }
 
-  come (game: Engine) {
+  come(game: Engine) {
     // this.enemyPool[0].pos.x = globalX
     // this.enemyPool[0].pos.y = globalY
 
-    if(this.cursor % 100 === 0 )    console.log(this.cursor)
-    game.add(this.enemyPool[this.cursor])
-    this.enemyPool[this.cursor].pos = game.screenToWorldCoordinates(vec(10, 10))
-    this.cursor++
+    if (this.cursor % 100 === 0) console.log(this.cursor);
+    game.add(this.enemyPool[this.cursor]);
+    this.enemyPool[this.cursor].pos = game.screenToWorldCoordinates(
+      vec(10, 10)
+    );
+    this.cursor++;
 
     /** for worker test */
-    const trans = new TextEncoder().encode(JSON.stringify(this.enemyPool.map(v => v.pos)))
-    const u8arr = new Uint8Array(trans)
+    const trans = new TextEncoder().encode(
+      JSON.stringify(this.enemyPool.map((v) => v.pos))
+    );
+    const u8arr = new Uint8Array(trans);
 
-    enemyWorker.postMessage(u8arr)
-    
+    //enemyWorker.postMessage(u8arr)
+
     /** ***** */
+  }
+
+  counter = 0;
+  enemyGenCounter = enemyGenInterval;
+  update(game: Engine, delta: number): void {
+    this.counter++;
+    if (this.counter % 30) enemyWorker.postMessage("tick");
+
+    this.enemyGenCounter -= delta;
+
+    if (this.enemyGenCounter < 0) {
+      // temp.pos = player.pos.add(vec(-20, -20))
+      this.enemyGenCounter = enemyGenInterval;
+      this.come(game);
+    }
   }
 }
 
-export const ep = new EnemyPool()
+export const ep = new EnemyPool();

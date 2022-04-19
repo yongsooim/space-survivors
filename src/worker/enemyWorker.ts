@@ -1,6 +1,7 @@
 import Box2DFactory from 'box2d-wasm' // ....
+import safeStringify from 'fast-safe-stringify'
+import { numberOfEnemy1 } from '../type/const'
 
-console.log(self)
 console.log('worker loaded')
 
 const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
@@ -13,17 +14,18 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
     //console.log('url in main  :  ' + url)
     //console.log('scriptDirectory in main  :  ' + scriptDirectory)
     //console.log('findng at in main  :  ./assets/' + url)
-    return '/assets/' + url  // Wasm files are copied at build time. See vite.config.ts
+    //return './' + url  // for build, dist
+    return '/assets/' + url  // for dev
   }
 })
 const { b2BodyDef, b2_dynamicBody, b2PolygonShape, b2Vec2, b2World } = box2D
 // in metres per second squared
-const gravity = new b2Vec2(0, 10)
+const gravity = new b2Vec2(0, 0)
 const world = new b2World(gravity)
 
-const sideLengthMetres = 1
+const sideLengthMetres = 8
 const square = new b2PolygonShape()
-square.SetAsBox(sideLengthMetres / 2, sideLengthMetres / 2)
+square.SetAsBox(sideLengthMetres , sideLengthMetres)
 
 const zero = new b2Vec2(0, 0)
 
@@ -31,50 +33,51 @@ const bd = new b2BodyDef()
 bd.set_type(b2_dynamicBody)
 bd.set_position(zero)
 
-const body = world.CreateBody(bd)
-body.CreateFixture(square, 1)
-body.SetTransform(zero, 0)
-body.SetLinearVelocity(zero)
-body.SetAwake(true)
-body.SetEnabled(true)
+const enemyBodyPool = new Array<Box2D.b2Body> (numberOfEnemy1) 
 
-console.log(body)
-
-/** ************* worker test */
-
-for (let i = 0; i < 10; i++) {
-  
-  console.log('executed in enemy worker')
+for ( let i = 0 ; i < numberOfEnemy1 ; i++){
+  enemyBodyPool[i] = world.CreateBody(bd)
+  enemyBodyPool[i].CreateFixture(square, 1)
+  enemyBodyPool[i].SetTransform(new b2Vec2(0, i * 4), 0)
+  //enemyBodyPool[i].SetTransform(zero, 0)
+  enemyBodyPool[i].SetFixedRotation(true)
+  enemyBodyPool[i].SetLinearVelocity(zero)
+  enemyBodyPool[i].SetAwake(true)
+  enemyBodyPool[i].SetEnabled(false)
 }
 
 
-const bodyPool = new Array<Box2D.b2Body> (1000) 
+let playerBody = world.CreateBody(bd)
 
-for ( let i = 0 ; i < 1000 ; i++){
-  bodyPool[i] = world.CreateBody(bd)
-
-  bodyPool[i].CreateFixture(square, 1)
-  bodyPool[i].SetTransform(zero, 0)
-  bodyPool[i].SetLinearVelocity(zero)
-  bodyPool[i].SetAwake(true)
-  bodyPool[i].SetEnabled(false)
-}
 
 let count = 0
 
 postMessage('enemy worker done')
 onmessage = event => {
+  console.log((enemyBodyPool.map(v=>v.GetPosition())))
   if (event.data) {
     try {
       //console.log(JSON.parse(new TextDecoder().decode(event.data)))
 
       JSON.parse(new TextDecoder().decode(event.data))
-      bodyPool[count].SetEnabled(true)
+      enemyBodyPool[count].SetEnabled(true)
       count++
 
-      world.Step(16, 1, 1)
+      world.Step(16, 3, 8)
     } catch {
-      console.log('no json')
+      //console.log('no json')
+      console.log(event.data)
     }
   }
 }
+
+
+ setInterval(()=>{
+
+  postMessage(enemyBodyPool.map(v=>{
+    return {
+      x: v.GetPosition().x,
+      y: v.GetPosition().y
+  }})
+  )
+ })
