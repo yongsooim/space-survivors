@@ -1,33 +1,11 @@
-import shipPng from "../asset/ship.png";
-import bgPng from "../asset/bg.png";
-import miscPng from "../asset/misc.png";
-import projPng from "../asset/proj.png";
-import uiPng from "../asset/ui.png";
-import charPng from "../asset/char.png";
-import fireWav from "../asset/Laser_Shoot9.wav";
-import * as PIXI from "pixi.js";
-import { app } from "../main";
-
-export const resourcePaths = {
-  shipPng,
-  bgPng,
-  miscPng,
-  projPng,
-  uiPng,
-  charPng,
-  fireWav,
-};
-
-export const resources: PIXI.IAddOptions[] = [
-  { name: "ship", url: shipPng, loadType: PIXI.LoaderResource.LOAD_TYPE.IMAGE },
-  { name: "bg", url: bgPng },
-  { name: "misc", url: miscPng },
-  { name: "proj", url: projPng },
-  { name: "ui", url: uiPng },
-  { name: "char", url: charPng },
-  { name: "fire", url: fireWav },
-];
-/* 
+import { Sprite, ImageSource, Resource, SpriteSheet, TileMap, Sound } from 'excalibur'
+import ship from '../asset/ship.png'
+import bg from '../asset/bg.png'
+import misc from '../asset/misc.png'
+import proj from '../asset/proj.png'
+import ui from '../asset/ui.png'
+import char from '../asset/char.png'
+import fireOggPath from '../asset/Laser_Shoot9.wav'
 
 const Resources = {
   ship: new ImageSource(ship),
@@ -114,4 +92,3 @@ const miscSprites8 = SpriteSheet.fromImageSource({
 })
 
 export { Resources, shipSprites16, shipSprites8, projSprites, miscSprites8 }
- */

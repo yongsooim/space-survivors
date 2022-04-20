@@ -2,7 +2,7 @@ import { autoAttackLifeTime, numberOfAutoAttack, autoAttackLifeTimeBulletSpeed, 
 import { shipSprites8, projSprites } from "../resource/resources";
 import { Actor, vec, Engine, Sprite, ActorArgs, CollisionType, Entity } from "excalibur";
 import { player } from "../player/player";
-import { enemyGroup } from "../collisionGroups";
+import { enemyGroup, enemiesCanCollideWith } from "../collisionGroups";
 import safeStringify from "fast-safe-stringify";
 
 import stringify from 'fast-safe-stringify'
@@ -45,7 +45,8 @@ export class Enemy extends Actor {
     super({
       width: 8,
       height: 8,
-      collisionType: CollisionType.PreventCollision
+      collisionType: CollisionType.Passive,
+      collisionGroup: enemiesCanCollideWith
     })
     this.counter = initialCounter++
     if (initialCounter === 120) {
@@ -53,7 +54,7 @@ export class Enemy extends Actor {
     }
 
     this.graphics.use(enemySprite)
-    this.scale = vec(20, 20)
+    this.scale = vec(2, 2)
     //this.actions.meet(player, speed);
     // this.actions.moveTo(player.pos, speed);
     this.body.bounciness = 0
@@ -129,6 +130,8 @@ export class EnemyPool extends Entity {
       // temp.pos = player.pos.add(vec(-20, -20))
       this.enemyGenCounter = enemyGenInterval
       this.come(game)
+      enemyWorker.postMessage('gen')
+
       
     }
     enemyWorker.postMessage(JSON.stringify({
@@ -136,7 +139,14 @@ export class EnemyPool extends Entity {
       y: player.pos.y
     }))
   }
-  
 }
 
 export const ep = new EnemyPool()
+
+
+
+setInterval(() => {
+
+  world.Step(16.666666, 2, 2)
+
+}, 16.666666)

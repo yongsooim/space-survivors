@@ -30,6 +30,10 @@ export default defineConfig({
         {
           src: "node_modules/box2d-wasm/dist/es/Box2D.simd.wasm",
           dest: "assets/",
+        },
+        {
+          src: "src/asset/netlify.toml",
+          dest: "./",
         }
       ]
     })

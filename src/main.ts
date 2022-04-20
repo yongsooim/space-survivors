@@ -1,98 +1,140 @@
-import { Engine, Physics, Loader, Color, DisplayMode, vec, CollisionSystem, CollisionResolutionStrategy } from 'excalibur'
-import { input } from './input/input'
-import { player } from './player/player'
-import { Resources, tilemap } from './resource/resources'
-import { DevTool } from '@excaliburjs/dev-tools'
-import { Enemy, ep } from './enemy/enemy'
+import * as PIXI from "pixi.js";
+import { Viewport } from "pixi-viewport";
+import { PI_2 } from "pixi.js";
+import { resources, resourcePaths } from "./resource/resources";
+import { sprites, enemy1 } from "./resource/spriteManage";
+import Worker from "./worker/worker1?worker";
+import shipPng from "./asset/ship.png";
+import { input, Direction } from "./input/input";
 
-Physics.collisionResolutionStrategy = CollisionResolutionStrategy.Arcade
+let sab = new SharedArrayBuffer(300);
 
-Physics.enabled = true
+const myWorker = new Worker();
 
-/**
-* Amount of overlap to tolerate in pixels
-*/
-Physics.slop = 0
+let aa = new Uint8Array(sab);
+setTimeout(() => {
+  myWorker.postMessage(sab);
+  
+}, 500);
 
-/**
- * Amount of positional overlap correction to apply each position iteration of the solver
- * O - meaning no correction, 1 - meaning correct all overlap
- */
-Physics.steeringFactor = 0
+// The application will create a renderer using WebGL, if possible,
+// with a fallback to a canvas render. It will also setup the ticker
+// and the root stage PIXI.Container
+PIXI.utils.skipHello();
+export const app = new PIXI.Application({
+  resizeTo: window,
+  antialias: false,
+});
 
-/**
-* Warm start set to true re-uses impulses from previous frames back in the solver
-*/
-Physics.warmStart = true
+// The application will create a canvas element for you that you
+// can then insert into the DOM
+document.body.appendChild(app.view);
 
-/**
-* By default bodies do not sleep
-*/
-Physics.bodiesCanSleepByDefault = true
+const viewport = new Viewport({
+  screenWidth: window.innerWidth,
+  screenHeight: window.innerHeight,
+  worldWidth: 1000,
+  worldHeight: 1000,
 
-/**
-* Surface epsilon is used to help deal with surface penetration
-*/
-Physics.surfaceEpsilon = 0.5
-Physics.sleepEpsilon = 0.7
-Physics.wakeThreshold = Physics.sleepEpsilon * 3
-Physics.sleepBias = 2
+  interaction: app.renderer.plugins.interaction, // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
+});
+let ship = [] as PIXI.Sprite[];
 
-/**
- * Enable fast moving body checking, this enables checking for collision pairs via raycast for fast moving objects to prevent
- * bodies from tunneling through one another.
- */
-Physics.checkForFastBodies = false
+app.loader.add(resources).load(() => {
+  const tilingSprite = new PIXI.TilingSprite(sprites.bg.texture, 5000, 5000);
 
-class Game extends Engine {
-  constructor () {
-    super({
-      width: 1280,
-      height: 960,
-      antialiasing: false,
-      backgroundColor: Color.Black,
-      suppressConsoleBootMessage: true,
-      displayMode: DisplayMode.FitScreen,
-      maxFps: 60
-    })
-  }
+  viewport.addChild(tilingSprite);
 
-  async initialize () {
-    const loader = new Loader(Object.values(Resources))
+  sprites.ship.x = app.renderer.width / 2;
+  sprites.ship.y = app.renderer.height / 2;
 
-    loader.backgroundColor = '#000000'
-    // white dot string
-    loader.logo = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjiJu+4D8ABYEClcC+vtcAAAAASUVORK5CYII='
-    loader.logoWidth = game.screen.viewport.width / 2
-    loader.logoPosition = vec(game.screen.viewport.width * 45 / 100, game.screen.viewport.height * 2 / 5)
-    loader.loadingBarPosition = vec(game.screen.viewport.width / 4, game.screen.viewport.height * 4 / 5)
+  sprites.ship.anchor.x = 0.5;
+  sprites.ship.anchor.y = 0.5;
 
-    loader.startButtonFactory = () => {
-      game.screen.applyResolutionAndViewport()
-      let buttonElement: HTMLButtonElement = document.getElementById('fsbPlay') as HTMLButtonElement
-      if (!buttonElement) {
-        buttonElement = document.createElement('button')
+  sprites.ship2.x = app.renderer.width / 2;
+  sprites.ship2.y = app.renderer.height / 2;
+
+  sprites.ship2.anchor.x = 0.5;
+  sprites.ship2.anchor.y = 0.5;
+
+  viewport.addChild(sprites.ship);
+  viewport.addChild(sprites.ship2).position.x = 300;
+
+  const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE));
+  sprite.tint = 0xff0000;
+  sprite.width = sprite.height = 100;
+  sprite.position.set(100, 100);
+  sprite.anchor.x = 0.3;
+  sprite.anchor.y = 0.3;
+
+  app.stage.addChild(viewport);
+  viewport
+    .drag()
+    .pinch()
+    .wheel()
+    .follow(sprites.ship, { speed: 10, acceleration: 25 })
+    .decelerate()
+    .setZoom(4)
+
+  input.init();
+
+  let counter = 0;
+  let i = 0;
+
+  // Listen for frame updates
+  app.ticker.add((delta: number) => {
+    if(counter < 1000) counter++;
+    if (counter % 1 == 0) {
+      ship[i] = new PIXI.Sprite(enemy1);
+
+      ship[i].x = app.renderer.width / 2 + Math.random() * 2000;
+      ship[i].y = app.renderer.height / 2 + Math.random() * 2000;
+
+      ship[i].scale.x = 1;
+      ship[i].scale.y = 1;
+
+      ship[i].anchor.x = 0.5;
+      ship[i].anchor.y = 0.5;
+      viewport.addChild(ship[i]);
+
+      i++;
+      if (i % 100 == 0) {
+        console.log(i);
+        console.log(delta);
       }
+    }
+    input.update();
 
-      buttonElement.id = 'fsbPlay'
-      // buttonElement.textContent = '시작'
-      buttonElement.textContent = 's'
-      return buttonElement
+    sprites.ship.rotation += 0.01;
+    sprite.rotation -= 0.01;
+    sprites.ship2.rotation -= 0.01;
+
+    if (input.isDirectionPressed(Direction.Up)) {
+      sprites.ship.y -= 10;
+    }
+    if (input.isDirectionPressed(Direction.Down)) {
+      sprites.ship.y += 10;
+    }
+    if (input.isDirectionPressed(Direction.Left)) {
+      sprites.ship.x -= 10;
+    }
+    if (input.isDirectionPressed(Direction.Right)) {
+      sprites.ship.x += 10;
     }
 
-    tilemap.scale = vec(10, 10)
-    this.start(loader)
-    game.add(tilemap)
-    game.add(player)
-    game.currentScene.add(input)
-    game.currentScene.add(ep)
-    this.currentScene.camera.zoom = 0.3
-    // this.currentScene.camera.strategy.lockToActor(player)
-    this.currentScene.camera.strategy.elasticToActor(player, 0.6, 0.8)
+  ship[0].position.y += 1
+
+  });
+});
+
+let ticker = PIXI.Ticker.shared;
+
+let counter = 0
+myWorker.onmessage = (ev) => {
+  let obj = JSON.parse(new TextDecoder().decode(ev.data))
+  for(let i = 1 ; i < 1000 ; i++){
+    ship[i].x  = obj[i].x
+    ship[i].y  = obj[i].y
   }
+  console.log(ship[0].y)
 }
-
-export const game = new Game()
-game.initialize()
-
-// let devtool = new DevTool(game)

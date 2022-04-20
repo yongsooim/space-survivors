@@ -28,7 +28,7 @@ const zero = new b2Vec2(0, 0)
 const gravity = zero
 const world = new b2World(gravity) // zero gravity
 
-const sideLengthMetres = 8
+const sideLengthMetres = 16
 
 const bd = new b2BodyDef()
 bd.set_type(b2_dynamicBody)
@@ -42,24 +42,30 @@ const enemyBodyPool = new Array<Box2D.b2Body>(numberOfEnemy1)
 for (let i = 0; i < numberOfEnemy1; i++) {
   enemyBodyPool[i] = world.CreateBody(bd)
   enemyBodyPool[i].CreateFixture(square, 1)
-  enemyBodyPool[i].SetTransform(new b2Vec2(0, i * 4), 0)
-   //enemyBodyPool[i].SetTransform(new b2Vec2(Math.random(), Math.random()), 0)
+  //enemyBodyPool[i].SetTransform(new b2Vec2(0, i * 4), 0)
+  enemyBodyPool[i].SetTransform(new b2Vec2(Math.random() * 10, Math.random() * 10), 0)
   enemyBodyPool[i].SetFixedRotation(true)
   enemyBodyPool[i].SetLinearVelocity(zero)
-  enemyBodyPool[i].SetAwake(true)
-  enemyBodyPool[i].SetEnabled(true)
+  enemyBodyPool[i].SetAwake(false)
+  enemyBodyPool[i].SetEnabled(false)
   //enemyBodyPool[i].ApplyForce(0, 0, false)
 }
 
 let count = 0
 
-
+let counter = 0
 let mainPlayerPos = {x:0, y:0}
 let receivedObj : any
 onmessage = (ev) => { 
-  console.log(ev.data)
-  mainPlayerPos.x = JSON.parse(ev.data).x
-  mainPlayerPos.y = JSON.parse(ev.data).y
+  if(ev.data === 'gen'){
+    if(counter === numberOfEnemy1) counter = 0
+    enemyBodyPool[counter++].SetEnabled(true)
+
+  } else {
+    mainPlayerPos.x = JSON.parse(ev.data).x
+    mainPlayerPos.y = JSON.parse(ev.data).y
+  
+  }
 }
 
 /* onmessage = event => {
@@ -90,7 +96,7 @@ setInterval(() => {
       }
     }))
   )
-  world.Step(50, 3, 8)
+  world.Step(16.666666, 2, 2)
 
   for(let i = 0 ; i < numberOfEnemy1 ; i++){
     let temp = new b2Vec2(mainPlayerPos.x - enemyBodyPool[i].GetPosition().x, mainPlayerPos.y - enemyBodyPool[i].GetPosition().y)
@@ -98,5 +104,7 @@ setInterval(() => {
     temp.op_mul(50)
     //enemyBodyPool[i].ApplyForce(temp)
     enemyBodyPool[i].SetLinearVelocity(temp)
+    enemyBodyPool[i].ApplyForce(temp, 0, true)
+
   }
-}, 50)
+}, 16.666666)

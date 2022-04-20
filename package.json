@@ -60,6 +60,10 @@
     "fast-json": "^2.1.1",
     "fast-safe-stringify": "^2.1.1",
     "is-mobile": "^3.1.1",
+    "pixi-viewport": "^4.34.4",
+    "pixi.js": "^6.3.0",
+    "pixi.js-keyboard": "^1.1.6",
+    "pixi.js-mouse": "^1.1.6",
     "vite-plugin-svelte": "^3.0.1"
   },
   "build": {

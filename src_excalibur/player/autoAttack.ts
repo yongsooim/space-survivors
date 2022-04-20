@@ -14,7 +14,7 @@ class AutoAttackBullet extends Actor {
       height: 4,
       collisionType: CollisionType.Passive,
       collisionGroup: weaponGroup,
-      scale: vec(10, 10)
+      scale: vec(2, 2)
     })
   }
 

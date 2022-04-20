@@ -75,6 +75,7 @@ simd
 electron
 shared memory between worker and main thread? Search SharedArrayBuffer
 object pool
+BSON in shared array buffer
 
 
 SharedArrayBuffer structure

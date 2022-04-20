@@ -1,7 +1,7 @@
 {
   
   "compilerOptions": {
-    //"isolatedModules":true,
+    "isolatedModules":true,
     "target": "esnext",
     "useDefineForClassFields": true,
     "module": "esnext",
@@ -16,7 +16,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "allowJs": true
+    "allowJs": true,
+    "types": ["vite/client"]
   },
   "include": ["./src"]
 }
