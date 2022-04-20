@@ -5,15 +5,22 @@ import { game } from '../main'
 import { AutoAttackPool } from './autoAttack'
 import { Enemy, EnemyPool, ep } from '../enemy/enemy'
 import { playersCanCollideWith, playerGroup } from '../collisionGroups'
+import Worker from '../worker/playerWorker?worker'
+
+const playerWorker = new Worker()
 
 const boom = new Animation({
   frames: [
+    { graphic: miscSprites8.getSprite(12, 6) as Sprite, duration: 150 },
+    { graphic: miscSprites8.getSprite(11, 6) as Sprite, duration: 150 },
     { graphic: miscSprites8.getSprite(10, 6) as Sprite, duration: 150 },
     { graphic: miscSprites8.getSprite(11, 6) as Sprite, duration: 150 },
     { graphic: miscSprites8.getSprite(12, 6) as Sprite, duration: 150 }
   ],
   strategy: AnimationStrategy.End
 })
+
+
 
 boom.scale = vec(3, 3)
 boom.opacity = 0.7
@@ -22,7 +29,6 @@ export class Player extends Actor {
   public hp = 100;
   public speed = 100;
   public ship = 'frigate';
-  public direction = Direction.Up;
   public autoAttackInterval = 400; // ms
   public autoAttackCounter = this.autoAttackInterval;
 
@@ -103,6 +109,7 @@ export class Player extends Actor {
       this.vel.x += this.speed * delta
     }
 
+    playerWorker.postMessage(JSON.stringify({x: this.pos.x, y:this.pos.y}))
   }
 
   counter = 0

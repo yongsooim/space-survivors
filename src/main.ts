@@ -57,7 +57,7 @@ class Game extends Engine {
     })
   }
 
-  initialize () {
+  async initialize () {
     const loader = new Loader(Object.values(Resources))
 
     loader.backgroundColor = '#000000'

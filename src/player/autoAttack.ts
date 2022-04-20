@@ -16,7 +16,6 @@ class AutoAttackBullet extends Actor {
       collisionGroup: weaponGroup,
       scale: vec(10, 10)
     })
-    //    this.collider.useCircleCollider(4)
   }
 
   onInitialize () {
@@ -31,7 +30,7 @@ class AutoAttackBullet extends Actor {
   fire (game: Engine) {
     this.remainLifeTime = autoAttackLifeTime
     this.pos = player.pos.add(vec(0, -4))
-    // this.graphics.use(lv1autoAttack)
+    this.graphics.use(lv1autoAttack)
     game.add(this)
   }
 

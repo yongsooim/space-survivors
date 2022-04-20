@@ -74,7 +74,7 @@ web assembly
 simd
 electron
 shared memory between worker and main thread? Search SharedArrayBuffer
-
+object pool
 
 
 SharedArrayBuffer structure
@@ -95,3 +95,15 @@ multi thread for
 1. main thread (excaliburjs, render, actor control, scene control)
 2. enemy collision (may have multiple layers, figher class in the foreground, mothership class in the background, collide with player and weapon and each other)
 3. resource? coin? exp? collector? (get items.. collide with player)
+
+
+
+
+
+
+worker
+only playerPos is sent to worker thread to calculate (1. enemy move target) and (2. enemy gen pos)
+enemy gen/destory info is sent to worker
+
+worker sent all enemies pos
+

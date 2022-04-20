@@ -1,5 +1,9 @@
 import { Engine, Entity, Input } from 'excalibur'
 import { game } from '../main'
+//import stringify from 'fast-safe-stringify'
+//import Worker from '../worker/inputWorker?worker'
+
+//const inputWorker = new Worker()
 
 export enum Direction {
   Up = 'Up',
@@ -91,7 +95,7 @@ class InputManager extends Entity {
   };
 
   /** Updating fsb keys */
-  update (game: Engine, delta: number) {
+  onPreUpdate(game: Engine, _delta: number): void {
     if (
       game.input.keyboard.isHeld(Input.Keys.Up) ||
       game.input.keyboard.isHeld(Input.Keys.W) ||
@@ -205,6 +209,8 @@ class InputManager extends Entity {
     } else {
       this.isPressed.C = false
     }
+    
+    //inputWorker.postMessage(stringify(this.isPressed))
   }
 
   isDirectionPressed (direction: Direction) {
