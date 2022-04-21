@@ -1,12 +1,12 @@
-import shipPng from "../asset/ship.png";
-import bgPng from "../asset/bg.png";
-import miscPng from "../asset/misc.png";
-import projPng from "../asset/proj.png";
-import uiPng from "../asset/ui.png";
-import charPng from "../asset/char.png";
-import fireWav from "../asset/Laser_Shoot9.wav";
-import * as PIXI from "pixi.js";
-import { app } from "../main";
+import shipPng from '../asset/ship.png'
+import bgPng from '../asset/bg.png'
+import miscPng from '../asset/misc.png'
+import projPng from '../asset/proj.png'
+import uiPng from '../asset/ui.png'
+import charPng from '../asset/char.png'
+import fireWav from '../asset/Laser_Shoot9.wav'
+import * as PIXI from 'pixi.js'
+import { app } from '../main'
 
 export const resourcePaths = {
   shipPng,
@@ -15,19 +15,19 @@ export const resourcePaths = {
   projPng,
   uiPng,
   charPng,
-  fireWav,
-};
+  fireWav
+}
 
 export const resources: PIXI.IAddOptions[] = [
-  { name: "ship", url: shipPng, loadType: PIXI.LoaderResource.LOAD_TYPE.IMAGE },
-  { name: "bg", url: bgPng },
-  { name: "misc", url: miscPng },
-  { name: "proj", url: projPng },
-  { name: "ui", url: uiPng },
-  { name: "char", url: charPng },
-  { name: "fire", url: fireWav },
-];
-/* 
+  { name: 'ship', url: shipPng, loadType: PIXI.LoaderResource.LOAD_TYPE.IMAGE },
+  { name: 'bg', url: bgPng },
+  { name: 'misc', url: miscPng },
+  { name: 'proj', url: projPng },
+  { name: 'ui', url: uiPng },
+  { name: 'char', url: charPng },
+  { name: 'fire', url: fireWav }
+]
+/*
 
 const Resources = {
   ship: new ImageSource(ship),
