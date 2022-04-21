@@ -1,5 +1,10 @@
 import { Actor } from '../class/Actor'
 
-declare class player extends Actor {
+class player extends Actor {
 
+
+    constructor() {
+        super()
+        this.speed = 0.3
+    }
 }

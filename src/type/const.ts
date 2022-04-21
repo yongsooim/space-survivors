@@ -1,1 +1,1 @@
-export const numberOfEnemy1 = 1000
+export const numberOfEnemy1 = 2000

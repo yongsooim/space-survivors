@@ -9,9 +9,14 @@ export const enemy1 = new PIXI.Texture(ships, new PIXI.Rectangle(9 * 8, 0 * 8, 8
 const bgBase = new PIXI.BaseTexture(resourcePaths.bgPng)
 const bg = new PIXI.Texture(bgBase)
 
+
+const proj = new PIXI.BaseTexture(resourcePaths.projPng)
+export const aa = new PIXI.Texture(proj, new PIXI.Rectangle(4 * 8, 0 * 8, 8, 8))
+
 export const sprites = {
   ship: new PIXI.Sprite(ship1),
   ship2: new PIXI.Sprite(ship1),
-  bg: new PIXI.Sprite(bg)
+  bg: new PIXI.Sprite(bg),
+  autoAttack: new PIXI.Sprite(aa)
 
 }
