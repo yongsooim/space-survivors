@@ -27,20 +27,17 @@ const zero = new b2Vec2(0, 0);
 const gravity = zero;
 const world = new b2World(gravity); // zero gravity
 
-const sideLengthMetres = 4;
-
 const bd = new b2BodyDef();
 bd.set_type(b2_dynamicBody);
 bd.set_position(new b2Vec2(Math.random() * 10, Math.random() * 10));
 
 const square = new b2PolygonShape();
-square.SetAsBox(sideLengthMetres, sideLengthMetres);
-
+square.SetAsBox(5, 5);
 const enemyBodyPool = new Array<Box2D.b2Body>(numberOfEnemy1);
 
 for (let i = 0; i < numberOfEnemy1; i++) {
   enemyBodyPool[i] = world.CreateBody(bd);
-  enemyBodyPool[i].CreateFixture(square, 1);
+  enemyBodyPool[i].CreateFixture(square, 0.2).SetFriction(0);
   //enemyBodyPool[i].SetTransform(new b2Vec2(0, i * 4), 0)
   enemyBodyPool[i].SetTransform(
     new b2Vec2(Math.random() * 200, Math.random() * 200),
@@ -49,7 +46,7 @@ for (let i = 0; i < numberOfEnemy1; i++) {
   enemyBodyPool[i].SetFixedRotation(true);
   enemyBodyPool[i].SetLinearVelocity(zero);
   enemyBodyPool[i].SetAwake(false);
-  enemyBodyPool[i].SetEnabled(false);
+  enemyBodyPool[i].SetEnabled(true);
   //enemyBodyPool[i].ApplyForce(0, 0, false)
 }
 
@@ -59,7 +56,7 @@ let counter = 0;
 let mainPlayerPos = { x: 0, y: 0 };
 let receivedObj: any;
 onmessage = (ev) => {
-  console.log(ev.data);
+  //console.log(ev.data);
   /* 
   if(ev.data === 'gen'){
     if(counter === numberOfEnemy1) counter = 0
@@ -70,6 +67,9 @@ onmessage = (ev) => {
     mainPlayerPos.y = JSON.parse(ev.data).y
   
   } */
+  mainPlayerPos.x = ev.data[0]
+  mainPlayerPos.y = ev.data[1]
+  
 };
 
 /* onmessage = event => {
@@ -95,14 +95,13 @@ const fromWorker = [] as SharedArrayBuffer[];
 fromWorker[0] = new SharedArrayBuffer(1000);
 fromWorker[1] = new SharedArrayBuffer(1000);
 
-const view = [] as Float32Array[];
-view[0] = new Float32Array(fromWorker[0]);
-view[1] = new Float32Array(fromWorker[1]);
+const view = [] as Float64Array[];
+view[0] = new Float64Array(fromWorker[0]);
+view[1] = new Float64Array(fromWorker[1]);
 
 view[0][0] = 0.3;
 
 let isA = 0;
-
 
 let isFirst = true
 const sab = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * 2 * numberOfEnemy1)
@@ -117,7 +116,7 @@ setInterval(() => {
   //     }
   //   }))
   // )
-  world.Step(16.666666, 2, 2);
+  world.Step(33, 2, 4);
 
   for (let i = 0; i < numberOfEnemy1; i++) {
     let temp = new b2Vec2(
@@ -130,21 +129,12 @@ setInterval(() => {
     enemyBodyPool[i].SetLinearVelocity(temp);
     enemyBodyPool[i].ApplyForce(temp, 0, true);
 
-    let arr = JSON.stringify(
-      enemyBodyPool.map((v) => {
-        return {
-          x: v.GetPosition().x,
-          y: v.GetPosition().y,
-        };
-      })
-    );
-
     let arrSab = new Float64Array(sab)
 
-    //for(let i = 0; i < numberOfEnemy1 ; i++) {
-    //  arrSab[i * 2] = enemyBodyPool[i].GetPosition().x
-    //  arrSab[i * 2 + 1] = enemyBodyPool[i].GetPosition().y
-    //}
+    for(let i = 0; i < numberOfEnemy1 ; i++) {
+      arrSab[i * 2] = enemyBodyPool[i].GetPosition().x
+      arrSab[i * 2 + 1] = enemyBodyPool[i].GetPosition().y
+    }
 
     //let arr = JSON.stringify(enemyBodyPool)
 
@@ -155,12 +145,7 @@ setInterval(() => {
     } else {
       postMessage('a')
     }
-
-    console.log(arrSab)
-    //console.log(arrSab)
-    //console.log(buf);
-    //console.log(JSON.parse(new TextDecoder().decode(buf)));
   }
-}, 16.666666);
+}, 33);
 
 export default Worker;

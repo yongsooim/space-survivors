@@ -61,7 +61,7 @@
 
 --브금
 마즈매트릭스 테크노
-퇴근길 지하철 믹스 찾아보기
+퇴근길 지하철 믹스 찾아보기 (망잉덴샤)
 
 
 --테크
@@ -91,20 +91,22 @@ vel
 iskilled
 }
 
-
 multi thread for
 1. main thread (excaliburjs, render, actor control, scene control)
 2. enemy collision (may have multiple layers, figher class in the foreground, mothership class in the background, collide with player and weapon and each other)
 3. resource? coin? exp? collector? (get items.. collide with player)
-
-
-
-
-
 
 worker
 only playerPos is sent to worker thread to calculate (1. enemy move target) and (2. enemy gen pos)
 enemy gen/destory info is sent to worker
 
 worker sent all enemies pos
+
+box2d runs like below
+
+get interval
+get delta 
+setTimeout () {
+    calculate physics
+} , if (interval - delta > 0), interval - delta  else  0 (immediately)
 

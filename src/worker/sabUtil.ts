@@ -27,13 +27,9 @@ class sabUtil {
     for (let i = 0; i < length; i++) {
       this.arrToPixi[i] = src[i]
     }
-    this.sabToPixi[0] = new SharedArrayBuffer(sizeOfElement * numberOfEnemy1 * 2)
 
     const sharedBuffer = new SharedArrayBuffer(sizeOfElement * numberOfEnemy1);
     const sharedArray = new Float64Array(sharedBuffer);
-
-    
-
   }
 
 

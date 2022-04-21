@@ -6,6 +6,7 @@ import { sprites, enemy1 } from "./resource/spriteManage";
 import Worker from "./worker/worker1?worker";
 import shipPng from "./asset/ship.png";
 import { input, Direction } from "./input/input";
+import { numberOfEnemy1 } from "./type/const";
 
 let sab = new SharedArrayBuffer(300);
 
@@ -61,7 +62,7 @@ app.loader.add(resources).load(() => {
 //  sprite.anchor.x = 0.3;
 //  sprite.anchor.y = 0.3;
 
-//  app.stage.addChild(viewport);
+  app.stage.addChild(viewport);
   viewport
     .drag()
     .pinch()
@@ -89,7 +90,7 @@ app.loader.add(resources).load(() => {
 
       ship[i].anchor.x = 0.5;
       ship[i].anchor.y = 0.5;
-//      viewport.addChild(ship[i]);
+      viewport.addChild(ship[i]);
 
       i++;
       if (i % 500 == 0) {
@@ -116,7 +117,7 @@ app.loader.add(resources).load(() => {
     }
 
   ship[0].position.y += 1
-
+    myWorker.postMessage([sprites.ship.x, sprites.ship.y])
   });
 });
 
@@ -124,18 +125,18 @@ let ticker = PIXI.Ticker.shared;
 
 let counter = 0
 let isFirst = true
-let arr 
+let arr : Float64Array
 myWorker.onmessage = (ev) => {
   //console.log(new Float64Array(ev.data))
 
   if(isFirst) { 
     arr = new Float64Array(ev.data) 
     isFirst = false}
-  arr[0] = counter++
-//  let obj = JSON.parse(new TextDecoder().decode(ev.data))
-//  for(let i = 1 ; i < 1000 ; i++){
-//    ship[i].x  = obj[i].x
-//    ship[i].y  = obj[i].y
-//  }
-//  console.log(ship[0].y)
+  //let obj = JSON.parse(new TextDecoder().decode(ev.data))
+  for(let i = 1 ; i < numberOfEnemy1 ; i++){
+    if(ship[i]){
+      ship[i].x  = arr[i * 2]
+      ship[i].y  = arr[i * 2 + 1]
+    }
+  }
 }
