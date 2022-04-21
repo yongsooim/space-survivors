@@ -11,12 +11,6 @@ let sab = new SharedArrayBuffer(300);
 
 const myWorker = new Worker();
 
-let aa = new Uint8Array(sab);
-setTimeout(() => {
-  myWorker.postMessage(sab);
-  
-}, 500);
-
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
 // and the root stage PIXI.Container
@@ -43,7 +37,7 @@ let ship = [] as PIXI.Sprite[];
 app.loader.add(resources).load(() => {
   const tilingSprite = new PIXI.TilingSprite(sprites.bg.texture, 5000, 5000);
 
-  viewport.addChild(tilingSprite);
+//  viewport.addChild(tilingSprite);
 
   sprites.ship.x = app.renderer.width / 2;
   sprites.ship.y = app.renderer.height / 2;
@@ -57,17 +51,17 @@ app.loader.add(resources).load(() => {
   sprites.ship2.anchor.x = 0.5;
   sprites.ship2.anchor.y = 0.5;
 
-  viewport.addChild(sprites.ship);
-  viewport.addChild(sprites.ship2).position.x = 300;
+//  viewport.addChild(sprites.ship);
+//  viewport.addChild(sprites.ship2).position.x = 300;
 
-  const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE));
-  sprite.tint = 0xff0000;
-  sprite.width = sprite.height = 100;
-  sprite.position.set(100, 100);
-  sprite.anchor.x = 0.3;
-  sprite.anchor.y = 0.3;
+//  const sprite = viewport.addChild(new PIXI.Sprite(PIXI.Texture.WHITE));
+//  sprite.tint = 0xff0000;
+//  sprite.width = sprite.height = 100;
+//  sprite.position.set(100, 100);
+//  sprite.anchor.x = 0.3;
+//  sprite.anchor.y = 0.3;
 
-  app.stage.addChild(viewport);
+//  app.stage.addChild(viewport);
   viewport
     .drag()
     .pinch()
@@ -95,10 +89,10 @@ app.loader.add(resources).load(() => {
 
       ship[i].anchor.x = 0.5;
       ship[i].anchor.y = 0.5;
-      viewport.addChild(ship[i]);
+//      viewport.addChild(ship[i]);
 
       i++;
-      if (i % 100 == 0) {
+      if (i % 500 == 0) {
         console.log(i);
         console.log(delta);
       }
@@ -106,7 +100,6 @@ app.loader.add(resources).load(() => {
     input.update();
 
     sprites.ship.rotation += 0.01;
-    sprite.rotation -= 0.01;
     sprites.ship2.rotation -= 0.01;
 
     if (input.isDirectionPressed(Direction.Up)) {
@@ -130,11 +123,19 @@ app.loader.add(resources).load(() => {
 let ticker = PIXI.Ticker.shared;
 
 let counter = 0
+let isFirst = true
+let arr 
 myWorker.onmessage = (ev) => {
-  let obj = JSON.parse(new TextDecoder().decode(ev.data))
-  for(let i = 1 ; i < 1000 ; i++){
-    ship[i].x  = obj[i].x
-    ship[i].y  = obj[i].y
-  }
-  console.log(ship[0].y)
+  //console.log(new Float64Array(ev.data))
+
+  if(isFirst) { 
+    arr = new Float64Array(ev.data) 
+    isFirst = false}
+  arr[0] = counter++
+//  let obj = JSON.parse(new TextDecoder().decode(ev.data))
+//  for(let i = 1 ; i < 1000 ; i++){
+//    ship[i].x  = obj[i].x
+//    ship[i].y  = obj[i].y
+//  }
+//  console.log(ship[0].y)
 }

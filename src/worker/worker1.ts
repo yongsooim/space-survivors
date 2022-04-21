@@ -59,7 +59,7 @@ let counter = 0;
 let mainPlayerPos = { x: 0, y: 0 };
 let receivedObj: any;
 onmessage = (ev) => {
-  console.log(ev);
+  console.log(ev.data);
   /* 
   if(ev.data === 'gen'){
     if(counter === numberOfEnemy1) counter = 0
@@ -102,6 +102,10 @@ view[1] = new Float32Array(fromWorker[1]);
 view[0][0] = 0.3;
 
 let isA = 0;
+
+
+let isFirst = true
+const sab = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * 2 * numberOfEnemy1)
 setInterval(() => {
   isA = isA === 0 ? 1 : 0; //toggling
   //postMessage(view[isA])
@@ -135,10 +139,25 @@ setInterval(() => {
       })
     );
 
+    let arrSab = new Float64Array(sab)
+
+    //for(let i = 0; i < numberOfEnemy1 ; i++) {
+    //  arrSab[i * 2] = enemyBodyPool[i].GetPosition().x
+    //  arrSab[i * 2 + 1] = enemyBodyPool[i].GetPosition().y
+    //}
+
     //let arr = JSON.stringify(enemyBodyPool)
 
-    let buf = new TextEncoder().encode(arr);
-    postMessage(buf)
+    //let buf = new TextEncoder().encode(arr);
+    if(isFirst){
+            postMessage(sab)
+            isFirst = false
+    } else {
+      postMessage('a')
+    }
+
+    console.log(arrSab)
+    //console.log(arrSab)
     //console.log(buf);
     //console.log(JSON.parse(new TextDecoder().decode(buf)));
   }
