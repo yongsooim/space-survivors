@@ -32,7 +32,7 @@ export default defineConfig({
           dest: "assets/",
         },
         {
-          src: "src/asset/netlify.toml",
+          src: "src/asset/netlify.toml",  // for netlify cross origin setting
           dest: "./",
         }
       ]

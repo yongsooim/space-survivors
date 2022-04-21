@@ -1,58 +1,58 @@
-import { keyboard, Keys } from "./keyboard";
+import { keyboard, Keys } from './keyboard'
 
 export enum Direction {
-  Up = "Up",
-  Left = "Left",
-  Right = "Right",
-  Down = "Down",
-  UpLeft = "UpLeft",
-  UpRight = "UpRight",
-  DownLeft = "DownLeft",
-  DownRight = "DownRight",
-  None = "None",
+  Up = 'Up',
+  Left = 'Left',
+  Right = 'Right',
+  Down = 'Down',
+  UpLeft = 'UpLeft',
+  UpRight = 'UpRight',
+  DownLeft = 'DownLeft',
+  DownRight = 'DownRight',
+  None = 'None',
 }
 
 export declare enum SsKey {
-  Up = "Up",
-  Down = "Down",
-  Left = "Left",
-  Right = "Right",
-  UpLeft = "UpLeft",
-  UpRight = "UpRight",
-  DownLeft = "DownLeft",
-  DownRight = "DownRight",
-  Enter = "Enter",
-  Esc = "Esc",
-  Shift = "Shift",
-  C = "C",
-  None = "None",
+  Up = 'Up',
+  Down = 'Down',
+  Left = 'Left',
+  Right = 'Right',
+  UpLeft = 'UpLeft',
+  UpRight = 'UpRight',
+  DownLeft = 'DownLeft',
+  DownRight = 'DownRight',
+  Enter = 'Enter',
+  Esc = 'Esc',
+  Shift = 'Shift',
+  C = 'C',
+  None = 'None',
 }
 
 /** Direction to SsKey */
-export function d2k(direction: Direction) {
+export function d2k (direction: Direction) {
   if (
     direction === Direction.Up ||
     direction === Direction.Down ||
     direction === Direction.Left ||
     direction === Direction.Right
   ) {
-    return direction as string as SsKey;
+    return direction as string as SsKey
   } else {
-    return SsKey.None;
+    return SsKey.None
   }
 }
 
 /** SsKey to Direction */
-export function k2d(key: SsKey) {
+export function k2d (key: SsKey) {
   if (
     key === SsKey.Up ||
     key === SsKey.Down ||
     key === SsKey.Left ||
     key === SsKey.Right
   ) {
-    return key as string as Direction;
+    return key as string as Direction
   } else {
-    return Direction.None;
+    return Direction.None
   }
 }
 
@@ -86,23 +86,24 @@ class Input {
     Esc: false,
     C: false,
     Shift: false,
-    None: false,
+    None: false
   };
-  init() {
-    keyboard.init();
+
+  init () {
+    keyboard.init()
   }
 
-  update() {
-    keyboard.update();
+  update () {
+    keyboard.update()
 
     if (
       keyboard.isHeld(Keys.Up) ||
       keyboard.isHeld(Keys.W) ||
       keyboard.isHeld(Keys.KeyW)
     ) {
-      this.isPressed.Up = true;
+      this.isPressed.Up = true
     } else {
-      this.isPressed.Up = false;
+      this.isPressed.Up = false
     }
 
     if (
@@ -112,9 +113,9 @@ class Input {
       keyboard.isHeld(Keys.X) ||
       keyboard.isHeld(Keys.KeyX)
     ) {
-      this.isPressed.Down = true;
+      this.isPressed.Down = true
     } else {
-      this.isPressed.Down = false;
+      this.isPressed.Down = false
     }
 
     if (
@@ -122,9 +123,9 @@ class Input {
       keyboard.isHeld(Keys.A) ||
       keyboard.isHeld(Keys.KeyA)
     ) {
-      this.isPressed.Left = true;
+      this.isPressed.Left = true
     } else {
-      this.isPressed.Left = false;
+      this.isPressed.Left = false
     }
 
     if (
@@ -132,33 +133,33 @@ class Input {
       keyboard.isHeld(Keys.D) ||
       keyboard.isHeld(Keys.KeyD)
     ) {
-      this.isPressed.Right = true;
+      this.isPressed.Right = true
     } else {
-      this.isPressed.Right = false;
+      this.isPressed.Right = false
     }
 
     if (keyboard.isHeld(Keys.Q) || keyboard.isHeld(Keys.KeyQ)) {
-      this.isPressed.UpLeft = true;
+      this.isPressed.UpLeft = true
     } else {
-      this.isPressed.UpLeft = false;
+      this.isPressed.UpLeft = false
     }
 
     if (keyboard.isHeld(Keys.E) || keyboard.isHeld(Keys.KeyE)) {
-      this.isPressed.UpRight = true;
+      this.isPressed.UpRight = true
     } else {
-      this.isPressed.UpRight = false;
+      this.isPressed.UpRight = false
     }
 
     if (keyboard.isHeld(Keys.Z) || keyboard.isHeld(Keys.KeyZ)) {
-      this.isPressed.DownLeft = true;
+      this.isPressed.DownLeft = true
     } else {
-      this.isPressed.DownLeft = false;
+      this.isPressed.DownLeft = false
     }
 
     if (keyboard.isHeld(Keys.C) || keyboard.isHeld(Keys.KeyC)) {
-      this.isPressed.DownRight = true;
+      this.isPressed.DownRight = true
     } else {
-      this.isPressed.DownRight = false;
+      this.isPressed.DownRight = false
     }
 
     if (
@@ -166,32 +167,32 @@ class Input {
       keyboard.isHeld(Keys.Escape) ||
       keyboard.isHeld(Keys.Numpad0)
     ) {
-      this.isPressed.Esc = true;
+      this.isPressed.Esc = true
     } else {
-      this.isPressed.Esc = false;
+      this.isPressed.Esc = false
     }
 
     if (keyboard.isHeld(Keys.Space)) {
       // To do : add keyboard.isHeld(Keys.Enter)
-      console.log("enter pressed");
-      this.isPressed.Enter = true;
+      console.log('enter pressed')
+      this.isPressed.Enter = true
     } else {
-      this.isPressed.Enter = false;
+      this.isPressed.Enter = false
     }
 
     if (keyboard.isHeld(Keys.ShiftLeft) || keyboard.isHeld(Keys.ShiftRight)) {
-      this.isPressed.Shift = true;
+      this.isPressed.Shift = true
     } else {
-      this.isPressed.Shift = false;
+      this.isPressed.Shift = false
     }
 
     if (keyboard.wasPressed(Keys.C) || keyboard.wasPressed(Keys.KeyC)) {
-      this.isPressed.C = true;
+      this.isPressed.C = true
     } else {
-      this.isPressed.C = false;
+      this.isPressed.C = false
     }
   }
-  
+
   isDirectionPressed (direction: Direction) {
     switch (direction) {
     case Direction.Up:
@@ -213,7 +214,6 @@ class Input {
     }
     return null
   }
-
 }
 
-export const input = new Input();
+export const input = new Input()

@@ -110,3 +110,7 @@ setTimeout () {
     calculate physics
 } , if (interval - delta > 0), interval - delta  else  0 (immediately)
 
+
+shoot auto attack synchronizing with bgm music rhythm
+when some bigger enemy like mother ship comes, bgm plays kick drum
+

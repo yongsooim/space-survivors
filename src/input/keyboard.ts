@@ -156,11 +156,11 @@ export class Keyboard {
   private _keys: Keys[] = [];
   private _keysUp: Keys[] = [];
   private _keysDown: Keys[] = [];
-  
+
   /**
    * Initialize Keyboard event listeners
    */
-  init(global?: GlobalEventHandlers): void {
+  init (global?: GlobalEventHandlers): void {
     if (!global && window.top) {
       try {
         // Try and listen to events on top window frame if within an iframe.
@@ -170,78 +170,77 @@ export class Keyboard {
         // Attempt to add an event listener, which triggers a DOMException on
         // cross-origin iframes
         const noop = () => {
-          return;
-        };
-        window.top.addEventListener('blur', noop);
-        window.top.removeEventListener('blur', noop);
+
+        }
+        window.top.addEventListener('blur', noop)
+        window.top.removeEventListener('blur', noop)
 
         // this will be the same as window if not embedded within an iframe
-        global = window.top;
+        global = window.top
       } catch {
         // fallback to current frame
-        global = window;
-
+        global = window
       }
 
-    global.addEventListener('blur', () => {
-      this._keys.length = 0; // empties array efficiently
-    });
+      global.addEventListener('blur', () => {
+        this._keys.length = 0 // empties array efficiently
+      })
 
-    // key up is on window because canvas cannot have focus
-    global.addEventListener('keyup', (ev: KeyboardEvent) => {
-      const code = ev.code as Keys;
-      const key = this._keys.indexOf(code);
-      this._keys.splice(key, 1);
-      this._keysUp.push(code);
-    });
+      // key up is on window because canvas cannot have focus
+      global.addEventListener('keyup', (ev: KeyboardEvent) => {
+        const code = ev.code as Keys
+        const key = this._keys.indexOf(code)
+        this._keys.splice(key, 1)
+        this._keysUp.push(code)
+      })
 
-    // key down is on window because canvas cannot have focus
-    global.addEventListener('keydown', (ev: KeyboardEvent) => {
-      const code = ev.code as Keys;
-      if (this._keys.indexOf(code) === -1) {
-        this._keys.push(code);
-        this._keysDown.push(code);
-      }
-    });
-  }}
+      // key down is on window because canvas cannot have focus
+      global.addEventListener('keydown', (ev: KeyboardEvent) => {
+        const code = ev.code as Keys
+        if (this._keys.indexOf(code) === -1) {
+          this._keys.push(code)
+          this._keysDown.push(code)
+        }
+      })
+    }
+  }
 
-  public update() {
+  public update () {
     // Reset keysDown and keysUp after update is complete
-    this._keysDown.length = 0;
-    this._keysUp.length = 0;
+    this._keysDown.length = 0
+    this._keysUp.length = 0
   }
 
   /**
    * Gets list of keys being pressed down
    */
-  public getKeys(): Keys[] {
-    return this._keys;
+  public getKeys (): Keys[] {
+    return this._keys
   }
 
   /**
    * Tests if a certain key was just pressed this frame. This is cleared at the end of the update frame.
    * @param key Test whether a key was just pressed
    */
-  public wasPressed(key: Keys): boolean {
-    return this._keysDown.indexOf(key) > -1;
+  public wasPressed (key: Keys): boolean {
+    return this._keysDown.indexOf(key) > -1
   }
 
   /**
    * Tests if a certain key is held down. This is persisted between frames.
    * @param key  Test whether a key is held down
    */
-  public isHeld(key: Keys): boolean {
-    return this._keys.indexOf(key) > -1;
+  public isHeld (key: Keys): boolean {
+    return this._keys.indexOf(key) > -1
   }
 
   /**
    * Tests if a certain key was just released this frame. This is cleared at the end of the update frame.
    * @param key  Test whether a key was just released
    */
-  public wasReleased(key: Keys): boolean {
-    return this._keysUp.indexOf(key) > -1;
+  public wasReleased (key: Keys): boolean {
+    return this._keysUp.indexOf(key) > -1
   }
 }
-
 
 export const keyboard = new Keyboard()
