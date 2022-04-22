@@ -1,50 +1,39 @@
 // Util for shared array buffer between main thread and worker thread
-import { numberOfEnemy1 } from '../type/const'
+import { numberOfEnemy1, numberOfEnemy1double, numberOfWeapon1, numberOfWeapon1double, numberOfResource1, numberOfResource1double } from '../type/const'
 import * as PIXI from 'pixi.js'
 import Box2DFactory from 'box2d-wasm' // ....
 
 const sizeOfElement = Float64Array.BYTES_PER_ELEMENT // js uses 8 byte for number
 
+//
+// dynamic values
+// enemy1 positions
+// weapon positions
+// player positions
+// resource positions
+// bullet weapon positions
+// damage dealt?
+// 
+
+// 1. SharedArrayBuffer
+// 2. TypedArray(SharedArrayBuffer) used in main
+
 class SabWorker1 {
-  public sabToPixi = [ // all enemy1 positions, plan to double buffered
-    new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfEnemy1 * 2), // multiplied by 2 for 2 elements : [x, y]
-    new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfEnemy1 * 2)
-  ]
-  public arrToPixi = [  // owned by worker thread
-    new Float64Array(this.sabToPixi[0]), 
-    new Float64Array(this.sabToPixi[1]), 
-  ]
-  public arrOfPixi = new Array<Float64Array>(2) // owned by main thread
+  public playerPosition = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * 2)
 
-  // player position array [x, y]
-  public sabToBox2D = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * 2) // player position, no double buffer
-  public arrToBox2D = new Float64Array(this.sabToBox2D) // owned by worker thread
-  public arrOfBox2D = new Float64Array(2) // owned by main thread
+  public enemy1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfEnemy1double)
+  public enemy1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfEnemy1)
 
-  mutateSabToPixi (dest: PIXI.Sprite[], src: number[], length: number, slot: number) {
-    for (let i = 0; i < length; i++) {
-    }
+  public weapon1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfWeapon1double)
+  public weapon1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfWeapon1)
 
-    const sharedBuffer = new SharedArrayBuffer(sizeOfElement * numberOfEnemy1)
-    const sharedArray = new Float64Array(sharedBuffer)
-  }
+  public resource1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfResource1double)
+  public resource1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfResource1)
 
-  mutateSabToBox2D (dest: Box2D.b2Body[], src: number[], length: number, slot: number) {
-
-  }
-
-  copyPosToRenderer (dest: PIXI.Sprite[], src: number[], length: number) {
-    for (let i = 0; i < length; i += 2) {
-      dest[i].x = src[i]
-      dest[i].y = src[i + 1]
-    }
-  }
-
-  copyEnabledToBox2D (dest: Box2D.b2Body[], src: number[], length: number) {
-    for (let i = 0; i < length; i++) {
-      dest[i].SetEnabled(src[i] !== 0)
-    }
-  }
+  /** arrays used in main */
+  public playerPositionArr = new Float64Array(this.playerPosition)
+  public enemy1PositionsArr = new Float64Array(this.enemy1Positions)
+  public enemy1EnabledArr = new Float64Array(this.enemy1Enabled)
 }
 
  const sabWorker1 = new SabWorker1()

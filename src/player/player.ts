@@ -1,10 +1,14 @@
+import { Sprite } from 'pixi.js'
 import { Actor } from '../class/Actor'
 
-class player extends Actor {
-
+export class Player extends Sprite {
+    speed = 350
 
     constructor() {
         super()
-        this.speed = 0.3
+    }
+
+    update(){
+
     }
 }

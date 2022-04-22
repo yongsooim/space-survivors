@@ -27,6 +27,7 @@ export const resources: PIXI.IAddOptions[] = [
   { name: 'char', url: charPng },
   { name: 'fire', url: fireWav }
 ]
+
 /*
 
 const Resources = {

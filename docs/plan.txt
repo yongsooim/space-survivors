@@ -46,6 +46,7 @@
 프리깃 클래스
 디스트로이어 클래스
 마더십 클래스
+beam saber  
 
 --적
 스컬지
@@ -112,5 +113,9 @@ setTimeout () {
 
 
 shoot auto attack synchronizing with bgm music rhythm
-when some bigger enemy like mother ship comes, bgm plays kick drum
+when some bigger enemy like mother ship comes, bgm plays kick drum comes in, suspens... 
 
+
+worker1 : enemy1 collision
+worker2 : enemy1 <-> bullet / enemy1 <-> player collision?
+worker3 : resource collision?

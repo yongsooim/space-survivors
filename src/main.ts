@@ -1,22 +1,17 @@
 import * as PIXI from 'pixi.js'
 import { Viewport } from 'pixi-viewport'
-import { PI_2 } from 'pixi.js'
 import { resources, resourcePaths } from './resource/resources'
 import { sprites, enemy1 } from './resource/spriteManage'
 import Worker from './worker/worker1?worker'
 import shipPng from './asset/ship.png'
 import { input, Direction } from './input/input'
-import { numberOfEnemy1 } from './type/const'
+import { numberOfEnemy1, numberOfEnemy1double } from './type/const'
 import sabWorker1 from './worker/sabManage'
-import {SceneManager} from "pixi-scenegraph"
+import { SceneManager } from "pixi-scenegraph.js"
 import { MyScene } from './scene/s1'
+import * as Comlink from 'comlink'
 
-
-
-const myWorker = new Worker()
-myWorker.onmessage = (ev) => {
-  sabWorker1.arrOfPixi[0] = new Float64Array(ev.data)
-}
+const worker1 = new Worker()
 
 // The application will create a renderer using WebGL, if possible,
 // with a fallback to a canvas render. It will also setup the ticker
@@ -26,7 +21,6 @@ export const app = new PIXI.Application({
   resizeTo: window,
   antialias: false
 })
-
 
 // The application will create a canvas element for you that you
 // can then insert into the DOM
@@ -39,9 +33,6 @@ export const viewport = new Viewport({
   worldHeight: 1000,
   interaction: app.renderer.plugins.interaction // the interaction module is important for wheel to work properly when renderer.view is placed or scaled
 })
-
-
-
 
 //const scm = new SceneManager({
 //  width: 800,
@@ -74,14 +65,15 @@ export const viewport = new Viewport({
 //  viewport.screenHeight = window.innerHeight
 //})
 
-const ship = [] as PIXI.Sprite[]
+const enemy1ships = [] as PIXI.Sprite[]
+let indexDouble
 
 app.loader.add(resources).load(() => {
   const tilingSprite = new PIXI.TilingSprite(sprites.bg.texture, 5000, 5000)
   tilingSprite.scale.x = 0.1
   tilingSprite.scale.y = 0.1
 
-  viewport.addChild(tilingSprite);
+  //viewport.addChild(tilingSprite);
 
   sprites.ship.x = 100
   sprites.ship.y = 100
@@ -102,29 +94,31 @@ app.loader.add(resources).load(() => {
   viewport.addChild(sprites.ship2).position.x = 300;
 
   app.stage.addChild(viewport)
-  viewport.drag().pinch().wheel().decelerate().setZoom(20).follow(sprites.ship)
+  viewport.pinch().wheel().setZoom(0.1).
+    clampZoom({ minScale: 0.01, maxScale: 6 }).follow(sprites.ship)
 
   input.init()
 
   for (let i = 0; i < numberOfEnemy1; i++) {
-    ship[i] = new PIXI.Sprite(enemy1)
+    enemy1ships[i] = new PIXI.Sprite(enemy1)
 
-    ship[i].scale.x = 0.2
-    ship[i].scale.y = 0.2
+    enemy1ships[i].scale.x = 0.2
+    enemy1ships[i].scale.y = 0.2
 
-    ship[i].anchor.set(0.5)
-    
-    viewport.addChild(ship[i])
+    enemy1ships[i].anchor.set(0.5)
+    enemy1ships[i].x = 0
+    enemy1ships[i].y = 0
+    viewport.addChild(enemy1ships[i])
   }
-
 
   // Listen for frame updates
   app.ticker.add((delta: number) => {
+
+    //enemy1 position update
     for (let i = 1; i < numberOfEnemy1; i++) {
-      if (ship[i] && sabWorker1.arrOfPixi[0]) {
-        ship[i].x = sabWorker1.arrOfPixi[0][i * 2]
-        ship[i].y = sabWorker1.arrOfPixi[0][i * 2 + 1]
-      }
+      indexDouble = i * 2
+      enemy1ships[i].x = sabWorker1.enemy1PositionsArr[indexDouble]
+      enemy1ships[i].y = sabWorker1.enemy1PositionsArr[indexDouble + 1]
     }
 
     input.update()
@@ -144,9 +138,21 @@ app.loader.add(resources).load(() => {
     if (input.isDirectionPressed(Direction.Right)) {
       sprites.ship.x += 0.3 * delta
     }
-    sabWorker1.arrToBox2D[0] = sprites.ship.x
-    sabWorker1.arrToBox2D[1] = sprites.ship.y
+    sabWorker1.playerPositionArr[0] = sprites.ship.x
+    sabWorker1.playerPositionArr[1] = sprites.ship.y
   })
 })
 
-setTimeout(()=>{myWorker.postMessage(sabWorker1.sabToBox2D)}, 300)
+setTimeout(() => {
+  worker1.postMessage({
+    playerPositionSab: sabWorker1.playerPosition,
+    enemy1PositionsSab: sabWorker1.enemy1Positions,
+    enemy1EnabledSab: sabWorker1.enemy1Enabled,
+  })
+
+  worker1.postMessage({
+    playerPositionSab: sabWorker1.playerPosition,
+    enemy1PositionsSab: sabWorker1.enemy1Positions,
+    enemy1EnabledSab: sabWorker1.enemy1Enabled,
+  })
+}, 300)
