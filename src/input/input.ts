@@ -1,17 +1,7 @@
 import { keyboard, Keys } from "./keyboard";
 import { touch } from "./touch";
-
-export enum Direction {
-  Up = "Up",
-  Left = "Left",
-  Right = "Right",
-  Down = "Down",
-  UpLeft = "UpLeft",
-  UpRight = "UpRight",
-  DownLeft = "DownLeft",
-  DownRight = "DownRight",
-  None = "None",
-}
+import { Direction } from "../type/type";
+import { Vector } from "../class/Vector";
 
 export declare enum SsKey {
   Up = "Up",
@@ -26,6 +16,8 @@ export declare enum SsKey {
   Esc = "Esc",
   Shift = "Shift",
   C = "C",
+  Equal = "Equal",
+  Minus = "Minus",
   None = "None",
 }
 
@@ -56,24 +48,8 @@ export function k2d(key: SsKey) {
     return Direction.None;
   }
 }
-
-/** to keyboard input */
-//  export function d2key (direction: Direction) {
-//    if (direction === Direction.Up) {
-//      return Keys.Up
-//    } else if (direction === Direction.Down) {
-//      return Keys.Down
-//    } else if (direction === Direction.Left) {
-//      return Keys.Left
-//    } else if (direction === Direction.Right) {
-//      return Keys.Right
-//    } else {
-//      console.log('error')
-//      throw Error('Not supported direction ')
-//    }
-//  }
-
-class Input {
+export class Input {
+  public vector = new Vector(0, 0)
   public isPressed = {
     Up: false,
     Down: false,
@@ -87,6 +63,8 @@ class Input {
     Esc: false,
     C: false,
     Shift: false,
+    Equal: false,
+    Minus: false,
     None: false,
   };
 
@@ -96,6 +74,13 @@ class Input {
   }
 
   update() {
+    this.vector.x = touch.vector.x
+    this.vector.y = touch.vector.y
+
+    if(touch.vector.x !== 0 && touch.vector.y !== 0){
+
+    }
+
     keyboard.update();
 
     if (

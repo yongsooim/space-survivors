@@ -1,19 +1,29 @@
 import Box2DFactory from "box2d-wasm"; // ....
 import { Buffer } from "pixi.js";
-import { numberOfEnemy1 } from "../type/const";
-import * as Comlink from 'comlink'
+import { enemy1Speed, numberOfEnemy1, worker1Interval } from "../type/const";
 
 // Shared Aray Buffer setting
-let playerPosition = new Float64Array([0, 0])
-let enemy1positions = new Float64Array(numberOfEnemy1 * 2)
-let enemy1Enabled = new Float64Array(numberOfEnemy1)
+let playerPosition : Float64Array
+let enemy1positions : Float64Array
+let enemy1Hps : Float64Array
 
-onmessage = (ev)=>{
-  playerPosition = new Float64Array(ev.data.playerPositionSab)
-  enemy1positions = new Float64Array(ev.data.enemy1PositionsSab)
-  enemy1Enabled = new Float64Array(ev.data.enemy1EnabledSab)
-}
+const enemy1HpsOld = new Float64Array(numberOfEnemy1)
 
+let loop = () => {};
+
+onmessage = (ev) => {
+  if (ev.data.cmd === "close") {
+    playerPosition = new Float64Array();
+    enemy1positions = new Float64Array();
+    enemy1Hps = new Float64Array();
+    self.close();
+    loop = () => {};
+  } else {
+    playerPosition = new Float64Array(ev.data[0]);
+    enemy1positions = new Float64Array(ev.data[1]);
+    enemy1Hps = new Float64Array(ev.data[2]);
+  }
+};
 
 const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
   ///
@@ -25,7 +35,7 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
     // console.log('url in main  :  ' + url)
     // console.log('scriptDirectory in main  :  ' + scriptDirectory)
     // console.log('findng at in main  :  ./assets/' + url)
-     //return './' + url  // for build, dist
+    //return './' + url  // for build, dist
     // console.log(scriptDirectory)
     return "/assets/" + url; // for dev
   },
@@ -38,56 +48,109 @@ const world = new b2World(gravity); // zero gravity
 
 const bd = new b2BodyDef();
 bd.set_type(b2_dynamicBody);
-bd.set_position(new b2Vec2(Math.random() * 10, Math.random() * 10));
 
 const square = new b2PolygonShape();
 let boxSideLength = 0.8;
 square.SetAsBox(boxSideLength, boxSideLength);
 const enemy1BodyPool = new Array<Box2D.b2Body>(numberOfEnemy1);
 
+let tempVector = zero;
+
+// creating boxes
 for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i] = world.CreateBody(bd);
-  enemy1BodyPool[i].CreateFixture(square, 1).SetFriction(0);
-  enemy1BodyPool[i].SetTransform(new b2Vec2(Math.random() * 200, Math.random() * 200), 0);
+  enemy1BodyPool[i].CreateFixture(square, 1).SetFriction(1);
+  enemy1BodyPool[i].GetFixtureList().SetRestitution(0);
+  enemy1BodyPool[i].SetLinearDamping(0);
+  enemy1BodyPool[i].SetAngularDamping(0);
+  enemy1BodyPool[i].SetSleepingAllowed(false);
+  tempVector.x = (Math.random() - 0.5) * 1500;
+  tempVector.y = (Math.random() - 0.5) * 1500;
+  enemy1BodyPool[i].SetTransform(tempVector, 0);
   enemy1BodyPool[i].SetFixedRotation(false);
   enemy1BodyPool[i].SetAwake(true);
   enemy1BodyPool[i].SetEnabled(true);
 }
 
-let tempDirectionVec = zero;
-let tempVec = zero
+let tempEnemyPos = zero;
+let diffX: number;
+let diffY: number;
+let diffXSquare: number;
+let diffYSquare: number;
+let tempPlayerPosX: number;
+let tempPlayerPosY: number;
+let indexDouble;
+let tempIterator;
+let length;
+let tempForVectorSetting = new b2Vec2(0, 0);
+
+let numberOfDivide = 15;
+let divideTable = new Array<number>(numberOfDivide + 1);
+
+for (let i = 0; i < numberOfDivide + 1; i++) {
+  divideTable[i] = Math.floor(i * (numberOfEnemy1 / numberOfDivide));
+}
+
 let counter = 0;
-let diffX: number
-let diffY: number
-let tempPlayerX: number
-let tempPlayerY: number
-let indexDouble
-setInterval(() => {
-  world.Step(1000/30, 2, 4);
+let start = 0;
+let end = 0;
+let lastExecuted = Date.now();
+let delta = 0;
+let now = 0;
+let stepTime = 0;
+
+loop = () => {
   counter++;
-  
-  tempPlayerX = playerPosition[0]
-  tempPlayerY = playerPosition[1]
-  for (let i = 0; i < numberOfEnemy1; i++) {
-    tempVec = enemy1BodyPool[i].GetPosition()
-
-    // update shared array buffer
-    indexDouble = i * 2
-    enemy1positions[indexDouble] = tempVec.x;
-    enemy1positions[indexDouble + 1] = tempVec.y;
-    
-    diffX = tempPlayerX - tempVec.x;
-    diffY = tempPlayerY - tempVec.y;
-    let length = Math.sqrt(diffX * diffX + diffY * diffY);
-    tempDirectionVec = new b2Vec2(
-      (diffX  / length) * 0.005,
-      (diffY  / length) * 0.005
-    );
-
-    enemy1BodyPool[i].GetLinearVelocity().__destroy__();
-    enemy1BodyPool[i].SetLinearVelocity(tempDirectionVec);
-    tempDirectionVec.__destroy__()
+  if (counter === numberOfDivide) {
+    counter = 0;
   }
-  
-  world.Step(1000/30, 3, 8);
-}, 1000/30);
+
+  start = divideTable[counter];
+  end = divideTable[counter + 1];
+
+  tempPlayerPosX = playerPosition[0];
+  tempPlayerPosY = playerPosition[1];
+
+  // partial calc vector to player
+  for (tempIterator = start; tempIterator < end; tempIterator++) {
+    tempEnemyPos = enemy1BodyPool[tempIterator].GetPosition();
+    diffX = tempPlayerPosX - tempEnemyPos.x;
+    diffY = tempPlayerPosY - tempEnemyPos.y;
+    diffXSquare = diffX * diffX;
+    diffYSquare = diffY * diffY;
+    length = Math.sqrt(diffXSquare + diffYSquare);
+    tempForVectorSetting.x = enemy1Speed * diffX / length;
+    tempForVectorSetting.y = enemy1Speed * diffY / length;
+    enemy1BodyPool[tempIterator].SetLinearVelocity(tempForVectorSetting);
+    //console.log(tempForVectorSetting)
+  }
+
+  // update shared memory buffer
+  tempIterator = numberOfEnemy1;
+  while (tempIterator--) {
+    tempEnemyPos = enemy1BodyPool[tempIterator].GetPosition();
+    indexDouble = tempIterator * 2;
+    enemy1positions[indexDouble] = tempEnemyPos.x;
+    enemy1positions[indexDouble + 1] = tempEnemyPos.y;
+  }
+
+  now = Date.now();
+  delta = now - lastExecuted;
+  lastExecuted = now;
+
+  if (delta > worker1Interval + 3) {
+    if (delta > 500) {
+      stepTime = 500;
+    } else {
+      stepTime = delta;
+    }
+  } else {
+    stepTime = worker1Interval;
+  }
+
+  enemy1HpsOld.set(enemy1Hps)
+  world.Step(stepTime, 8, 3);
+};
+setTimeout(()=>{
+  setInterval(loop, worker1Interval);
+}, 500)

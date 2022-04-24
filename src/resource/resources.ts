@@ -5,8 +5,27 @@ import projPng from '../asset/proj.png'
 import uiPng from '../asset/ui.png'
 import charPng from '../asset/char.png'
 import fireWav from '../asset/Laser_Shoot9.wav'
+import kick from '../asset/kick.wav'
+import hihat from '../asset/hihat_close.wav'
+import snare from '../asset/snare.wav'
+import loop from '../asset/loop.wav'
+import bass from '../asset/bass.wav'
 import * as PIXI from 'pixi.js'
-import { app } from '../main'
+import { Sound, sound, webaudio } from '@pixi/sound';
+
+
+sound.add('kick', kick)
+sound.add('hihat_close', hihat)
+sound.add('loop', loop)
+sound.add('snare', snare)
+sound.add('bass', bass)
+
+export let kickSound = Sound.from(kick)
+export let hihatSound = Sound.from(hihat)
+export let loopSound  = Sound.from(loop)
+export let snareSound  = Sound.from(snare)
+export let bassSound  = Sound.from(bass)
+
 
 export const resourcePaths = {
   shipPng,

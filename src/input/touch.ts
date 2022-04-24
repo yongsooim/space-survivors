@@ -1,126 +1,130 @@
+import { viewport } from "../main";
+import nipplejs from "nipplejs";
+import { Direction } from "../type/type";
+import { Vector } from '../class/Vector'
 
-import { viewport } from '../main'
-
+let manager = nipplejs.create({
+  color: "#484848",
+  fadeTime:0
+});
 class Touch {
 
-    isPressed = {
-        Up : false,
-        Down : false,
-        Right: false,
-        Left: false
-    }
+  vector = Vector.Zero
 
-    init(){
-        viewport.on("touchmove", (e) => {
-
-            let xRatio = e.touches[0].clientX / document.body.clientHeight;
-            let yRatio = e.touches[0].clientY / document.body.clientWidth;
-      
-            if (yRatio / xRatio <= 1 && (1 - yRatio) / xRatio >= 1) {
-              this.isPressed.Up = true
-              this.isPressed.Down = false
-              this.isPressed.Right = false
-              this.isPressed.Left = false
-            }
-            else if (yRatio / xRatio > 1 && (1 - yRatio) / xRatio < 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = true
-                this.isPressed.Right = false
-                this.isPressed.Left = false
-              }
-            else if ((1 - yRatio) / xRatio < 1 && yRatio / xRatio <= 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = false
-                this.isPressed.Right = true
-                this.isPressed.Left = false
-              }
-            else if ((1 - yRatio) / xRatio >= 1 && yRatio / xRatio > 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = false
-                this.isPressed.Right = false
-                this.isPressed.Left = true
-              }
-      
-          });
-      
-          document.body.addEventListener("touchend", (e) => {
-            this.isPressed.Up = false
-            this.isPressed.Down = false
-            this.isPressed.Right = false
-            this.isPressed.Left = false
-          })
-
-          document.body.addEventListener("touchstart", (e) => {
-      
-      
-            let xRatio = e.touches[0].clientX / document.body.clientHeight;
-            let yRatio = e.touches[0].clientY / document.body.clientWidth;
-      
-            if (yRatio / xRatio <= 1 && (1 - yRatio) / xRatio >= 1) {
-                this.isPressed.Up = true
-                this.isPressed.Down = false
-                this.isPressed.Right = false
-                this.isPressed.Left = false
-            }
-            else if (yRatio / xRatio > 1 && (1 - yRatio) / xRatio < 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = true
-                this.isPressed.Right = false
-                this.isPressed.Left = false
-            }
-            else if ((1 - yRatio) / xRatio < 1 && yRatio / xRatio <= 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = false
-                this.isPressed.Right = true
-                this.isPressed.Left = false
-            }
-            else if ((1 - yRatio) / xRatio >= 1 && yRatio / xRatio > 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = false
-                this.isPressed.Right = false
-                this.isPressed.Left = true
-            }
-      
-          });
-
-
-          
-          viewport.on("mousemove", (e) => {
-      
-      
-            let xRatio = e.clientX / document.body.clientHeight;
-            let yRatio = e.clientY / document.body.clientWidth;
-      
-            if (yRatio / xRatio <= 1 && (1 - yRatio) / xRatio >= 1) {
-                this.isPressed.Up = true
-                this.isPressed.Down = false
-                this.isPressed.Right = false
-                this.isPressed.Left = false
-            }
-            else if (yRatio / xRatio > 1 && (1 - yRatio) / xRatio < 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = true
-                this.isPressed.Right = false
-                this.isPressed.Left = false
-            }
-            else if ((1 - yRatio) / xRatio < 1 && yRatio / xRatio <= 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = false
-                this.isPressed.Right = true
-                this.isPressed.Left = false
-            }
-            else if ((1 - yRatio) / xRatio >= 1 && yRatio / xRatio > 1){
-                this.isPressed.Up = false
-                this.isPressed.Down = false
-                this.isPressed.Right = false
-                this.isPressed.Left = true
-            }
-      
-          });
-
-      
-    }
-
+  isPressed = {
+    Up: false,
+    Down: false,
+    Right: false,
+    Left: false,
+  };
+  init() {
+    
+  viewport.on("pinch-start", () => {
+    manager.destroy()
+    this.vector.x = 0
+    this.vector.y = 0
+    touch.isPressed.Up = false;
+    touch.isPressed.Down = false;
+    touch.isPressed.Left = false;
+    touch.isPressed.Right = false;
+  });
+  viewport.on("pinch-end", () => {
+    manager = nipplejs.create({
+      color: "#484848",
+      fadeTime:0
+    });
+    this.vector.x = 0
+    this.vector.y = 0
+    this.initNipple()
+  });
+  
+  this.initNipple()
 }
 
-export const touch = new Touch()
+initNipple = () => {
+  manager.on("move", (evt, nipple) => {
+    this.vector.x = nipple.vector.x
+    this.vector.y = nipple.vector.y
+    
+    if (nipple.distance > 10) {
+      if (
+        nipple.angle.radian <= Math.PI / 8 ||
+        nipple.angle.radian > (Math.PI * 15) / 8
+      ) {
+        touch.isPressed.Up = false;
+        touch.isPressed.Down = false;
+        touch.isPressed.Left = false;
+        touch.isPressed.Right = true;
+      } else if (
+        (Math.PI * 1) / 8 <= nipple.angle.radian &&
+        nipple.angle.radian < (Math.PI * 3) / 8
+      ) {
+        touch.isPressed.Up = true;
+        touch.isPressed.Down = false;
+        touch.isPressed.Left = false;
+        touch.isPressed.Right = true;
+      } else if (
+        (Math.PI * 3) / 8 <= nipple.angle.radian &&
+        nipple.angle.radian < (Math.PI * 5) / 8
+      ) {
+        touch.isPressed.Up = true;
+        touch.isPressed.Down = false;
+        touch.isPressed.Left = false;
+        touch.isPressed.Right = false;
+      } else if (
+        (Math.PI * 5) / 8 <= nipple.angle.radian &&
+        nipple.angle.radian < (Math.PI * 7) / 8
+      ) {
+        touch.isPressed.Up = true;
+        touch.isPressed.Down = false;
+        touch.isPressed.Left = true;
+        touch.isPressed.Right = false;
+      } else if (
+        (Math.PI * 7) / 8 <= nipple.angle.radian &&
+        nipple.angle.radian < (Math.PI * 9) / 8
+      ) {
+        touch.isPressed.Up = false;
+        touch.isPressed.Down = false;
+        touch.isPressed.Left = true;
+        touch.isPressed.Right = false;
+      } else if (
+        (Math.PI * 9) / 8 <= nipple.angle.radian &&
+        nipple.angle.radian < (Math.PI * 11) / 8
+      ) {
+        touch.isPressed.Up = false;
+        touch.isPressed.Down = true;
+        touch.isPressed.Left = true;
+        touch.isPressed.Right = false;
+      } else if (
+        (Math.PI * 11) / 8 <= nipple.angle.radian &&
+        nipple.angle.radian < (Math.PI * 13) / 8
+      ) {
+        touch.isPressed.Up = false;
+        touch.isPressed.Down = true;
+        touch.isPressed.Left = false;
+        touch.isPressed.Right = false;
+      } else if (
+        (Math.PI * 13) / 8 <= nipple.angle.radian &&
+        nipple.angle.radian < (Math.PI * 15) / 8
+      ) {
+        touch.isPressed.Up = false;
+        touch.isPressed.Down = true;
+        touch.isPressed.Left = false;
+        touch.isPressed.Right = true;
+      }
+    }
+  });
+
+  manager.on("end", (evt, nipple) => {
+    this.vector.x = 0
+    this.vector.y = 0
+
+    touch.isPressed.Up = false;
+    touch.isPressed.Down = false;
+    touch.isPressed.Left = false;
+    touch.isPressed.Right = false;
+  });
+  }
+}
+
+export const touch = new Touch();

@@ -146,7 +146,10 @@ export enum Keys {
   // OTHER
   Space = 'Space',
   Esc = 'Escape',
-  Escape = 'Escape'
+  Escape = 'Escape',
+  PageUp = 'PageUp',
+  PageDown = 'PageDown'
+
 }
 
 /**

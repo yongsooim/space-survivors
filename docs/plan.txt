@@ -119,3 +119,8 @@ when some bigger enemy like mother ship comes, bgm plays kick drum comes in, sus
 worker1 : enemy1 collision
 worker2 : enemy1 <-> bullet / enemy1 <-> player collision?
 worker3 : resource collision?
+
+
+
+https://opengameart.org/content/among-machines - not using
+https://opengameart.org/content/high-castle - not using
