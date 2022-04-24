@@ -9,11 +9,9 @@ export const numberOfWeapon1double = numberOfWeapon1 * 2
 export const numberOfResource1 = 1000
 export const numberOfResource1double = numberOfResource1 * 2
 
-
-export const numberOfAutoAttack1= 100
-
+export const numberOfAutoAttack1= 50
 
 export const playerSpeed = 0.06
 
 export const worker1Interval = 1000 / 24
-export const worker2Interval = 1000 / 60
+export const worker2Interval = 1000 / 30

@@ -24,7 +24,7 @@ export function heartbeatInit() {
       case 1:
       case 9:
         kickSound.play();
-        loopSound.play()
+        //loopSound.play()
         player.fire();
     }
     switch (beatCounter) {

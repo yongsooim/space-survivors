@@ -5,17 +5,13 @@ import { resources, resourcePaths } from "./resource/resources";
 import { sprites, enemy1 } from "./resource/spriteManage";
 import Worker from "./worker/worker1?worker";
 import shipPng from "./asset/ship.png";
-import {
-  playerSpeed,
-  numberOfEnemy1,
-  numberOfEnemy1double,
-} from "./type/const";
+import { playerSpeed, numberOfEnemy1, numberOfEnemy1double } from "./type/const";
 import sabWorker1 from "./worker/sabManage";
 import { SceneManager, Scene } from "pixi-scenegraph";
 import { Direction } from "./type/type";
 import { heartbeatInit } from "./timer/heartbeatManage";
 import { player } from "./player/player";
-import { ObservablePoint, ParticleContainer, Renderer } from "pixi.js";
+import { ObservablePoint, Container, ParticleContainer, Renderer } from "pixi.js";
 import { BatchRendererPluginFactory } from "pixi-batch-renderer";
 import { DiffGeometryFactory, DiffDrawer } from "@pixi-pbr/diffy";
 import { input } from "./input/input";
@@ -106,9 +102,9 @@ app.loader.add(resources).load(async () => {
       rotation: false,
       uvs: false,
       tint: false,
-      alpha: false,
+      alpha: true,
       scale: false,
-      position: true,
+      position: true
     },
     numberOfEnemy1,
     false
@@ -143,14 +139,12 @@ app.loader.add(resources).load(async () => {
     tempIterator = numberOfEnemy1;
     while (tempIterator--) {
       if (sabWorker1.enemy1HpsArr[tempIterator] === 0) {
-        enemy1container.children[tempIterator].visible = false;
-        continue
+        enemy1container.children[tempIterator].alpha = 0;
+        continue;
       }
       indexDouble = tempIterator * 2;
-      enemy1container.children[tempIterator].x =
-        sabWorker1.enemy1PositionsArr[indexDouble];
-      enemy1container.children[tempIterator].y =
-        sabWorker1.enemy1PositionsArr[indexDouble + 1];
+      enemy1container.children[tempIterator].x = sabWorker1.enemy1PositionsArr[indexDouble];
+      enemy1container.children[tempIterator].y = sabWorker1.enemy1PositionsArr[indexDouble + 1];
     }
 
     input.update();
@@ -160,12 +154,12 @@ app.loader.add(resources).load(async () => {
   });
 });
 
+setInterval(()=>{
+  //console.log(sabWorker1.enemy1HpsArr)
+}, 500)
+
 setTimeout(() => {
-  worker1.postMessage([
-    sabWorker1.playerPosition,
-    sabWorker1.enemy1Positions,
-    sabWorker1.enemy1Hps,
-  ]);
+  worker1.postMessage([sabWorker1.playerPosition, sabWorker1.enemy1Positions, sabWorker1.enemy1Hps]);
 }, 300);
 
 window.onbeforeunload = function (e) {

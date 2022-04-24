@@ -15,14 +15,15 @@ enum BoxCategory {
 
 let autoAttack1Positions: Float64Array;
 let enemy1Positions: Float64Array;
-let enemy1Hps: Float64Array;
+let enemy1Hps: Int32Array;
 
 onmessage = (evt) => {
-  console.log(evt.data[1]);
   autoAttack1Positions = new Float64Array(evt.data[0]);
   enemy1Positions = new Float64Array(evt.data[1]);
-  enemy1Hps = new Float64Array(evt.data[2]);
+  enemy1Hps = new Int32Array(evt.data[2]);
+  console.log(enemy1Hps)
 };
+postMessage('')
 
 const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
   ///
@@ -49,7 +50,7 @@ const bd = new b2BodyDef();
 bd.set_type(b2_dynamicBody);
 
 const square = new b2PolygonShape();
-let boxSideLength = 0.8;
+let boxSideLength = 0.6;
 square.SetAsBox(boxSideLength, boxSideLength);
 const enemy1BodyPool = new Array<Box2D.b2Body>(numberOfEnemy1);
 const autoAttack1BodyPool = new Array<Box2D.b2Body>(numberOfAutoAttack1);
@@ -65,6 +66,7 @@ for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i].GetFixtureList().SetRestitution(0);
   enemy1BodyPool[i].GetFixtureList().SetSensor(true);
   enemy1BodyPool[i].GetFixtureList().SetFilterData(BoxCategory.Enemy1);
+  enemy1BodyPool[i].SetFixedRotation(true)
   enemy1BodyPool[i].SetEnabled(false);
 
   autoAttack1BodyPool[i] = world.CreateBody(bd);
@@ -72,7 +74,14 @@ for (let i = 0; i < numberOfEnemy1; i++) {
   autoAttack1BodyPool[i].GetFixtureList().SetRestitution(0);
   autoAttack1BodyPool[i].GetFixtureList().SetSensor(true);
   autoAttack1BodyPool[i].GetFixtureList().SetFilterData(BoxCategory.AutoAttack1);
+  autoAttack1BodyPool[i].SetFixedRotation(true);
   autoAttack1BodyPool[i].SetEnabled(false);
+
+  enemy1aabbs[i] = new b2AABB()
+}
+
+for(let i = 0 ; i < numberOfAutoAttack1 ; i++ ){
+  autoAttack1aabbs[i] = new b2AABB()
 }
 
 let tempEnemyPos = zero;
@@ -84,6 +93,7 @@ let tempPlayerPosX: number;
 let tempPlayerPosY: number;
 let indexDouble;
 let tempIterator;
+let tempIterator2;
 let length;
 let tempForVectorSetting = new b2Vec2(0, 0);
 
@@ -129,43 +139,31 @@ loop = () => {
     tempVec.x = autoAttack1Positions[indexDouble];
     tempVec.y = autoAttack1Positions[indexDouble + 1];
     autoAttack1BodyPool[tempIterator].SetTransform(tempVec, 0);
+    square.ComputeAABB(autoAttack1aabbs[tempIterator], autoAttack1BodyPool[tempIterator].GetTransform(), 0);
   }
 
   tempIterator = numberOfEnemy1;
-  let tempIterator2 = numberOfAutoAttack1;
-  //while (tempIterator--) {
-  //  while (tempIterator2--) {
-  //    if(b2TestOverlap(
-  //      enemy1BodyPool[tempIterator].GetFixtureList().GetAABB(0),
-  //      autoAttack1BodyPool[tempIterator2].GetFixtureList().GetAABB(0))) {
-  //      //console.log('collide')
-  //    }
-  //  }
-  //}
-
-  now = Date.now();
-  delta = now - lastExecuted;
-  lastExecuted = now;
-
-  if (delta > worker2Interval + 3) {
-    if (delta > 500) {
-      stepTime = 500;
-    } else {
-      stepTime = delta;
+  while (tempIterator--) {
+    if(enemy1Hps[tempIterator] === 0){
+      continue
     }
-  } else {
-    stepTime = worker2Interval;
+    tempIterator2 = numberOfAutoAttack1;
+    while (tempIterator2--) {
+      if (b2TestOverlap(enemy1aabbs[tempIterator], autoAttack1aabbs[tempIterator2])) {
+        enemy1Hps[tempIterator] = 0
+        //console.log("collide");
+      }
+    }
   }
-  world.Step(stepTime, 8, 3);
 };
 setTimeout(() => {
   setInterval(loop, worker2Interval);
 }, 500);
 
-setInterval(() => {
+//setInterval(() => {
   //console.log(enemy1Hps);
-  console.log(enemy1aabbs[0]);
-  //console.log(enemy1Positions)
-}, 500);
+//  console.log(enemy1Positions)
+  //console.log(enemy1aabbs[0]?.upperBound.x);
+//}, 500);
 
 export default Worker;

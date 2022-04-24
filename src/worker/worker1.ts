@@ -5,7 +5,7 @@ import { enemy1Speed, numberOfEnemy1, worker1Interval } from "../type/const";
 // Shared Aray Buffer setting
 let playerPosition : Float64Array
 let enemy1positions : Float64Array
-let enemy1Hps : Float64Array
+let enemy1Hps : Int32Array
 
 const enemy1HpsOld = new Float64Array(numberOfEnemy1)
 
@@ -15,13 +15,13 @@ onmessage = (ev) => {
   if (ev.data.cmd === "close") {
     playerPosition = new Float64Array();
     enemy1positions = new Float64Array();
-    enemy1Hps = new Float64Array();
+    enemy1Hps = new Int32Array();
     self.close();
     loop = () => {};
   } else {
     playerPosition = new Float64Array(ev.data[0]);
     enemy1positions = new Float64Array(ev.data[1]);
-    enemy1Hps = new Float64Array(ev.data[2]);
+    enemy1Hps = new Int32Array(ev.data[2]);
   }
 };
 
@@ -64,8 +64,8 @@ for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i].SetLinearDamping(0);
   enemy1BodyPool[i].SetAngularDamping(0);
   enemy1BodyPool[i].SetSleepingAllowed(false);
-  tempVector.x = (Math.random() - 0.5) * 1500;
-  tempVector.y = (Math.random() - 0.5) * 1500;
+  tempVector.x = (Math.random() - 0.5) * 150;
+  tempVector.y = (Math.random() - 0.5) * 150;
   enemy1BodyPool[i].SetTransform(tempVector, 0);
   enemy1BodyPool[i].SetFixedRotation(false);
   enemy1BodyPool[i].SetAwake(true);
@@ -113,6 +113,10 @@ loop = () => {
 
   // partial calc vector to player
   for (tempIterator = start; tempIterator < end; tempIterator++) {
+    if(enemy1Hps[tempIterator] === 0){
+      enemy1BodyPool[tempIterator].SetEnabled(false)
+      continue
+    }
     tempEnemyPos = enemy1BodyPool[tempIterator].GetPosition();
     diffX = tempPlayerPosX - tempEnemyPos.x;
     diffY = tempPlayerPosY - tempEnemyPos.y;
@@ -128,6 +132,9 @@ loop = () => {
   // update shared memory buffer
   tempIterator = numberOfEnemy1;
   while (tempIterator--) {
+    if(enemy1Hps[tempIterator] === 0){
+      continue
+    }
     tempEnemyPos = enemy1BodyPool[tempIterator].GetPosition();
     indexDouble = tempIterator * 2;
     enemy1positions[indexDouble] = tempEnemyPos.x;
