@@ -20,6 +20,8 @@ class Player extends Container {
   playerSprite = new PIXI.Sprite(ship1);
   constructor() {
     super();
+    this.x = 100
+    this.y = 100
     this.playerSprite.x = 0;
     this.playerSprite.y = 0;
     this.playerSprite.scale.x = 0.1;

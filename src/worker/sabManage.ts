@@ -25,7 +25,7 @@ class SabWorker1 {
   public enemy1Hps = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * numberOfEnemy1)
 
   public autoAttack1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfAutoAttack1 * 2)
-  public autoAttack1ReaminTimes = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfAutoAttack1)
+  public autoAttack1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfAutoAttack1)
 
   public weapon1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfWeapon1double)
   public weapon1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfWeapon1)
@@ -38,7 +38,7 @@ class SabWorker1 {
   public enemy1PositionsArr = new Float64Array(this.enemy1Positions)
   public enemy1HpsArr = new Int32Array(this.enemy1Hps)
   public autoAttack1PositionsArr = new Float64Array(this.autoAttack1Positions)
-  public autoAttack1ReaminTimesArr = new Float64Array(this.autoAttack1ReaminTimes)
+  public autoAttack1EnabledArr = new Float64Array(this.autoAttack1Enabled)
 }
 
  const sabWorker1 = new SabWorker1()

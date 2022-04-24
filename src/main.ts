@@ -31,6 +31,7 @@ function animate() {
 requestAnimationFrame(animate);
 
 const worker1 = new Worker();
+
 PIXI.utils.skipHello();
 PIXI.settings.GC_MAX_CHECK_COUNT = 20000;
 PIXI.settings.GC_MAX_IDLE = 80000;
@@ -53,7 +54,6 @@ export let viewport = new Viewport({
 });
 
 input.init();
-
 let enemy1ships = [] as PIXI.Sprite[];
 let indexDouble;
 
@@ -74,6 +74,7 @@ app.loader.add(resources).load(async () => {
   tilingSprite.anchor.y = 0.5;
 
   viewport.addChild(tilingSprite);
+  aaPool.init();
 
   viewport.center.x = 250;
   viewport.center.y = 250;
@@ -104,7 +105,7 @@ app.loader.add(resources).load(async () => {
       tint: false,
       alpha: true,
       scale: false,
-      position: true
+      position: true,
     },
     numberOfEnemy1,
     false
@@ -138,7 +139,8 @@ app.loader.add(resources).load(async () => {
     //enemy1 position update
     tempIterator = numberOfEnemy1;
     while (tempIterator--) {
-      if (sabWorker1.enemy1HpsArr[tempIterator] === 0) {
+      if (sabWorker1.enemy1HpsArr[tempIterator] <= 0) {
+        sabWorker1.enemy1HpsArr[tempIterator] = 0;
         enemy1container.children[tempIterator].alpha = 0;
         continue;
       }
@@ -154,23 +156,25 @@ app.loader.add(resources).load(async () => {
   });
 });
 
-setInterval(()=>{
+setInterval(() => {
   //console.log(sabWorker1.enemy1HpsArr)
-}, 500)
+}, 500);
 
 setTimeout(() => {
   worker1.postMessage([sabWorker1.playerPosition, sabWorker1.enemy1Positions, sabWorker1.enemy1Hps]);
-}, 300);
+}, 1000);
 
 window.onbeforeunload = function (e) {
   location.reload();
   document.location.reload();
   worker1.postMessage({ cmd: "close" });
+  worker1.terminate();
   PIXI.utils.clearTextureCache();
 };
 
 window.onclose = function (e) {
   worker1.postMessage({ cmd: "close" });
+  worker1.terminate();
   PIXI.utils.clearTextureCache();
 };
 

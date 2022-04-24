@@ -1,6 +1,6 @@
 import Box2DFactory from "box2d-wasm"; // ....
 import { Buffer } from "pixi.js";
-import { enemy1Speed, numberOfEnemy1, worker1Interval } from "../type/const";
+import { enemy1Speed, numberOfEnemy1, spawnSize, worker1Interval } from "../type/const";
 
 // Shared Aray Buffer setting
 let playerPosition : Float64Array
@@ -9,15 +9,19 @@ let enemy1Hps : Int32Array
 
 const enemy1HpsOld = new Float64Array(numberOfEnemy1)
 
+
+
 let loop = () => {};
+let loopInterval : number
 
 onmessage = (ev) => {
   if (ev.data.cmd === "close") {
+    loop = () => {};
+    clearInterval(loopInterval)
     playerPosition = new Float64Array();
     enemy1positions = new Float64Array();
     enemy1Hps = new Int32Array();
     self.close();
-    loop = () => {};
   } else {
     playerPosition = new Float64Array(ev.data[0]);
     enemy1positions = new Float64Array(ev.data[1]);
@@ -59,13 +63,13 @@ let tempVector = zero;
 // creating boxes
 for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i] = world.CreateBody(bd);
-  enemy1BodyPool[i].CreateFixture(square, 1).SetFriction(1);
+  enemy1BodyPool[i].CreateFixture(square, 1).SetFriction(0);
   enemy1BodyPool[i].GetFixtureList().SetRestitution(0);
   enemy1BodyPool[i].SetLinearDamping(0);
   enemy1BodyPool[i].SetAngularDamping(0);
   enemy1BodyPool[i].SetSleepingAllowed(false);
-  tempVector.x = (Math.random() - 0.5) * 150;
-  tempVector.y = (Math.random() - 0.5) * 150;
+  tempVector.x = (Math.random() - 0.5) * spawnSize;
+  tempVector.y = (Math.random() - 0.5) * spawnSize;
   enemy1BodyPool[i].SetTransform(tempVector, 0);
   enemy1BodyPool[i].SetFixedRotation(false);
   enemy1BodyPool[i].SetAwake(true);
@@ -159,5 +163,5 @@ loop = () => {
   world.Step(stepTime, 8, 3);
 };
 setTimeout(()=>{
-  setInterval(loop, worker1Interval);
-}, 500)
+  loopInterval = setInterval(loop, worker1Interval);
+}, 1000)

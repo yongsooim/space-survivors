@@ -5,3 +5,4 @@ declare module '*.wav';
 declare module '*.js';
 declare module '*.ts';
 declare module 'heartbeats';
+declare module '@pixi-essentials/object-pool';

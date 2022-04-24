@@ -56,6 +56,7 @@
     "@capacitor/cli": "^3.5.0",
     "@capacitor/core": "^3.5.0",
     "@capacitor/ios": "^3.5.0",
+    "@pixi-essentials/object-pool": "^0.1.0",
     "@pixi-pbr/diffy": "^1.1.0",
     "@pixi-spine/base": "^3.0.13",
     "@pixi/constants": "^6.3.0",

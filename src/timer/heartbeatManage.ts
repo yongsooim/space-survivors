@@ -6,7 +6,7 @@ import { player } from "../player/player";
 let heartbeatWorker = new Worker();
 
 kickSound.volume = 0.05;
-hihatSound.volume = 0.05;
+hihatSound.volume = 0.01;
 loopSound.volume = 0.02;
 snareSound.volume = 0.05;
 bassSound.volume = 0.1;
@@ -30,7 +30,7 @@ export function heartbeatInit() {
     switch (beatCounter) {
       case 5:
       case 13:
-        snareSound.play();
+        //snareSound.play();
     }
 
     switch (beatCounter) {

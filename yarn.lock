@@ -272,6 +272,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@pixi-essentials/object-pool@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@pixi-essentials/object-pool/-/object-pool-0.1.0.tgz#e612a3a57b13fa1c92061a9a8e80cd5cd0bbc707"
+  integrity sha512-TAppOWSKBbONgphgx5W9Kw06dvoPRChcDLLB5O/+/pUBbx13fDk6Ra+azqLXqOvwzBEZ5pG3AGFIxRn2twJbOg==
+
 "@pixi-pbr/diffy@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@pixi-pbr/diffy/-/diffy-1.1.0.tgz#f5f8aa43c54910aebb87989af40c3604c91e7c84"
