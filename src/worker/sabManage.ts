@@ -13,7 +13,7 @@ const sizeOfElement = Float64Array.BYTES_PER_ELEMENT // js uses 8 byte for numbe
 // resource positions
 // bullet weapon positions
 // damage dealt?
-// 
+//
 
 // 1. SharedArrayBuffer
 // 2. TypedArray(SharedArrayBuffer) used in main
@@ -41,6 +41,6 @@ class SabWorker1 {
   public autoAttack1EnabledArr = new Float64Array(this.autoAttack1Enabled)
 }
 
- const sabWorker1 = new SabWorker1()
+const sabWorker1 = new SabWorker1()
 
- export default sabWorker1
+export default sabWorker1

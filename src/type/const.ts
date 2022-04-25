@@ -1,5 +1,5 @@
 
-export const numberOfEnemy1 = 3000
+export const numberOfEnemy1 = 1000
 export const numberOfEnemy1double = numberOfEnemy1 * 2
 export const enemy1Speed = 0.0017
 
@@ -11,8 +11,8 @@ export const numberOfWeapon1double = numberOfWeapon1 * 2
 export const numberOfResource1 = 1000
 export const numberOfResource1double = numberOfResource1 * 2
 
-export const numberOfAutoAttack1= 50
-export const autoAttack1Speed= 0.6
+export const numberOfAutoAttack1 = 10
+export const autoAttack1Speed = 0.6
 
 export const playerSpeed = 0.06
 

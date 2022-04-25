@@ -7,8 +7,8 @@ interface EnemyOption {
 
 class Enemy extends Actor {
     public damage
-    constructor(option?:EnemyOption){
-        super()
-        this.damage = option?.damage
+    constructor (option?:EnemyOption) {
+      super()
+      this.damage = option?.damage
     }
 }
