@@ -165,6 +165,10 @@ window.onbeforeunload = (e) => {
   PIXI.utils.clearTextureCache()
 }
 
+//window.onblur = (e) => {
+//  worker1.postMessage({ cmd: 'stop' })
+//}
+
 window.onclose = () => {
   worker1.postMessage({ cmd: 'close' })
   worker1.terminate()
@@ -176,3 +180,35 @@ window.document.addEventListener('beforeunload', () => {
   worker1.postMessage('')
   PIXI.utils.clearTextureCache()
 })
+
+
+
+
+
+// Set the name of the hidden property and the change event for visibility
+let hidden: string, visibilityChange;
+if (typeof document.hidden !== "undefined") { // Opera 12.10 and Firefox 18 and later support
+  hidden = "hidden";
+  visibilityChange = "visibilitychange";
+// @ts-ignore: Unreachable code error
+  } else if (typeof document.msHidden !== "undefined") {
+  hidden = "msHidden";
+  visibilityChange = "msvisibilitychange";
+// @ts-ignore: Unreachable code error
+} else if (typeof document.webkitHidden !== "undefined") {
+  hidden = "webkitHidden";
+  visibilityChange = "webkitvisibilitychange";
+}
+
+// If the page is hidden, pause the video;
+// if the page is shown, play the video
+function handleVisibilityChange() {
+// @ts-ignore: Unreachable code error
+  if (document[hidden]) {
+    console.log('hidden')
+  } else {
+    console.log('show')
+  }
+}
+
+document.addEventListener(visibilityChange as string, handleVisibilityChange, false);

@@ -10,7 +10,7 @@ export let emitter = new particles.Emitter(
           "min": 0.1,
           "max": 0.75
         },
-        "frequency": 0.01,
+        "frequency": 0.005,
         "emitterLifetime": 0,
         "maxParticles": 1000,
         "addAtBack": true,

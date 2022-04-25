@@ -123,6 +123,10 @@ initNipple = () => {
     touch.isPressed.Left = false
     touch.isPressed.Right = false
   })
+
+  manager.on('wheel', (evt)=>{
+    console.log(evt)
+  })
 }
 }
 

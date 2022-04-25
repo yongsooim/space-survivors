@@ -3,7 +3,7 @@ import { autoAttack1Speed, numberOfAutoAttack1 } from '../type/const'
 import { aa1Texture } from '../resource/spriteManage'
 import sabWorker1 from '../worker/sabManage'
 import { viewport } from '../main'
-import '../worker/worker2Master'
+import '../worker/worker2master'
 class AutoAttack1 extends PIXI.Sprite {
   fired = false;
   remainTime = 0;
