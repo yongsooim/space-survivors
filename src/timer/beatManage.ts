@@ -23,6 +23,7 @@ export function beatInit () {
     case 0o0: // octal literal
       kickSound.play()
       player.fire()
+      loopSound.play()
 
       break
 
