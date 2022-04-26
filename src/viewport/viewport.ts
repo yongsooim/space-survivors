@@ -2,9 +2,11 @@ import { Viewport } from 'pixi-viewport'
 import { player } from '../player/player'
 import { app } from '../main'
 import { keyboard, Keys } from '../input/keyboard'
+import { Container } from 'pixi.js'
 
 export let viewport: Viewport
-
+export let viewportContainer = new Container()
+viewportContainer.zIndex = 999
 export function initViewport() {
   viewport = new Viewport({
     screenWidth: window.innerWidth,
@@ -13,12 +15,12 @@ export function initViewport() {
     disableOnContextMenu: true,
     divWheel: document.getElementById('pixi') as HTMLElement
   })
-
+  viewport.zIndex = 999
   viewport
     .pinch({ noDrag: true })
     .wheel({ percent: 0, smooth: 10, trackpadPinch: true })
-    .setZoom(0.05)
-    .clampZoom({ minScale: 0.05, maxScale: 1000 })
+    .setZoom(1)
+    .clampZoom({ minScale: 1, maxScale: 500 })
     .follow(player)
     
   window.addEventListener('resize', () => {
@@ -26,6 +28,7 @@ export function initViewport() {
   })
 
   app.stage.addChild(viewport)
+  viewport.addChild(viewportContainer)
 }
 
 export const viewportUpdate = (delta: number) => {

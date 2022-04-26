@@ -1,137 +1,141 @@
 import * as particles from "@pixi/particle-emitter";
 import firePng from "../asset/fire.png";
 import particlePng from "../asset/particle.png";
-import { viewport } from "../viewport/viewport";
+import { viewport, viewportContainer } from "../viewport/viewport";
+import { player } from "./player";
 
-export let emitter = new particles.Emitter(
-    viewport,
+export let emitter : particles.Emitter
+export let initEmitter = () => {
+  emitter = new particles.Emitter(viewportContainer, {
+    lifetime: {
+      min: 0.05,
+      max: 0.1,
+    },
+    frequency: 0.0005,
+    emitterLifetime: 0,
+    maxParticles: 1000,
+    addAtBack: false,
+    pos: {
+      x: 0,
+      y: 0.7,
+    },
+    behaviors: [
       {
-        "lifetime": {
-          "min": 0.1,
-          "max": 0.75
-        },
-        "frequency": 0.005,
-        "emitterLifetime": 0,
-        "maxParticles": 1000,
-        "addAtBack": true,
-        "pos": {
-          "x": 0,
-          "y": 0.8
-        },
-        "behaviors": [
-          {
-            "type": "alpha",
-            "config": {
-              "alpha": {
-                "list": [
-                  {
-                    "time": 0,
-                    "value": 0.62
-                  },
-                  {
-                    "time": 1,
-                    "value": 0
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "type": "moveSpeedStatic",
-            "config": {
-              "min": 5,
-              "max": 5
-            }
-          },
-          {
-            "type": "scale",
-            "config": {
-              "scale": {
-                "list": [
-                  {
-                    "time": 0,
-                    "value": 0.01
-                  },
-                  {
-                    "time": 1,
-                    "value": 0.0001
-                  }
-                ]
+        type: "alpha",
+        config: {
+          alpha: {
+            list: [
+              {
+                time: 0,
+                value: 0.82,
               },
-              "minMult": 0.5
-            }
+              {
+                time: 1,
+                value: 0,
+              },
+            ],
           },
-          {
-            "type": "color",
-            "config": {
-              "color": {
-                "list": [
-                  {
-                    "time": 0,
-                    "value": "fff191"
-                  },
-                  {
-                    "time": 1,
-                    "value": "ff622c"
-                  }
-                ]
-              }
-            }
+        },
+      },
+      {
+        type: "moveSpeedStatic",
+        config: {
+          min: 18,
+          max: 20,
+        },
+      },
+      {
+        type: "scale",
+        config: {
+          scale: {
+            list: [
+              {
+                time: 0,
+                value: 0.008,
+              },
+              {
+                time: 1,
+                value: 0.0001,
+              },
+              {
+                time: 2,
+                value: 0.2,
+              },
+            ],
           },
-          {
-            "type": "rotation",
-            "config": {
-              "accel": 0,
-              "minSpeed": -50,
-              "maxSpeed": -50,
-              "minStart": -265,
-              "maxStart": -275
-            }
+          minMult: 0.5,
+        },
+      },
+      {
+        type: "color",
+        config: {
+          color: {
+            list: [
+              {
+                time: 0,
+                value: "ffa171",
+              },
+              {
+                time: 1,
+                value: "ff120c",
+              },
+            ],
           },
-          {
-            "type": "textureRandom",
-            "config": {
-              "textures": [
-                particlePng,
-                firePng
-              ]
-            }
+        },
+      },
+      {
+        type: "rotation",
+        config: {
+          accel: 0,
+          minSpeed: -50,
+          maxSpeed: -50,
+          minStart: -269,
+          maxStart: -271,
+        },
+      },
+      {
+        type: "textureRandom",
+        config: {
+          textures: [particlePng, firePng],
+        },
+      },
+      {
+        type: "spawnShape",
+        config: {
+          type: "torus",
+          data: {
+            x: 0,
+            y: 0,
+            radius: 0.2,
+            innerRadius: 0,
+            affectRotation: false,
           },
-          {
-            "type": "spawnShape",
-            "config": {
-              "type": "torus",
-              "data": {
-                "x": 0,
-                "y": 0,
-                "radius": 0.2,
-                "innerRadius": 0,
-                "affectRotation": false
-              }
-            }
-          }
-        ]
-      });
-  
+        },
+      },
+    ],
+  });
+
   // Calculate the current time
   var elapsed = Date.now();
-  
+
   // Update function every frame
   var update = function () {
     // Update the next frame
     requestAnimationFrame(update);
-  
+
+    emitter.updateOwnerPos(player.x, player.y);
+
     var now = Date.now();
-  
+
     // The emitter requires the elapsed
     // number of seconds since the last update
     emitter.update((now - elapsed) * 0.001);
     elapsed = now;
   };
-  
+
   // Start emitting
   emitter.emit = true;
-  
+
   // Start the update
   update();
-  
+};

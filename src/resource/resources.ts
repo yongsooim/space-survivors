@@ -4,6 +4,8 @@ import miscPng from '../asset/misc.png'
 import projPng from '../asset/proj.png'
 import uiPng from '../asset/ui.png'
 import charPng from '../asset/char.png'
+import particlePng from "../asset/particle.png";
+
 import fireWav from '../asset/Laser_Shoot9.wav'
 import kick from '../asset/kick.wav'
 import hihat from '../asset/hihat_close.wav'
@@ -26,7 +28,8 @@ export const resourcePaths = {
   miscPng,
   projPng,
   uiPng,
-  charPng
+  charPng,
+  particlePng
 }
 
 export const resources: PIXI.IAddOptions[] = [

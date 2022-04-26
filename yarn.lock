@@ -786,6 +786,11 @@
     "@typescript-eslint/types" "5.20.0"
     eslint-visitor-keys "^3.0.0"
 
+"@ungap/structured-clone@^0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-0.3.4.tgz#f6d804e185591373992781361e4aa5bb81ffba35"
+  integrity sha512-TSVh8CpnwNAsPC5wXcIyh92Bv1gq6E9cNDeeLu7Z4h8V4/qWtXJp7y42qljRkqcpmsve1iozwv1wr+3BNdILCg==
+
 accurate-interval@^1.0.9:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/accurate-interval/-/accurate-interval-1.0.9.tgz#5752282f88e8050e5e0947e0d024d37f50300c3c"

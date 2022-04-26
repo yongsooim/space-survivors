@@ -9,10 +9,12 @@ export let baseTextures = {
   proj: new PIXI.BaseTexture(resourcePaths.projPng),
   ui: new PIXI.BaseTexture(resourcePaths.uiPng),
   char: new PIXI.BaseTexture(resourcePaths.charPng),
+  particle: new PIXI.BaseTexture(resourcePaths.particlePng),
 }
 
 export let textures = {
-  ship1 : new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(4 * 8, 8 * 8, 16, 16))
+  ship1 : new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(4 * 8, 8 * 8, 16, 16)),
+  particle : new PIXI.Texture(baseTextures.particle),
 }
 
 export const enemy1 = new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(9 * 8, 0 * 8, 8, 8))

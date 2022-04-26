@@ -1,9 +1,9 @@
 
-export const numberOfEnemy1 = 1000
+export const numberOfEnemy1 = 2000
 export const numberOfEnemy1double = numberOfEnemy1 * 2
-export const enemy1Speed = 0.0017
+export const enemy1Speed = 0.0018
 
-export const spawnSize = 500
+export const spawnSize = 1000
 
 export const numberOfWeapon1 = 1000
 export const numberOfWeapon1double = numberOfWeapon1 * 2

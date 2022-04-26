@@ -62,6 +62,7 @@ const enemy1BodyPool = new Array<Box2D.b2Body>(numberOfEnemy1)
 
 const tempVector = zero
 
+
 // creating boxes
 for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i] = world.CreateBody(bd)
@@ -97,6 +98,8 @@ let delta = 0
 let now = 0
 let stepTime = 0
 
+let tempVelVector = new b2Vec2(0, 0)
+
 loop = () => {
   if (++counter === numberOfDivide) {
     counter = 0
@@ -107,15 +110,15 @@ loop = () => {
 
   // partial calc vector to player
   for (tempIterator = counter; tempIterator < numberOfEnemy1; tempIterator += numberOfDivide) {
-    tempEnemyPos = enemy1BodyPool[tempIterator].GetPosition()
-    diffX = tempPlayerPosX - tempEnemyPos.x
-    diffY = tempPlayerPosY - tempEnemyPos.y
-    diffXSquare = diffX * diffX
-    diffYSquare = diffY * diffY
-    length = Math.sqrt(diffXSquare + diffYSquare)
-    tempForVectorSetting.Set(enemy1Speed * diffX / length, enemy1Speed * diffY / length)
-    enemy1BodyPool[tempIterator].SetLinearVelocity(tempForVectorSetting)
-  }
+
+    tempVelVector.x = tempPlayerPosX
+    tempVelVector.y = tempPlayerPosY
+  
+    tempVelVector.op_sub(enemy1BodyPool[tempIterator].GetPosition())
+    tempVelVector.Normalize()
+    tempVelVector.op_mul(enemy1Speed)
+    enemy1BodyPool[tempIterator].SetLinearVelocity(tempVelVector)
+    }
 
   // update shared memory buffer
   tempIterator = numberOfEnemy1

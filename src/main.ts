@@ -7,18 +7,16 @@ import { worker1init } from './worker/worker1master'
 import { tileInit } from './tile/tile'
 import { aaPool } from './weapon/autoAttack1'
 import { enemy1update } from './worker/worker1master'
-import { initViewport, viewport, viewportUpdate } from './viewport/viewport'
+import { initViewport, viewport, viewportContainer, viewportUpdate } from './viewport/viewport'
 import { initStat } from './stat/stat'
 import isMobile from 'is-mobile'
+import { worker3init } from './worker/worker3master'
 
 PIXI.utils.skipHello()
-PIXI.settings.GC_MAX_CHECK_COUNT = 20000
-PIXI.settings.GC_MAX_IDLE = 80000
-PIXI.settings.GC_MODE = PIXI.GC_MODES.MANUAL
-PIXI.settings.FILTER_MULTISAMPLE = PIXI.MSAA_QUALITY.NONE
-PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.LOW
-PIXI.settings.PRECISION_VERTEX = PIXI.PRECISION.LOW
-PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
+//PIXI.settings.FILTER_MULTISAMPLE = PIXI.MSAA_QUALITY.NONE
+//PIXI.settings.PRECISION_FRAGMENT = PIXI.PRECISION.HIGH
+//PIXI.settings.PRECISION_VERTEX = PIXI.PRECISION.HIGH
+//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 PIXI.settings.PREFER_ENV = PIXI.ENV.WEBGL2
 
 export const app = new PIXI.Application({
@@ -26,7 +24,7 @@ export const app = new PIXI.Application({
   resizeTo: window,
   antialias: false,
   backgroundColor: 0x000000,
-  //autoDensity: true
+  autoDensity: true
 })
 
 document.body.appendChild(app.view)
@@ -34,19 +32,21 @@ document.body.appendChild(app.view)
 app.loader.add(resources).load(async () => {
   initStat()
   initViewport()
-  input.init()
   tileInit()
-  viewport.addChild(player)
-  worker1init()
+  input.init()
+  viewportContainer.addChild(player)
   aaPool.init()
+  worker1init()
+  worker3init()
   beatInit()
 
   // Listen for frame updates
   app.ticker.add((delta: number) => {
     input.update()
-    player.update(delta)
     aaPool.update(delta)
     viewportUpdate(delta)
+    enemy1update()
+    player.update(delta)
   })
 })
 

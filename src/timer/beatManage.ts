@@ -14,6 +14,7 @@ sound.volume('bass', 0.05)
 const beatMax = 32
 let beatCounter = 0
 export function beatInit () {
+  sound.volumeAll = 0.1
   heartbeatWorker.onmessage = () => {
     if (++beatCounter >= beatMax) { // can have 0 ~ 31, 4 bar
       beatCounter = 0
@@ -23,6 +24,7 @@ export function beatInit () {
     case 0o0: // octal literal
       sound.play('kick')
       sound.play('loop')
+      player.flame()
       player.fire()
 
       break
