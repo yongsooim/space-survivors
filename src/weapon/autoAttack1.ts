@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import { autoAttack1Speed, numberOfAutoAttack1 } from '../type/const'
 import { aa1Texture } from '../resource/spriteManage'
 import sabWorker1 from '../worker/sabManage'
-import { viewport } from '../main'
+import { viewport } from '../viewport/viewport'
 import '../worker/worker2master'
 class AutoAttack1 extends PIXI.Sprite {
   fired = false;

@@ -1,29 +1,29 @@
 import Worker from './beatWorker?worker'
-import { bassSound, kickSound, loopSound, snareSound, hihatSound } from '../resource/resources'
+import { sound } from '@pixi/sound'
 
 import { player } from '../player/player'
 
 const heartbeatWorker = new Worker()
 
-kickSound.volume = 0.05
-hihatSound.volume = 0.01
-loopSound.volume = 0.02
-snareSound.volume = 0.05
-bassSound.volume = 0.1
+sound.volume('kick', 0.05)
+sound.volume('hihat', 0.05)
+sound.volume('loop', 0.05)
+sound.volume('snare', 0.05)
+sound.volume('bass', 0.05)
 
 const beatMax = 32
 let beatCounter = 0
 export function beatInit () {
-  heartbeatWorker.onmessage = (e) => {
+  heartbeatWorker.onmessage = () => {
     if (++beatCounter >= beatMax) { // can have 0 ~ 31, 4 bar
       beatCounter = 0
     }
 
     switch (beatCounter) {
     case 0o0: // octal literal
-      kickSound.play()
+      sound.play('kick')
+      sound.play('loop')
       player.fire()
-      loopSound.play()
 
       break
 
@@ -56,7 +56,7 @@ export function beatInit () {
       break
 
     case 0o10:
-      kickSound.play()
+      sound.play('kick')
       player.fire()
 
       break
@@ -90,7 +90,7 @@ export function beatInit () {
       break
 
     case 0o20:
-      kickSound.play()
+      sound.play('kick')
       player.fire()
 
       break
@@ -124,7 +124,7 @@ export function beatInit () {
       break
 
     case 0o30:
-      kickSound.play()
+      sound.play('kick')
       player.fire()
 
       break
@@ -157,6 +157,9 @@ export function beatInit () {
 
       break
     }
+
+
+    // use counter for sychro actions 
   }
 
   setTimeout(() => {

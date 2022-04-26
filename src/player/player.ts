@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { ship1 } from "../resource/spriteManage";
+import { textures } from "../resource/spriteManage";
 import * as PIXI from "pixi.js";
 import { input } from "../input/input";
 import { Direction } from "../type/type";
@@ -7,14 +7,16 @@ import { playerSpeed } from "../type/const";
 import sabWorker1 from "../worker/sabManage";
 import { Vector } from "../class/Vector";
 import { keyboard, Keys } from "../input/keyboard";
-import { viewport } from "../main";
+import { viewport } from "../viewport/viewport";
 import { aaPool } from "../weapon/autoAttack1";
+import { emitter } from './fire-emit'
 class Player extends Container {
   speed = 350;
   vector = new Vector(0, 0);
   positionVector = new Vector(0, 0);
+  emitter = emitter
 
-  playerSprite = new PIXI.Sprite(ship1);
+  playerSprite = new PIXI.Sprite(textures.ship1);
   constructor() {
     super();
     this.x = 100;
@@ -79,11 +81,9 @@ class Player extends Container {
     sabWorker1.playerPositionArr[0] = this.x;
     sabWorker1.playerPositionArr[1] = this.y;
 
-    if (keyboard.isHeld(Keys.Equal) === true || keyboard.isHeld(Keys.PageUp) === true) {
-      viewport.zoomPercent(0.02 * delta, true);
-    }
-    if (keyboard.isHeld(Keys.Minus) === true || keyboard.isHeld(Keys.PageDown) === true) {
-      viewport.zoomPercent(-0.02 * delta, true);
+
+    if(this.emitter){
+      this.emitter.updateSpawnPos(this.x, this.y)
     }
   }
 
@@ -93,5 +93,3 @@ class Player extends Container {
 }
 
 export const player = new Player();
-
-import ("./fire-emit")

@@ -85,6 +85,7 @@
     "electron-reload": "^2.0.0-alpha.1",
     "heartbeats": "^5.0.1",
     "is-mobile": "^3.1.1",
+    "liquidfun-wasm": "^7.0.0",
     "nipplejs": "^0.9.1",
     "pixi-batch-renderer": "^2.5.3",
     "pixi-heaven": "^0.3.1",

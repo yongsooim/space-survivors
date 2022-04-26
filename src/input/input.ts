@@ -77,10 +77,6 @@ export class Input {
     this.vector.x = touch.vector.x
     this.vector.y = touch.vector.y
 
-    if (touch.vector.x !== 0 && touch.vector.y !== 0) {
-
-    }
-
     keyboard.update()
 
     if (

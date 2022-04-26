@@ -1,4 +1,4 @@
-// this worker calculates collision between autoAttack1
+// this worker calculates collision between enemyt1 and autoAttack1 
 
 import Box2DFactory from 'box2d-wasm' // ....
 import { numberOfAutoAttack1, numberOfEnemy1, worker2Interval } from '../type/const'
@@ -11,7 +11,9 @@ let enemy1Hps: Int32Array
 let loopInterval : number
 
 onmessage = (ev) => {
-  if (ev.data.cmd === 'close') {
+  if(ev.data.cmd === 'stop'){
+    // pause
+  } else if (ev.data.cmd === 'close') {
     clearInterval(loopInterval)
     loop = () => {}
     autoAttack1Positions = new Float64Array()
@@ -95,8 +97,7 @@ let counter = 0
 const tempVec = new b2Vec2(0, 0)
 let loop = () => {}
 loop = () => {
-  counter++
-  if (counter === numberOfDivide) {
+  if (++counter === numberOfDivide) {
     counter = 0
   }
 
@@ -104,8 +105,7 @@ loop = () => {
   tempIterator = numberOfEnemy1
   while (tempIterator--) {
     indexDouble = tempIterator * 2
-    tempVec.x = enemy1Positions[indexDouble]
-    tempVec.y = enemy1Positions[indexDouble + 1]
+    tempVec.Set(enemy1Positions[indexDouble], enemy1Positions[indexDouble + 1]) 
     enemy1BodyPool[tempIterator].SetTransform(tempVec, 0)
     square.ComputeAABB(enemy1aabbs[tempIterator], enemy1BodyPool[tempIterator].GetTransform(), 0)
   }
@@ -114,8 +114,7 @@ loop = () => {
   tempIterator = numberOfAutoAttack1
   while (tempIterator--) {
     indexDouble = tempIterator * 2
-    tempVec.x = autoAttack1Positions[indexDouble]
-    tempVec.y = autoAttack1Positions[indexDouble + 1]
+    tempVec.Set(autoAttack1Positions[indexDouble], autoAttack1Positions[indexDouble + 1]) 
     autoAttack1BodyPool[tempIterator].SetTransform(tempVec, 0)
     square.ComputeAABB(autoAttack1aabbs[tempIterator], autoAttack1BodyPool[tempIterator].GetTransform(), 0)
   }

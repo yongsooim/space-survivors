@@ -1,7 +1,7 @@
 // this worker calculates enemy1's collision and its resolving
 
 import Box2DFactory from 'box2d-wasm' // ....
-import { enemy1Speed, numberOfEnemy1, spawnSize, worker1Interval } from '../type/const'
+import { enemy1Speed, numberOfEnemy1, spawnSize, worker1Interval as worker1interval } from '../type/const'
 
 // Shared Aray Buffer setting
 let playerPosition : Float64Array
@@ -14,7 +14,9 @@ let loop = () => {}
 let loopInterval : number
 
 onmessage = (ev) => {
-  if (ev.data.cmd === 'close') {
+  if(ev.data.cmd === 'stop'){
+    // pause
+  } else if (ev.data.cmd === 'close') {
     loop = () => {}
     clearInterval(loopInterval)
     playerPosition = new Float64Array()
@@ -35,7 +37,7 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
   // But we want to look for Box2D.wasm relative to public/index.html instead.
   //
   // locateFile: (url, scriptDirectory) => {
-  locateFile: (url, scriptDirectory) => {
+  locateFile: (url) => {
     // console.log('url in main  :  ' + url)
     // console.log('scriptDirectory in main  :  ' + scriptDirectory)
     // console.log('findng at in main  :  ./assets/' + url)
@@ -68,8 +70,7 @@ for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i].SetLinearDamping(0)
   enemy1BodyPool[i].SetAngularDamping(0)
   enemy1BodyPool[i].SetSleepingAllowed(false)
-  tempVector.x = (Math.random() - 0.5) * spawnSize
-  tempVector.y = (Math.random() - 0.5) * spawnSize
+  tempVector.Set((Math.random() - 0.5) * spawnSize, (Math.random() - 0.5) * spawnSize)
   enemy1BodyPool[i].SetTransform(tempVector, 0)
   enemy1BodyPool[i].SetFixedRotation(false)
   enemy1BodyPool[i].SetAwake(true)
@@ -91,15 +92,13 @@ const tempForVectorSetting = new b2Vec2(0, 0)
 const numberOfDivide = 15
 
 let counter = 0
-const end = 0
 let lastExecuted = Date.now()
 let delta = 0
 let now = 0
 let stepTime = 0
 
 loop = () => {
-  counter++
-  if (counter === numberOfDivide) {
+  if (++counter === numberOfDivide) {
     counter = 0
   }
 
@@ -114,8 +113,7 @@ loop = () => {
     diffXSquare = diffX * diffX
     diffYSquare = diffY * diffY
     length = Math.sqrt(diffXSquare + diffYSquare)
-    tempForVectorSetting.x = enemy1Speed * diffX / length
-    tempForVectorSetting.y = enemy1Speed * diffY / length
+    tempForVectorSetting.Set(enemy1Speed * diffX / length, enemy1Speed * diffY / length)
     enemy1BodyPool[tempIterator].SetLinearVelocity(tempForVectorSetting)
   }
 
@@ -139,19 +137,19 @@ loop = () => {
   delta = now - lastExecuted
   lastExecuted = now
 
-  if (delta > worker1Interval + 5) {
+  if (delta > worker1interval + 5) {
     if (delta > 500) {
       stepTime = 500
     } else {
       stepTime = delta
     }
   } else {
-    stepTime = worker1Interval
+    stepTime = worker1interval
   }
 
   enemy1HpsOld.set(enemy1Hps)
   world.Step(stepTime, 8, 3)
 }
 setTimeout(() => {
-  loopInterval = setInterval(loop, worker1Interval)
+  loopInterval = setInterval(loop, worker1interval)
 }, 1000)

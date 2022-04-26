@@ -2957,6 +2957,13 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
+liquidfun-wasm@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/liquidfun-wasm/-/liquidfun-wasm-7.0.0.tgz#7fa96bde638a7c712ddc23c9d28b6ca2a44d62f6"
+  integrity sha512-Cf6CBPrjOgPKtz+4fgG5kp11diYWEDUJHa1dZX5Na6otOq3dn2aCo5rqONAyJqqYByjB74ny8Mpzp2u+Yo32QQ==
+  dependencies:
+    "@types/emscripten" "^1.39.6"
+
 load-tsconfig@^0.2.0:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/load-tsconfig/-/load-tsconfig-0.2.3.tgz#08af3e7744943caab0c75f8af7f1703639c3ef1f"
