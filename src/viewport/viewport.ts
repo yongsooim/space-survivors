@@ -19,7 +19,7 @@ export function initViewport() {
   viewport
     .pinch({ noDrag: true })
     .wheel({ percent: 0, smooth: 10, trackpadPinch: true })
-    .setZoom(1)
+    .setZoom(5)
     .clampZoom({ minScale: 1, maxScale: 500 })
     .follow(player)
 

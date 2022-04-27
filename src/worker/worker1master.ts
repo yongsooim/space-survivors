@@ -36,6 +36,7 @@ export async function worker1init() {
     tempEnemyShip.scale.set(0.2)
     tempEnemyShip.anchor.set(0.5);
     tempEnemyShip.position.set(9999)
+    tempEnemyShip.alpha = 0.8
     tempEnemyShip.cacheAsBitmapResolution = 1;
     tempEnemyShip.cacheAsBitmap = true;
     enemy1container.addChild(tempEnemyShip);
@@ -61,7 +62,7 @@ export function enemy1update() {
 }
 
 setTimeout(() => {
-  worker1.postMessage([sabWorker1.playerPosition, sabWorker1.enemy1Positions, sabWorker1.enemy1Hps]);
+  worker1.postMessage([sabWorker1.playerPosition, sabWorker1.enemy1Positions, sabWorker1.enemy1Hps, sabWorker1.lifeSab]);
 }, 1000);
 
 window.onbeforeunload = () => {

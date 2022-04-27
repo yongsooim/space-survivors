@@ -7,6 +7,7 @@ import { enemy1speed, numberOfEnemy1, spawnSize, worker1interval as worker1inter
 let playerPosition: Float64Array
 let enemy1positions: Float64Array
 let enemy1Hps: Int32Array
+let life: Int32Array
 
 const enemy1HpsOld = new Float64Array(numberOfEnemy1)
 
@@ -27,6 +28,7 @@ onmessage = (ev) => {
     playerPosition = new Float64Array(ev.data[0])
     enemy1positions = new Float64Array(ev.data[1])
     enemy1Hps = new Int32Array(ev.data[2])
+    life = new Int32Array(ev.data[3])
   }
 }
 
@@ -62,6 +64,7 @@ const enemy1BodyPool = new Array<Box2D.b2Body>(numberOfEnemy1)
 
 const tempVector = zero
 
+square.SetAsBox(0.7, 0.7)
 const playerBody = world.CreateBody(bd)
 playerBody.CreateFixture(square, 1).SetFriction(0)
 playerBody.GetFixtureList().SetRestitution(0)
@@ -70,11 +73,15 @@ playerBody.SetAngularDamping(0)
 playerBody.SetSleepingAllowed(false)
 playerBody.SetEnabled(true)
 
+square.SetAsBox(boxSideLength, boxSideLength)
+
 // creating boxes
 for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i] = world.CreateBody(bd)
   enemy1BodyPool[i].CreateFixture(square, 1).SetFriction(0)
   enemy1BodyPool[i].GetFixtureList().SetRestitution(0)
+
+
   enemy1BodyPool[i].SetLinearDamping(0)
   enemy1BodyPool[i].SetAngularDamping(0)
   enemy1BodyPool[i].SetSleepingAllowed(false)
@@ -122,9 +129,11 @@ loop = () => {
     tempCalcVector.Set(tempPlayerPosX, tempPlayerPosY)
     tempCalcVector.op_sub(enemy1BodyPool[tempIterator].GetPosition())
 
-    if(tempCalcVector.Length() < 0.03){ // player hit
-      enemy1BodyPool[tempIterator].SetEnabled(false)
-      continue
+    if(tempCalcVector.Length() < 2){ // player hit
+      //enemy1BodyPool[tempIterator].SetEnabled(false)
+      console.log('player hit')
+      Atomics.sub(life, 0, 1)
+      
     }
 
     tempCalcVector.Normalize()

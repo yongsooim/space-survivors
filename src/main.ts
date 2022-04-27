@@ -11,7 +11,8 @@ import { initViewport, viewport, viewportContainer } from './viewport/viewport'
 import { initStat } from './stat/stat'
 import isMobile from 'is-mobile'
 import { worker3init } from './worker/worker3master'
-import { addText } from './ui/ui'
+import { addText, resizeText } from './ui/ui'
+
 
 PIXI.utils.skipHello()
 //PIXI.settings.FILTER_MULTISAMPLE = PIXI.MSAA_QUALITY.NONE
@@ -81,3 +82,4 @@ function handleVisibilityChange() {
 }
 
 document.addEventListener(visibilityChange as string, handleVisibilityChange, false);
+

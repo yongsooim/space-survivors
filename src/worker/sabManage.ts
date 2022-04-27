@@ -23,13 +23,17 @@ type SabSet = {
 
 class SabWorker1 {
   public timerSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
+  public resourceCollectedSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
+  public killSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
+  public lifeSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
+  
   public playerPosition = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * 2)
 
   public enemy1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfEnemy1double)
   public enemy1Hps = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * numberOfEnemy1)
 
   public autoAttack1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfAutoAttack1 * 2)
-  public autoAttack1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfAutoAttack1)
+  public autoAttack1Enabled = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * numberOfAutoAttack1)
 
   public weapon1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfWeapon1double)
   public weapon1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfWeapon1)
@@ -43,9 +47,15 @@ class SabWorker1 {
   public enemy1PositionsArr = new Float64Array(this.enemy1Positions)
   public enemy1HpsArr = new Int32Array(this.enemy1Hps)
   public autoAttack1PositionsArr = new Float64Array(this.autoAttack1Positions)
-  public autoAttack1EnabledArr = new Float64Array(this.autoAttack1Enabled)
+  public autoAttack1EnabledArr = new Int32Array(this.autoAttack1Enabled)
   public resource1PositionsArr = new Float64Array(this.resource1Positions)
   public resource1RemainTimesArr = new Int32Array(this.resource1RemainTimes)
+
+  public timerArr = new Int32Array(this.timerSab)
+  public resourceCollectedArr = new Int32Array(this.resourceCollectedSab)
+  public killArr = new Int32Array(this.killSab)
+  public lifeArr = new Int32Array(this.lifeSab)
+
 }
 
 const sabWorker1 = new SabWorker1()

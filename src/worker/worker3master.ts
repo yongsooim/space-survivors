@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import Worker from "./worker3?worker";
 import { numberOfResource1 } from "../type/const";
-import { viewport } from "../viewport/viewport";
+import { viewport, viewportContainer } from "../viewport/viewport";
 import particlePng from "../asset/particle.png";
 import { player } from "../player/player";
 import sabWorker1 from './sabManage'
@@ -26,12 +26,12 @@ let indexDouble = 0
 
 export async function worker3init() {
   let resource1sprites;
-  viewport.addChild(resource1container);
   tempIterator = numberOfResource1;
   while (tempIterator--) {
-    resource1sprites = new PIXI.Sprite(textures.particle);
+    resource1sprites = new PIXI.Sprite(textures.particles[Math.floor(Math.random() * 15.9)]);
+    //resource1sprites = new PIXI.Sprite(textures.particle);
 
-    resource1sprites.scale.set(0.06)
+    resource1sprites.scale.set(0.04)
     resource1sprites.anchor.set(0.5);
     resource1sprites.tint = 0x964b00;
     resource1sprites.alpha = 0.5;
@@ -39,17 +39,23 @@ export async function worker3init() {
     resource1sprites.y = Math.random() * 100 - 50;
     resource1container.addChild(resource1sprites);
 
-    sabWorker1.resource1RemainTimesArr[tempIterator] = 100000
   }
 
-  viewport.addChild(resource1container);
+  viewportContainer.addChild(resource1container);
 
   worker3.postMessage([
-    sabManage.resource1Positions,
+    sabManage.playerPosition,
     sabManage.resource1Positions,
     sabManage.resource1RemainTimes,
+    sabManage.resourceCollectedSab,
 
   ])
+
+  tempIterator = numberOfResource1;
+  while (tempIterator--) {
+
+    sabWorker1.resource1RemainTimesArr[tempIterator] = 0x7fffffff
+  }
 
   app.ticker.add(()=>{
     tempIterator = numberOfResource1;

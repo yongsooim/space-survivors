@@ -8,7 +8,7 @@ app.commandLine.appendSwitch("disable-http-cache");
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 600,
+    width: 1600,
     height: 900,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
