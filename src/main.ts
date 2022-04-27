@@ -7,10 +7,11 @@ import { worker1init } from './worker/worker1master'
 import { tileInit } from './tile/tile'
 import { aaPool } from './weapon/autoAttack1'
 import { enemy1update } from './worker/worker1master'
-import { initViewport, viewport, viewportContainer, viewportUpdate } from './viewport/viewport'
+import { initViewport, viewport, viewportContainer } from './viewport/viewport'
 import { initStat } from './stat/stat'
 import isMobile from 'is-mobile'
 import { worker3init } from './worker/worker3master'
+import { addText } from './ui/ui'
 
 PIXI.utils.skipHello()
 //PIXI.settings.FILTER_MULTISAMPLE = PIXI.MSAA_QUALITY.NONE
@@ -39,12 +40,12 @@ app.loader.add(resources).load(async () => {
   worker1init()
   worker3init()
   beatInit()
-
+  addText()
+  
   // Listen for frame updates
   app.ticker.add((delta: number) => {
     input.update()
     aaPool.update(delta)
-    viewportUpdate(delta)
     enemy1update()
     player.update(delta)
   })

@@ -22,21 +22,20 @@ export function initViewport() {
     .setZoom(1)
     .clampZoom({ minScale: 1, maxScale: 500 })
     .follow(player)
-    
+
   window.addEventListener('resize', () => {
     viewport.resize(window.innerWidth, window.innerHeight)
   })
 
   app.stage.addChild(viewport)
   viewport.addChild(viewportContainer)
-}
 
-export const viewportUpdate = (delta: number) => {
-  //viewport.update(delta)
-  if (keyboard.isHeld(Keys.Equal) === true || keyboard.isHeld(Keys.PageUp) === true) {
-    viewport.zoomPercent(0.02 * delta, true);
-  }
-  if (keyboard.isHeld(Keys.Minus) === true || keyboard.isHeld(Keys.PageDown) === true) {
-    viewport.zoomPercent(-0.02 * delta, true);
-  }
+  app.ticker.add((delta) => {
+    if (keyboard.isHeld(Keys.Equal) === true || keyboard.isHeld(Keys.PageUp) === true) {
+      viewport.zoomPercent(0.02 * delta, true);
+    }
+    if (keyboard.isHeld(Keys.Minus) === true || keyboard.isHeld(Keys.PageDown) === true) {
+      viewport.zoomPercent(-0.02 * delta, true);
+    }
+  })
 }

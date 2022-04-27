@@ -35,7 +35,7 @@ class SabWorker1 {
   public weapon1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfWeapon1)
 
   public resource1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfResource1double)
-  public resource1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfResource1)
+  public resource1RemainTimes = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * numberOfResource1)
 
   /** arrays used in main */
   public timer = new Int32Array(this.timerSab)
@@ -44,6 +44,8 @@ class SabWorker1 {
   public enemy1HpsArr = new Int32Array(this.enemy1Hps)
   public autoAttack1PositionsArr = new Float64Array(this.autoAttack1Positions)
   public autoAttack1EnabledArr = new Float64Array(this.autoAttack1Enabled)
+  public resource1PositionsArr = new Float64Array(this.resource1Positions)
+  public resource1RemainTimesArr = new Int32Array(this.resource1RemainTimes)
 }
 
 const sabWorker1 = new SabWorker1()

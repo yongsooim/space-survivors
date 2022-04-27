@@ -1,23 +1,23 @@
 // this worker calculates enemy1's collision and its resolving
 
 import Box2DFactory from 'box2d-wasm' // ....
-import { enemy1Speed, numberOfEnemy1, spawnSize, worker1Interval as worker1interval } from '../type/const'
+import { enemy1speed, numberOfEnemy1, spawnSize, worker1interval as worker1interval } from '../type/const'
 
 // Shared Aray Buffer setting
-let playerPosition : Float64Array
-let enemy1positions : Float64Array
-let enemy1Hps : Int32Array
+let playerPosition: Float64Array
+let enemy1positions: Float64Array
+let enemy1Hps: Int32Array
 
 const enemy1HpsOld = new Float64Array(numberOfEnemy1)
 
-let loop = () => {}
-let loopInterval : number
+let loop = () => { }
+let loopInterval: number
 
 onmessage = (ev) => {
-  if(ev.data.cmd === 'stop'){
+  if (ev.data.cmd === 'stop') {
     // pause
   } else if (ev.data.cmd === 'close') {
-    loop = () => {}
+    loop = () => { }
     clearInterval(loopInterval)
     playerPosition = new Float64Array()
     enemy1positions = new Float64Array()
@@ -62,6 +62,13 @@ const enemy1BodyPool = new Array<Box2D.b2Body>(numberOfEnemy1)
 
 const tempVector = zero
 
+const playerBody = world.CreateBody(bd)
+playerBody.CreateFixture(square, 1).SetFriction(0)
+playerBody.GetFixtureList().SetRestitution(0)
+playerBody.SetLinearDamping(0)
+playerBody.SetAngularDamping(0)
+playerBody.SetSleepingAllowed(false)
+playerBody.SetEnabled(true)
 
 // creating boxes
 for (let i = 0; i < numberOfEnemy1; i++) {
@@ -79,16 +86,10 @@ for (let i = 0; i < numberOfEnemy1; i++) {
 }
 
 let tempEnemyPos = zero
-let diffX: number
-let diffY: number
-let diffXSquare: number
-let diffYSquare: number
 let tempPlayerPosX: number
 let tempPlayerPosY: number
 let indexDouble
 let tempIterator
-let length
-const tempForVectorSetting = new b2Vec2(0, 0)
 
 const numberOfDivide = 15
 
@@ -98,7 +99,7 @@ let delta = 0
 let now = 0
 let stepTime = 0
 
-let tempVelVector = new b2Vec2(0, 0)
+let tempCalcVector = new b2Vec2(0, 0)
 
 loop = () => {
   if (++counter === numberOfDivide) {
@@ -108,17 +109,28 @@ loop = () => {
   tempPlayerPosX = playerPosition[0]
   tempPlayerPosY = playerPosition[1]
 
+  tempCalcVector.Set(tempPlayerPosX, tempPlayerPosY)
+  
+  playerBody.SetTransform(tempCalcVector, 0)
+
   // partial calc vector to player
   for (tempIterator = counter; tempIterator < numberOfEnemy1; tempIterator += numberOfDivide) {
-
-    tempVelVector.x = tempPlayerPosX
-    tempVelVector.y = tempPlayerPosY
-  
-    tempVelVector.op_sub(enemy1BodyPool[tempIterator].GetPosition())
-    tempVelVector.Normalize()
-    tempVelVector.op_mul(enemy1Speed)
-    enemy1BodyPool[tempIterator].SetLinearVelocity(tempVelVector)
+    if(enemy1BodyPool[tempIterator].IsEnabled() === false) {
+      continue
     }
+    
+    tempCalcVector.Set(tempPlayerPosX, tempPlayerPosY)
+    tempCalcVector.op_sub(enemy1BodyPool[tempIterator].GetPosition())
+
+    if(tempCalcVector.Length() < 0.03){ // player hit
+      enemy1BodyPool[tempIterator].SetEnabled(false)
+      continue
+    }
+
+    tempCalcVector.Normalize()
+    tempCalcVector.op_mul(enemy1speed)
+    enemy1BodyPool[tempIterator].SetLinearVelocity(tempCalcVector)
+  }
 
   // update shared memory buffer
   tempIterator = numberOfEnemy1
@@ -136,6 +148,7 @@ loop = () => {
     enemy1positions[indexDouble + 1] = tempEnemyPos.y
   }
 
+  // calculate elapsed and determine the interval to next step
   now = Date.now()
   delta = now - lastExecuted
   lastExecuted = now
@@ -150,9 +163,9 @@ loop = () => {
     stepTime = worker1interval
   }
 
-  enemy1HpsOld.set(enemy1Hps)
   world.Step(stepTime, 8, 3)
 }
+
 setTimeout(() => {
   loopInterval = setInterval(loop, worker1interval)
 }, 1000)

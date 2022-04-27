@@ -1,7 +1,7 @@
 
-export const numberOfEnemy1 = 2000
+export const numberOfEnemy1 = 3000
 export const numberOfEnemy1double = numberOfEnemy1 * 2
-export const enemy1Speed = 0.0018
+export const enemy1speed = 0.0018
 
 export const spawnSize = 1000
 
@@ -11,11 +11,12 @@ export const numberOfWeapon1double = numberOfWeapon1 * 2
 export const numberOfResource1 = 1000
 export const numberOfResource1double = numberOfResource1 * 2
 
-export const numberOfAutoAttack1 = 20
+export const numberOfAutoAttack1 = 100
 export const autoAttack1Speed = 0.6
 
 export const playerSpeed = 0.06
 
-export const worker1Interval = 1000 / 24
-export const worker2Interval = 1000 / 60
+export const worker1interval = 1000 / 24
+export const worker2interval = 1000 / 60
+export const worker3interval = 1000 / 60
 
