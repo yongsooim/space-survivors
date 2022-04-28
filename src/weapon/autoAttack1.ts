@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import { autoAttack1Speed, numberOfAutoAttack1 } from '../type/const'
 import { aa1Texture } from '../resource/spriteManage'
-import sabWorker1 from '../worker/sabManage'
+import sab from '../worker/sabManage'
 import { viewport } from '../viewport/viewport'
 import '../worker/worker2master'
 class AutoAttack1 extends PIXI.Sprite {
@@ -59,9 +59,9 @@ class AutoAttack1Pool {
       iteratorDouble = tempIterator * 2
 
       if (this.objectPool[tempIterator].fired === true) { // first update after fired check
-        sabWorker1.autoAttack1EnabledArr[tempIterator] = 1
+        sab.autoAttack1EnabledArr[tempIterator] = 1
         this.objectPool[tempIterator].fired = false
-      } else if (sabWorker1.autoAttack1EnabledArr[tempIterator] === 0 || this.objectPool[tempIterator].remainTime <= 0) { // skip check
+      } else if (sab.autoAttack1EnabledArr[tempIterator] === 0 || this.objectPool[tempIterator].remainTime <= 0) { // skip check
         this.objectPool[tempIterator].visible = false
         continue
       }
@@ -69,8 +69,8 @@ class AutoAttack1Pool {
       // bullet is not disabled and remain time is not expired
       this.objectPool[tempIterator].remainTime -= (delta * 1000) / 60
       this.objectPool[tempIterator].y -= autoAttack1Speed
-      sabWorker1.autoAttack1PositionsArr[iteratorDouble] = this.objectPool[tempIterator].x
-      sabWorker1.autoAttack1PositionsArr[iteratorDouble + 1] = this.objectPool[tempIterator].y
+      sab.autoAttack1PositionsArr[iteratorDouble] = this.objectPool[tempIterator].x
+      sab.autoAttack1PositionsArr[iteratorDouble + 1] = this.objectPool[tempIterator].y
     }
   }
 }

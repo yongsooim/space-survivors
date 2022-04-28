@@ -1,16 +1,16 @@
-import Worker from "./worker1?worker";
-import sabWorker1 from "./sabManage";
-import * as PIXI from "pixi.js";
-import { viewport, viewportContainer } from "../viewport/viewport";
-import { numberOfEnemy1 } from "../type/const";
-import { enemy1, sprites } from "../resource/spriteManage";
-import { Sprite } from "pixi.js";
-import { player } from "../player/player";
+import Worker from './worker1?worker'
+import sab from './sabManage'
+import * as PIXI from 'pixi.js'
+import { viewport, viewportContainer } from '../viewport/viewport'
+import { numberOfAutoAttack1, numberOfEnemy1 } from '../type/const'
+import { aa1Texture, enemy1, sprites } from '../resource/spriteManage'
+import { Sprite } from 'pixi.js'
+import { player } from '../player/player'
 
-const worker1 = new Worker();
+const worker1 = new Worker()
 
-let tempIterator = 0;
-let indexDouble = 0;
+let tempIterator = 0
+let indexDouble = 0
 
 const enemy1container = new PIXI.ParticleContainer(
   numberOfEnemy1,
@@ -21,72 +21,110 @@ const enemy1container = new PIXI.ParticleContainer(
     tint: false,
     alpha: true,
     scale: false,
-    position: true,
+    position: true
   },
   numberOfEnemy1,
   true
-);
+)
 
-let tempEnemyShip;
-export async function worker1init() {
-  tempIterator = numberOfEnemy1;
+const autoAttack1container = new PIXI.ParticleContainer(
+  numberOfAutoAttack1,
+  {
+    vertices: false,
+    rotation: false,
+    uvs: false,
+    tint: false,
+    alpha: true,
+    scale: false,
+    position: true
+  },
+  numberOfAutoAttack1,
+  true
+)
+
+let tempSprite
+export async function worker1init () {
+  tempIterator = numberOfEnemy1
   while (tempIterator--) {
-    sabWorker1.enemy1HpsArr[tempIterator] = 1;
-    tempEnemyShip = new PIXI.Sprite(enemy1);
-    tempEnemyShip.scale.set(0.2)
-    tempEnemyShip.anchor.set(0.5);
-    tempEnemyShip.position.set(9999)
-    tempEnemyShip.alpha = 0.8
-    tempEnemyShip.cacheAsBitmapResolution = 1;
-    tempEnemyShip.cacheAsBitmap = true;
-    enemy1container.addChild(tempEnemyShip);
+    sab.enemy1HpsArr[tempIterator] = 1
+    tempSprite = new PIXI.Sprite(enemy1)
+    tempSprite.scale.set(0.2)
+    tempSprite.anchor.set(0.5)
+    tempSprite.position.set(9999)
+    tempSprite.alpha = 0.8
+    tempSprite.cacheAsBitmapResolution = 1
+    tempSprite.cacheAsBitmap = true
+    enemy1container.addChild(tempSprite)
   }
 
-  viewportContainer.addChild(enemy1container);
+  tempIterator = numberOfAutoAttack1
+  while (tempIterator--) {
+    sab.enemy1HpsArr[tempIterator] = 1
+    tempSprite = new PIXI.Sprite(aa1Texture)
+    tempSprite.scale.set(0.2)
+    tempSprite.anchor.set(0.5)
+    tempSprite.position.set(9999)
+    tempSprite.alpha = 1
+    tempSprite.cacheAsBitmapResolution = 1
+    tempSprite.cacheAsBitmap = true
+    autoAttack1container.addChild(tempSprite)
+  }
+
+  viewportContainer.addChild(enemy1container)
+  viewportContainer.addChild(autoAttack1container)
 }
 
-export function enemy1update() {
-  tempIterator = numberOfEnemy1;
+export function enemy1update () {
+  tempIterator = numberOfEnemy1
   while (tempIterator--) {
-    if (sabWorker1.enemy1HpsArr[tempIterator] <= 0) {
-      sabWorker1.enemy1HpsArr[tempIterator] = 0;
-      enemy1container.children[tempIterator].alpha = 0;
-      continue;
+    if (sab.enemy1HpsArr[tempIterator] <= 0) {
+      sab.enemy1HpsArr[tempIterator] = 0
+      enemy1container.children[tempIterator].alpha = 0
+      continue
     }
-    indexDouble = tempIterator * 2;
+    indexDouble = tempIterator * 2
+    enemy1container.children[tempIterator].x = sab.enemy1PositionsArr[indexDouble]
+    enemy1container.children[tempIterator].y = sab.enemy1PositionsArr[indexDouble + 1]
+  }
 
-    enemy1container.children[tempIterator].x = sabWorker1.enemy1PositionsArr[indexDouble];
-
-    enemy1container.children[tempIterator].y = sabWorker1.enemy1PositionsArr[indexDouble + 1];
+  tempIterator = numberOfAutoAttack1
+  while (tempIterator--) {
+    indexDouble = tempIterator * 2
+    autoAttack1container.children[tempIterator].x = sab.autoAttack1PositionsArr[indexDouble]
+    autoAttack1container.children[tempIterator].y = sab.autoAttack1PositionsArr[indexDouble + 1]
   }
 }
 
 setTimeout(() => {
-  worker1.postMessage([sabWorker1.playerPosition, sabWorker1.enemy1Positions, sabWorker1.enemy1Hps, sabWorker1.lifeSab]);
-}, 1000);
+  worker1.postMessage([sab.playerPosition, sab.enemy1Positions, sab.enemy1Hps, sab.lifeSab, sab.autoAttack1Positions])
+}, 1000)
 
 window.onbeforeunload = () => {
-  location.reload();
-  document.location.reload();
-  worker1.postMessage({ cmd: "close" });
-  worker1.terminate();
-  PIXI.utils.clearTextureCache();
-};
+  location.reload()
+  document.location.reload()
+  worker1.postMessage({ cmd: 'close' })
+  worker1.terminate()
+  PIXI.utils.clearTextureCache()
+}
 
-//window.onblur = (e) => {
+// window.onblur = (e) => {
 //  worker1.postMessage({ cmd: 'stop' })
-//}
+// }
 
 window.onclose = () => {
-  worker1.postMessage({ cmd: "close" });
-  worker1.terminate();
-  PIXI.utils.clearTextureCache();
-};
+  worker1.postMessage({ cmd: 'close' })
+  worker1.terminate()
+  PIXI.utils.clearTextureCache()
+}
 
-window.document.addEventListener("beforeunload", () => {
-  worker1.terminate();
-  worker1.postMessage("");
-  PIXI.utils.clearTextureCache();
-});
+window.document.addEventListener('beforeunload', () => {
+  worker1.terminate()
+  worker1.postMessage('')
+  PIXI.utils.clearTextureCache()
+})
 
-export {};
+export function worker1fire(){
+  worker1.postMessage({cmd: 'fire'})
+}
+
+export {}

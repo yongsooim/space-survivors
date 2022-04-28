@@ -5,9 +5,9 @@ import { keyboard, Keys } from '../input/keyboard'
 import { Container } from 'pixi.js'
 
 export let viewport: Viewport
-export let viewportContainer = new Container()
+export const viewportContainer = new Container()
 viewportContainer.zIndex = 999
-export function initViewport() {
+export function initViewport () {
   viewport = new Viewport({
     screenWidth: window.innerWidth,
     screenHeight: window.innerHeight,
@@ -27,15 +27,15 @@ export function initViewport() {
     viewport.resize(window.innerWidth, window.innerHeight)
   })
 
-  app.stage.addChild(viewport)
   viewport.addChild(viewportContainer)
+  app.stage.addChild(viewport)
 
   app.ticker.add((delta) => {
     if (keyboard.isHeld(Keys.Equal) === true || keyboard.isHeld(Keys.PageUp) === true) {
-      viewport.zoomPercent(0.02 * delta, true);
+      viewport.zoomPercent(0.02 * delta, true)
     }
     if (keyboard.isHeld(Keys.Minus) === true || keyboard.isHeld(Keys.PageDown) === true) {
-      viewport.zoomPercent(-0.02 * delta, true);
+      viewport.zoomPercent(-0.02 * delta, true)
     }
   })
 }

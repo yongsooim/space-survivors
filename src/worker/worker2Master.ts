@@ -1,5 +1,5 @@
 import Worker from './worker2?worker'
-import sabWorker1 from './sabManage'
+import sab from './sabManage'
 import { aaPool } from '../weapon/autoAttack1'
 
 const worker2 = new Worker()
@@ -10,11 +10,11 @@ const worker2 = new Worker()
 
 setTimeout(() => {
   worker2.postMessage([
-    sabWorker1.autoAttack1Positions, 
-    sabWorker1.autoAttack1Enabled, 
-    sabWorker1.enemy1Positions, 
-    sabWorker1.enemy1Hps, 
-    sabWorker1.killSab
+    sab.autoAttack1Positions,
+    sab.autoAttack1Enabled,
+    sab.enemy1Positions,
+    sab.enemy1Hps,
+    sab.killSab
   ])
 }, 1000)
 

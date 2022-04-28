@@ -1,18 +1,43 @@
+import * as PIXI from "pixi.js";
+import { numberOfFlame } from "../type/const";
 import * as particles from '@pixi/particle-emitter'
 import firePng from '../asset/fire.png'
 import particlePng from '../asset/particle.png'
-import { viewport, viewportContainer } from '../viewport/viewport'
-import { player } from './player'
+import { viewportContainer } from "../viewport/viewport";
+import { player } from "../player/player";
 
-export let emitter : particles.Emitter
-export const initEmitter = () => {
+
+
+class Flame {
+  fired = false;
+  remainTime = 0;
+  cursor = 0;
+
+  objectPool = [] as any[]
+
+
+  flame(x: number, y: number) {
+    this.cursor++
+    if (this.cursor === numberOfFlame) {
+      this.cursor = 0
+    }
+    this.objectPool[this.cursor].fired = true
+    this.objectPool[this.cursor].x = x
+    this.objectPool[this.cursor].y = y + 0.7
+    this.objectPool[this.cursor].remainTime = 100
+
+    this.emitter.spawnPos = player.position
+    this.emitter.emitNow()
+    
+  }
+
   emitter = new particles.Emitter(viewportContainer, {
     lifetime: {
-      min: 0.05,
-      max: 0.1
+      min: 0.035,
+      max: 0.05
     },
     frequency: 0.0005,
-    emitterLifetime: 0,
+    emitterLifetime: 0.5,
     maxParticles: 1000,
     addAtBack: false,
     pos: {
@@ -40,8 +65,8 @@ export const initEmitter = () => {
       {
         type: 'moveSpeedStatic',
         config: {
-          min: 18,
-          max: 20
+          min: 40,
+          max: 40
         }
       },
       {
@@ -114,28 +139,6 @@ export const initEmitter = () => {
       }
     ]
   })
-
-  // Calculate the current time
-  let elapsed = Date.now()
-
-  // Update function every frame
-  const update = function () {
-    // Update the next frame
-    requestAnimationFrame(update)
-
-    emitter.updateOwnerPos(player.x, player.y)
-
-    const now = Date.now()
-
-    // The emitter requires the elapsed
-    // number of seconds since the last update
-    emitter.update((now - elapsed) * 0.001)
-    elapsed = now
-  }
-
-  // Start emitting
-  emitter.emit = true
-
-  // Start the update
-  update()
 }
+
+const flame = new Flame()

@@ -1,16 +1,22 @@
 // this worker calculates enemy1's collision and its resolving
 
 import Box2DFactory from 'box2d-wasm' // ....
-import { enemy1speed, numberOfEnemy1, spawnSize, worker1interval as worker1interval } from '../type/const'
+import Worker from './calcDirectionWorker?worker' // ....
+import { enemy1speed, numberOfAutoAttack1, numberOfEnemy1, numberOfEnemy1double, spawnSize, worker1interval } from '../type/const'
 
 // Shared Aray Buffer setting
 let playerPosition: Float64Array
 let enemy1positions: Float64Array
 let enemy1Hps: Int32Array
 let life: Int32Array
+let autoAttack1Positions: Float64Array
+
+let enemy1direction = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfEnemy1double)
+let enemy1directionArr = new Float64Array(enemy1direction)
 
 const enemy1HpsOld = new Float64Array(numberOfEnemy1)
 
+let calcDirectionWorker = new Worker()
 let loop = () => { }
 let loopInterval: number
 
@@ -24,11 +30,18 @@ onmessage = (ev) => {
     enemy1positions = new Float64Array()
     enemy1Hps = new Int32Array()
     self.close()
+  } else if (ev.data.cmd === 'fire') {
+
+    fire()
+
   } else {
     playerPosition = new Float64Array(ev.data[0])
     enemy1positions = new Float64Array(ev.data[1])
     enemy1Hps = new Int32Array(ev.data[2])
     life = new Int32Array(ev.data[3])
+    autoAttack1Positions = new Float64Array(ev.data[4])
+
+    calcDirectionWorker.postMessage([ev.data[0], ev.data[1], enemy1direction, ev.data[3]]) //playerPosition, enemy1 position
   }
 }
 
@@ -48,7 +61,7 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
     return '/assets/' + url // for dev
   }
 })
-const { b2BodyDef, b2_dynamicBody, b2PolygonShape, b2Vec2, b2World } = box2D
+const { b2BodyDef, b2_dynamicBody, b2PolygonShape, b2Vec2, b2World, JSContactListener, JSContactFilter, JSDestructionListener, b2Filter, b2Contact } = box2D
 // in metres per second squared
 const zero = new b2Vec2(0, 0)
 const gravity = zero
@@ -61,8 +74,24 @@ const square = new b2PolygonShape()
 const boxSideLength = 0.8
 square.SetAsBox(boxSideLength, boxSideLength)
 const enemy1BodyPool = new Array<Box2D.b2Body>(numberOfEnemy1)
+const autoAttack1BodyPool = new Array<Box2D.b2Body>(numberOfAutoAttack1)
 
 const tempVector = zero
+
+enum Filter {
+  Enemy1 = 0x0001,
+  AutoAttack1 = 0x0002
+}
+
+let enemy1filter = new b2Filter()
+enemy1filter.categoryBits = Filter.Enemy1
+enemy1filter.maskBits = Filter.AutoAttack1 & Filter.Enemy1
+enemy1filter.groupIndex = Filter.Enemy1
+
+let autoAttack1filter = new b2Filter()
+autoAttack1filter.categoryBits = Filter.AutoAttack1
+autoAttack1filter.maskBits = Filter.Enemy1
+autoAttack1filter.groupIndex = Filter.AutoAttack1
 
 square.SetAsBox(0.7, 0.7)
 const playerBody = world.CreateBody(bd)
@@ -80,7 +109,7 @@ for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i] = world.CreateBody(bd)
   enemy1BodyPool[i].CreateFixture(square, 1).SetFriction(0)
   enemy1BodyPool[i].GetFixtureList().SetRestitution(0)
-
+  enemy1BodyPool[i].GetFixtureList().SetFilterData(enemy1filter)
 
   enemy1BodyPool[i].SetLinearDamping(0)
   enemy1BodyPool[i].SetAngularDamping(0)
@@ -92,13 +121,42 @@ for (let i = 0; i < numberOfEnemy1; i++) {
   enemy1BodyPool[i].SetEnabled(true)
 }
 
+for (let i = 0; i < numberOfAutoAttack1; i++) {
+  autoAttack1BodyPool[i] = world.CreateBody(bd)
+  autoAttack1BodyPool[i].CreateFixture(square, 1).SetFriction(0)
+  autoAttack1BodyPool[i].GetFixtureList().SetRestitution(0)
+  autoAttack1BodyPool[i].GetFixtureList().SetFilterData(autoAttack1filter)
+
+  autoAttack1BodyPool[i].SetLinearDamping(0)
+  autoAttack1BodyPool[i].SetAngularDamping(0)
+  autoAttack1BodyPool[i].SetSleepingAllowed(false)
+  autoAttack1BodyPool[i].SetFixedRotation(false)
+  autoAttack1BodyPool[i].SetAwake(true)
+  autoAttack1BodyPool[i].SetEnabled(false)
+}
+
+let listener = new JSContactListener()
+listener.BeginContact = (contact) => {
+  //console.log(contact)
+}
+listener.EndContact = (contact) => {
+  //  console.log(contact)
+}
+listener.PostSolve = (contact) => {
+  //  console.log(contact)
+}
+listener.PreSolve = (contact) => {
+  //  console.log(contact)
+}
+world.SetContactListener(listener)
+
 let tempEnemyPos = zero
 let tempPlayerPosX: number
 let tempPlayerPosY: number
 let indexDouble
 let tempIterator
 
-const numberOfDivide = 15
+const numberOfDivide = 12
 
 let counter = 0
 let lastExecuted = Date.now()
@@ -106,7 +164,7 @@ let delta = 0
 let now = 0
 let stepTime = 0
 
-let tempCalcVector = new b2Vec2(0, 0)
+const tempCalcVector = new b2Vec2(0, 0)
 
 loop = () => {
   if (++counter === numberOfDivide) {
@@ -117,34 +175,21 @@ loop = () => {
   tempPlayerPosY = playerPosition[1]
 
   tempCalcVector.Set(tempPlayerPosX, tempPlayerPosY)
-  
+
   playerBody.SetTransform(tempCalcVector, 0)
 
-  // partial calc vector to player
-  for (tempIterator = counter; tempIterator < numberOfEnemy1; tempIterator += numberOfDivide) {
-    if(enemy1BodyPool[tempIterator].IsEnabled() === false) {
-      continue
-    }
-    
-    tempCalcVector.Set(tempPlayerPosX, tempPlayerPosY)
-    tempCalcVector.op_sub(enemy1BodyPool[tempIterator].GetPosition())
-
-    if(tempCalcVector.Length() < 2){ // player hit
-      //enemy1BodyPool[tempIterator].SetEnabled(false)
-      console.log('player hit')
-      Atomics.sub(life, 0, 1)
-      
-    }
-
-    tempCalcVector.Normalize()
-    tempCalcVector.op_mul(enemy1speed)
-    enemy1BodyPool[tempIterator].SetLinearVelocity(tempCalcVector)
+  tempIterator = numberOfEnemy1
+  while (tempIterator--) {
+    tempVector.Set(enemy1directionArr[tempIterator * 2], enemy1directionArr[tempIterator * 2 + 1])
+    enemy1BodyPool[tempIterator].SetLinearVelocity(tempVector)
   }
+
+  world.Step(stepTime, 8, 3)
 
   // update shared memory buffer
   tempIterator = numberOfEnemy1
   while (tempIterator--) {
-    if (enemy1BodyPool[tempIterator].IsEnabled() == false) {
+    if (enemy1BodyPool[tempIterator].IsEnabled() === false) {
       continue
     }
     if (enemy1Hps[tempIterator] === 0) {
@@ -155,6 +200,16 @@ loop = () => {
     indexDouble = tempIterator * 2
     enemy1positions[indexDouble] = tempEnemyPos.x
     enemy1positions[indexDouble + 1] = tempEnemyPos.y
+  }
+
+  calcDirectionWorker.postMessage({ cmd: 'calc' })
+
+  tempIterator = numberOfAutoAttack1
+  while (tempIterator--) {
+    let tempAutoAttackPos = autoAttack1BodyPool[tempIterator].GetPosition()
+    indexDouble = tempIterator * 2
+    autoAttack1Positions[indexDouble] = tempAutoAttackPos.x
+    autoAttack1Positions[indexDouble + 1] = tempAutoAttackPos.y
   }
 
   // calculate elapsed and determine the interval to next step
@@ -172,9 +227,26 @@ loop = () => {
     stepTime = worker1interval
   }
 
-  world.Step(stepTime, 8, 3)
 }
 
 setTimeout(() => {
   loopInterval = setInterval(loop, worker1interval)
 }, 1000)
+
+let autoAttackCounter = 0
+function fire() {
+  autoAttackCounter++
+  if (autoAttackCounter === numberOfAutoAttack1) {
+    autoAttackCounter = 0
+  }
+
+  let tempVec = new b2Vec2(playerPosition[0], playerPosition[1])
+  autoAttack1BodyPool[autoAttackCounter].SetTransform(tempVec, 0)
+
+  tempVec.set_x(0)
+  tempVec.set_y(-0.2)
+  autoAttack1BodyPool[autoAttackCounter].SetLinearVelocity(tempVec)
+  autoAttack1BodyPool[autoAttackCounter].SetEnabled(true)
+
+  tempVec.__destroy__()
+}

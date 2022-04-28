@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js'
 import { resourcePaths } from './resources'
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 
-export let baseTextures = {
+export const baseTextures = {
   ship: new PIXI.BaseTexture(resourcePaths.shipPng),
   bg: new PIXI.BaseTexture(resourcePaths.bgPng),
   misc: new PIXI.BaseTexture(resourcePaths.miscPng),
@@ -10,32 +10,33 @@ export let baseTextures = {
   ui: new PIXI.BaseTexture(resourcePaths.uiPng),
   char: new PIXI.BaseTexture(resourcePaths.charPng),
   particle: new PIXI.BaseTexture(resourcePaths.particlePng),
-  particles: new PIXI.BaseTexture(resourcePaths.particlesPng),
+  particles: new PIXI.BaseTexture(resourcePaths.particlesPng)
 }
 
-export let textures = {
-  ship1 : new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(4 * 8, 8 * 8, 16, 16)),
-  particle : new PIXI.Texture(baseTextures.particle),
-  particles : [
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 0, 256 * 0, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 1, 256 * 0, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 2, 256 * 0, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 3, 256 * 0, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 4, 256 * 0, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 0, 256 * 1, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 1, 256 * 1, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 2, 256 * 1, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 3, 256 * 1, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 4, 256 * 1, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 0, 256 * 2, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 1, 256 * 2, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 2, 256 * 2, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 3, 256 * 2, 256, 256)),
-    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle( 256 * 4, 256 * 2, 256, 256)),
+export const textures = {
+  ship1: new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(4 * 8, 8 * 8, 16, 16)),
+  particle: new PIXI.Texture(baseTextures.particle),
+  particles: [
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 0, 256 * 0, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 1, 256 * 0, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 2, 256 * 0, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 3, 256 * 0, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 4, 256 * 0, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 0, 256 * 1, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 1, 256 * 1, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 2, 256 * 1, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 3, 256 * 1, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 4, 256 * 1, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 0, 256 * 2, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 1, 256 * 2, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 2, 256 * 2, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 3, 256 * 2, 256, 256)),
+    new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 4, 256 * 2, 256, 256))
   ],
-  char1 : new PIXI.Texture(baseTextures.char, new PIXI.Rectangle(0 * 8, 0 * 8, 8, 8)),
+  resource2: new PIXI.Texture(baseTextures.misc, new PIXI.Rectangle(0 * 8, 0 * 8, 8, 8)),
+  char1: new PIXI.Texture(baseTextures.char, new PIXI.Rectangle(0 * 8, 0 * 8, 8, 8)),
 
-  ui1 : new PIXI.Texture(baseTextures.ui, new PIXI.Rectangle(11 * 8 , 0 * 8, 13, 13))
+  ui1: new PIXI.Texture(baseTextures.ui, new PIXI.Rectangle(11 * 8, 0 * 8, 13, 13))
 }
 
 export const enemy1 = new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(9 * 8, 0 * 8, 8, 8))

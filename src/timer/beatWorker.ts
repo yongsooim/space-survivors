@@ -7,11 +7,11 @@ let error = 0
 let now = Date.now()
 let nextExecute = 0
 
-let counter = 0
+const counter = 0
 
 onmessage = (ev) => {
-  if(ev.data.cmd === 'stop'){
-    // pause  
+  if (ev.data.cmd === 'stop') {
+    // pause
   } else if (ev.data === 'start') {
     running = true
     now = Date.now()
@@ -20,7 +20,7 @@ onmessage = (ev) => {
   } else if (ev.data === 'stop') {
     clearTimeout(timerId)
     running = false
-  } else if (ev.data === 'close'){
+  } else if (ev.data === 'close') {
     clearTimeout(timerId)
     running = false
     self.close()

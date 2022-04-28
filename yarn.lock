@@ -28,13 +28,6 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@babel/runtime@^7.17.9":
-  version "7.17.9"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.9.tgz#d19fbf802d01a8cb6cf053a64e472d42c434ba72"
-  integrity sha512-lSiBBvodq29uShpWGNbgFdKYNiFDo5/HIYsaCEY9ff4sb10x9jizo2+pRrSyF4jKZCXqgzuqBOQKbUm90gQwJg==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
 "@capacitor/android@^3.5.0":
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/@capacitor/android/-/android-3.5.0.tgz#fc80297512cd66690a000edf22e8cd9177f05459"
@@ -2158,14 +2151,6 @@ fast-levenshtein@^2.0.6:
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
   integrity sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc=
 
-fast-unique-numbers@^6.0.14:
-  version "6.0.14"
-  resolved "https://registry.yarnpkg.com/fast-unique-numbers/-/fast-unique-numbers-6.0.14.tgz#59650af4ce13922a70942d2dafbe4ad10cda32dc"
-  integrity sha512-rW9DgiwmiOANREkJ9tmt68uZ4dfmJT6pKEkBO4wZMnoHkMcC2Z8lcHMZzKCySlXppwrT7XIishwZIO9e4zUkKw==
-  dependencies:
-    "@babel/runtime" "^7.17.9"
-    tslib "^2.3.1"
-
 fastq@^1.6.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/fastq/-/fastq-1.13.0.tgz#616760f88a7526bdfc596b7cab8c18938c36b98c"
@@ -2489,11 +2474,6 @@ has@^1.0.3:
   integrity sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==
   dependencies:
     function-bind "^1.1.1"
-
-heartbeats@^5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/heartbeats/-/heartbeats-5.0.1.tgz#c0d476151982e707faac49345143b9582de40cae"
-  integrity sha1-wNR2FRmC5wf6rEk0UUO5WC3kDK4=
 
 hosted-git-info@^4.0.2:
   version "4.1.0"
@@ -2962,13 +2942,6 @@ lines-and-columns@^1.1.6:
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.2.4.tgz#eca284f75d2965079309dc0ad9255abb2ebc1632"
   integrity sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==
 
-liquidfun-wasm@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/liquidfun-wasm/-/liquidfun-wasm-7.0.0.tgz#7fa96bde638a7c712ddc23c9d28b6ca2a44d62f6"
-  integrity sha512-Cf6CBPrjOgPKtz+4fgG5kp11diYWEDUJHa1dZX5Na6otOq3dn2aCo5rqONAyJqqYByjB74ny8Mpzp2u+Yo32QQ==
-  dependencies:
-    "@types/emscripten" "^1.39.6"
-
 load-tsconfig@^0.2.0:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/load-tsconfig/-/load-tsconfig-0.2.3.tgz#08af3e7744943caab0c75f8af7f1703639c3ef1f"
@@ -3383,11 +3356,6 @@ pirates@^4.0.1:
   resolved "https://registry.yarnpkg.com/pirates/-/pirates-4.0.5.tgz#feec352ea5c3268fb23a37c702ab1699f35a5f3b"
   integrity sha512-8V9+HQPupnaXMA23c5hvl69zXvTwTzyAYasnkb0Tts4XvO4CliqONMOnvlq26rkhLC3nWDFBJf73LU1e1VZLaQ==
 
-pixi-batch-renderer@^2.5.3:
-  version "2.5.3"
-  resolved "https://registry.yarnpkg.com/pixi-batch-renderer/-/pixi-batch-renderer-2.5.3.tgz#4cb03d8500ae3bc592c4abe2132b98f7a3403532"
-  integrity sha512-YI1FQZMjFAmQxqnc1FGNowyuQ5JQidO15By1Vz1xzrnBDCvFhIDiav5phPCZ8Bdza+j1rVWmzPn/3nxd6SV1PA==
-
 pixi-heaven@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/pixi-heaven/-/pixi-heaven-0.3.1.tgz#77aa41077ade13d1811c485d2c3f8f9b13f5faa9"
@@ -3622,11 +3590,6 @@ readdirp@~3.6.0:
   integrity sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==
   dependencies:
     picomatch "^2.2.1"
-
-regenerator-runtime@^0.13.4:
-  version "0.13.9"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz#8925742a98ffd90814988d7566ad30ca3b263b52"
-  integrity sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==
 
 regexpp@^3.0.0, regexpp@^3.1.0, regexpp@^3.2.0:
   version "3.2.0"
@@ -4457,34 +4420,6 @@ word-wrap@^1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.3.tgz#610636f6b1f703891bd34771ccb17fb93b47079c"
   integrity sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
-
-worker-timers-broker@^6.0.68:
-  version "6.0.68"
-  resolved "https://registry.yarnpkg.com/worker-timers-broker/-/worker-timers-broker-6.0.68.tgz#210d06d5ade519a64f315d4651aa74009738cbe0"
-  integrity sha512-MKlQLRfgyi0q0zs/XDOuXjRD/KNL7JfB3ZhWhpA3gO4Uf5kK7+pWqS7F1ZYUd7yyjBnGO3F9plmXYsbYxAJufg==
-  dependencies:
-    "@babel/runtime" "^7.17.9"
-    fast-unique-numbers "^6.0.14"
-    tslib "^2.3.1"
-    worker-timers-worker "^7.0.35"
-
-worker-timers-worker@^7.0.35:
-  version "7.0.35"
-  resolved "https://registry.yarnpkg.com/worker-timers-worker/-/worker-timers-worker-7.0.35.tgz#28fb2d44dd126713c2ad7cd90725ac4e22676e2e"
-  integrity sha512-1oVreMVYNaAZaRU7hzVENBxPnz2mnJ8M62UAuQftLdJCrASTkwkvdQMLzDuiOK8jJRvL6gS3vCNIW5YpWwJKtA==
-  dependencies:
-    "@babel/runtime" "^7.17.9"
-    tslib "^2.3.1"
-
-worker-timers@^7.0.46:
-  version "7.0.46"
-  resolved "https://registry.yarnpkg.com/worker-timers/-/worker-timers-7.0.46.tgz#ff42c964ddebfc62119f10b15a272d87c6a54c0b"
-  integrity sha512-sbzAGMYeiFdiUFrW7DbxoBPfTIiHgQf+j9Lj1hbid0nkW65LFwS9nE1KOgDYzRCKHPSkQPTLZLgwMw9Iq6olQQ==
-  dependencies:
-    "@babel/runtime" "^7.17.9"
-    tslib "^2.3.1"
-    worker-timers-broker "^6.0.68"
-    worker-timers-worker "^7.0.35"
 
 wrap-ansi@^7.0.0:
   version "7.0.0"
