@@ -72,32 +72,35 @@ export async function worker3init () {
     sab.resourceCollectedSab
   ])
 
+  setTimeout(()=>{
+
+  }, 1000)
   tempIterator = numberOfResource1
   while (tempIterator--) {
-    sab.resource1RemainTimesArr[tempIterator] = 100000
+    sab.resource1RemainTimesArr[tempIterator] = 10000000
   }
 
   tempIterator = numberOfResource2
   while (tempIterator--) {
-    sab.resource2RemainTimesArr[tempIterator] = 200000
+    sab.resource2RemainTimesArr[tempIterator] = 20000000
   }
 
   tempIterator = numberOfResource1
   while (tempIterator--) {
     resource1container.children[tempIterator].x = sab.resource1PositionsArr[indexDouble]
     resource1container.children[tempIterator].y = sab.resource1PositionsArr[indexDouble + 1]
-    resource1container.children[tempIterator].alpha = 0.5
+    resource1container.children[tempIterator].alpha = 0.4
   }
 
   tempIterator = numberOfResource2
   while (tempIterator--) {
     resource2container.children[tempIterator].x = sab.resource2PositionsArr[indexDouble]
     resource2container.children[tempIterator].y = sab.resource2PositionsArr[indexDouble + 1]
-    resource2container.children[tempIterator].alpha = 1
+    resource2container.children[tempIterator].alpha = 0.3
   }
 
-  //viewportContainer.addChild(resource1container)
-  //viewportContainer.addChild(resource2container)
+  viewportContainer.addChild(resource1container)
+  viewportContainer.addChild(resource2container)
 
   app.ticker.add(() => {
     tempIterator = numberOfResource1
@@ -146,7 +149,7 @@ export async function worker3init () {
 
       indexDouble = tempIterator * 2
 
-      resource2container.children[tempIterator].rotation += 0.01
+      resource2container.children[tempIterator].rotation += 0.02
       resource2container.children[tempIterator].x = sab.resource2PositionsArr[indexDouble]
       resource2container.children[tempIterator].y = sab.resource2PositionsArr[indexDouble + 1]
     }

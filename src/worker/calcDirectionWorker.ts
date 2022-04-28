@@ -29,7 +29,6 @@ let length = 0
 
 let now
 let diff
-
 function calculate() {
   now = Date.now()
   tempPlayerPosX = playerPosition[0]
@@ -45,7 +44,6 @@ function calculate() {
     enemy1direction[tempIteratorDouble + 1] = enemy1speed * diffY / length
   }
   diff = Date.now() - now
-  if(diff !== 0) {
+  if(diff > 1)
     console.log(diff)
-  }
 }

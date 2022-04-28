@@ -8,6 +8,7 @@ import particlePng from '../asset/particle.png'
 import particlesPng from '../asset/particles.png'
 
 import fireWav from '../asset/Laser_Shoot9.wav'
+import shotWav from '../asset/shot.wav'
 import kick from '../asset/kick.wav'
 import hihat from '../asset/hihat_close.wav'
 import snare from '../asset/snare.wav'
@@ -21,6 +22,7 @@ sound.add('hihat', hihat)
 sound.add('loop', loop)
 sound.add('snare', snare)
 sound.add('bass', bass)
+sound.add('shot', shotWav)
 
 export const resourcePaths = {
   shipPng,
@@ -47,5 +49,6 @@ export const resources: PIXI.IAddOptions[] = [
   { name: 'snare', url: snare },
   { name: 'loop', url: loop },
   { name: 'bass', url: bass },
-  { name: 'particles', url: particlesPng }
+  { name: 'particles', url: particlesPng },
+  { name: 'shot', url: shotWav }
 ]

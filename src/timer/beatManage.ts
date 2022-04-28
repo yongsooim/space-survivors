@@ -12,6 +12,9 @@ sound.volume('loop', 0.05)
 sound.volume('snare', 0.05)
 sound.volume('bass', 0.05)
 
+sound.volume('loop', 0)
+
+
 const beatMax = 32
 let beatCounter = 0
 
@@ -34,12 +37,16 @@ export function beatInit () {
       break
 
     case 0o1:
+
       break
 
     case 0o2:
+      player.fire()
+
       break
 
     case 0o3:
+
       break
 
     case 0o4:
@@ -53,6 +60,7 @@ export function beatInit () {
       break
 
     case 0o6:
+      player.fire()
       break
 
     case 0o7:
@@ -70,6 +78,7 @@ export function beatInit () {
       break
 
     case 0o12:
+      player.fire()
       break
 
     case 0o13:
@@ -84,12 +93,14 @@ export function beatInit () {
       break
 
     case 0o15:
+      player.fire()
       break
 
     case 0o16:
       break
 
     case 0o17:
+      player.fire()
       break
 
     case 0o20:
@@ -104,6 +115,7 @@ export function beatInit () {
       break
 
     case 0o22:
+      player.fire()
       break
 
     case 0o23:
@@ -121,6 +133,7 @@ export function beatInit () {
       break
 
     case 0o26:
+      player.fire()
       break
 
     case 0o27:
@@ -138,6 +151,7 @@ export function beatInit () {
       break
 
     case 0o32:
+      player.fire()
       break
 
     case 0o33:
@@ -154,6 +168,7 @@ export function beatInit () {
       break
 
     case 0o36:
+      player.fire()
       break
 
     case 0o37:

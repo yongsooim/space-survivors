@@ -11,5 +11,6 @@ export const tileInit = () => {
   tilingSprite.anchor.y = 0.5
   tilingSprite.alpha = 1
   tilingSprite.zIndex = -999
-  bgContainer.addChild(tilingSprite)
+  //bgContainer.addChild(tilingSprite)
+  viewportContainer.addChild(tilingSprite)
 }

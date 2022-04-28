@@ -78,7 +78,7 @@ for (let i = 0; i < numberOfResource1; i++) {
   resource1BodyPool[i].SetLinearDamping(0.2)
   resource1BodyPool[i].SetAngularDamping(0)
   resource1BodyPool[i].SetSleepingAllowed(true)
-  tempVector.Set((Math.random() - 0.5) * 100, (Math.random() - 0.5) * 100)
+  tempVector.Set((Math.random() - 0.5) * 200, (Math.random() - 0.5) * 200)
   resource1BodyPool[i].SetTransform(tempVector, 0)
   resource1BodyPool[i].SetFixedRotation(true)
   resource1BodyPool[i].SetEnabled(true)

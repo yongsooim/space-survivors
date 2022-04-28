@@ -3,14 +3,9 @@
 import Box2DFactory from 'box2d-wasm' // ....
 import { numberOfAutoAttack1, numberOfEnemy1, worker2interval } from '../type/const'
 
-let autoAttack1Positions: Float64Array
-let autoAttack1Enabled: Int32Array
-let flame1Positions: Float64Array
-let flame1Enabled: Int32Array
-
+let playerPosition: Float64Array
 let enemy1Positions: Float64Array
 let enemy1Hps: Int32Array
-let killed: Int32Array
 
 let lastExecuted = Date.now()
 let delta = 0
@@ -39,6 +34,8 @@ onmessage = (ev) => {
     killed = new Int32Array(ev.data[4])
   }
 }
+
+
 postMessage('')
 
 const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({

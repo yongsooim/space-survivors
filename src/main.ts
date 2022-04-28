@@ -13,6 +13,7 @@ import { worker3init } from './worker/worker3master'
 import { addText } from './ui/ui'
 import { bgInit } from './tile/background'
 import { mainMenu } from './menu/mainMenu'
+import { tileInit } from './tile/tile'
 
 PIXI.utils.skipHello()
 PIXI.settings.FILTER_MULTISAMPLE = PIXI.MSAA_QUALITY.NONE
@@ -35,14 +36,15 @@ app.loader.add(resources).load(async () => {
 
   initStat()
   initViewport()
-  bgInit()
+  //bgInit()
+  tileInit()
   input.init()
   viewportContainer.addChild(player)
   aaPool.init()
   worker1init()
   worker3init()
-  beatInit()
   addText()
+  setTimeout(()=>{beatInit()}, 300)
 
   // Listen for frame updates
   app.ticker.add((delta: number) => {

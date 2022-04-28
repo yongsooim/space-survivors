@@ -4,16 +4,16 @@ import { viewport, viewportContainer } from '../viewport/viewport'
 import sab from '../worker/sabManage'
 import { sprites, textures } from '../resource/spriteManage'
 
-const resourceText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 10, fill: 0xffffff, align: 'center' })
+const resourceText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 18, fill: 0xffffff, align: 'center' })
 
-const infoText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 10, fill: 0xffffff, align: 'center' })
+const infoText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 18, fill: 0xffffff, align: 'center' })
 
 const char1 = new PIXI.Sprite(textures.char1)
-char1.scale.set(1)
+char1.scale.set(10)
 char1.anchor.set(0, 1)
 
 const ui1 = new PIXI.Sprite(textures.ui1)
-ui1.scale.set(1)
+ui1.scale.set(6)
 ui1.anchor.set(1, 1)
 ui1.interactive = true
 char1.interactive = true
@@ -31,7 +31,7 @@ ui1.on('pointerdown', () => {
 export const addText = () => {
   const ui = new PIXI.Container()
 
-  resourceText.scale.set(1.5)
+  resourceText.scale.set(1.2)
   resourceText.anchor.set(0.5, 0)
   resourceText.position.set(app.view.width / 2, 10)
 
