@@ -1,5 +1,10 @@
 const path = require("path");
-const { app, BrowserWindow } = require("electron");
+const { app, powerSaveBlocker, BrowserWindow } = require("electron");
+
+const id = powerSaveBlocker.start('prevent-display-sleep')
+console.log(powerSaveBlocker.isStarted(id))
+
+powerSaveBlocker.stop(id)
 
 const isDev = process.env.IS_DEV == "true" ? true : false;
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = "1"; // need to check someday...
@@ -8,8 +13,8 @@ app.commandLine.appendSwitch("disable-http-cache");
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 1600,
-    height: 900,
+    width: 400,
+    height: 300,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: false,

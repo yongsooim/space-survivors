@@ -12,23 +12,31 @@ let life: Int32Array;
 let autoAttack1Positions: Float64Array;
 let autoAttack1Enabled: Int32Array;
 let kills: Int32Array;
+let lock: Int32Array;
 
 let enemy1direction = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * numberOfEnemy1double);
 let enemy1directionArr = new Float64Array(enemy1direction);
 
 const enemy1HpsOld = new Float64Array(numberOfEnemy1);
+const disabledQueue = [] as number[]
 
 let calcDirectionWorker = new Worker();
-let loop = () => {};
+let loop = () => { };
 let loopInterval: number;
+let running = false
 
 onmessage = (ev) => {
   if (ev.data.cmd === "stop") {
+    running = false
     // pause
   } else if (ev.data.cmd === "start") {
-
+    running = true
+    setTimeout(() => {
+      loopInterval = setInterval(loop, worker1interval);
+    }, 1000);
   } else if (ev.data.cmd === "close") {
-    loop = () => {};
+    running = false
+    loop = () => { };
     clearInterval(loopInterval);
     playerPosition = new Float64Array();
     enemy1positions = new Float64Array();
@@ -36,16 +44,19 @@ onmessage = (ev) => {
     self.close();
   } else if (ev.data.cmd === "fire") {
     fire();
+  } else if (ev.data.cmd === "flame") {
+    flame();
   } else {
-    playerPosition = new Float64Array(ev.data[0]);
-    enemy1positions = new Float64Array(ev.data[1]);
-    enemy1Hps = new Int32Array(ev.data[2]);
-    life = new Int32Array(ev.data[3]);
-    autoAttack1Positions = new Float64Array(ev.data[4]);
-    autoAttack1Enabled = new Int32Array(ev.data[5]);
-    kills = new Int32Array(ev.data[6])
+    playerPosition = new Float64Array(ev.data.playerPosition);
+    enemy1positions = new Float64Array(ev.data.enemy1Positions);
+    enemy1Hps = new Int32Array(ev.data.enemy1Hps,);
+    life = new Int32Array(ev.data.lifeSab);
+    autoAttack1Positions = new Float64Array(ev.data.autoAttack1Positions);
+    autoAttack1Enabled = new Int32Array(ev.data.autoAttack1Enabled);
+    kills = new Int32Array(ev.data.killSab)
+    lock = new Int32Array(ev.data.lockSab)
 
-    calcDirectionWorker.postMessage([ev.data[0], ev.data[1], enemy1direction, ev.data[3]]); //playerPosition, enemy1 position
+    calcDirectionWorker.postMessage([ev.data, enemy1direction]); //playerPosition, enemy1 position
   }
 };
 
@@ -154,7 +165,7 @@ for (let i = 0; i < numberOfAutoAttack1; i++) {
   autoAttack1BodyPool[i].CreateFixture(square, 1).SetFriction(0);
   autoAttack1BodyPool[i].GetFixtureList().SetRestitution(0);
   autoAttack1BodyPool[i].GetFixtureList().SetFilterData(autoAttack1filter);
-  autoAttack1BodyPool[i].GetFixtureList().SetSensor(true);
+  //autoAttack1BodyPool[i].GetFixtureList().SetSensor(true);
 
   autoAttack1BodyPool[i].SetLinearDamping(0);
   autoAttack1BodyPool[i].SetAngularDamping(0);
@@ -174,58 +185,74 @@ let lastExecuted = Date.now();
 let delta = 0;
 let now = 0;
 let stepTime = 0;
-let collidedBody;
 
-let cb = new JSContactListener();
+let contactListener = new JSContactListener();
 let fixA;
 let fixB;
 
+let bodyBullet
+let bodyEnemy
+
 let disableRequest = [] as Box2D.b2Body[];
 
-cb.BeginContact = (contact) => {
-  if(disableRequest.length >= 2) return
+contactListener.BeginContact = (contact) => { };
+contactListener.EndContact = () => { };
+contactListener.PostSolve = (contact) => {
   contact = wrapPointer(contact as number, b2Contact);
-  fixA = contact?.GetFixtureA();
-  fixB = contact?.GetFixtureB();
+  fixA = contact.GetFixtureA();
+  fixB = contact.GetFixtureB();
 
-  if (fixA.GetFilterData()?.get_categoryBits() === Filter.AutoAttack1 && fixB.GetFilterData()?.get_categoryBits() === Filter.Enemy1) {
-    disableRequest.push(fixA.GetBody());
-    disableRequest.push(fixB.GetBody());
-  } else if (fixB.GetFilterData()?.get_categoryBits() === Filter.AutoAttack1 && fixA.GetFilterData()?.get_categoryBits() === Filter.Enemy1) {
-    disableRequest.push(fixA.GetBody());
-    disableRequest.push(fixB.GetBody());
+  if (fixA.GetFilterData().categoryBits === Filter.AutoAttack1) {
+    bodyBullet = fixA.GetBody()
+    bodyEnemy = fixB.GetBody()
+    fixA.GetFilterData().set_maskBits(0) // no more collision listener for this 
+  } else if (fixB.GetFilterData().categoryBits === Filter.AutoAttack1) {
+    bodyEnemy = fixA.GetBody()
+    bodyBullet = fixB.GetBody()
+    fixB.GetFilterData().set_maskBits(0) // no more collision listener for this 
+  } else {
+    return
   }
-  
-};
 
-cb.EndContact = () => {};
-cb.PostSolve = () => {};
-cb.PreSolve = () => {};
+  disableRequest.push(bodyBullet);
 
-world.SetContactListener(cb);
+  //@ts-ignore
+  if (enemy1Hps[ptrToEnemyBodyIndex[bodyEnemy.Zu]] >= 0) {
+    //@ts-ignore
+    Atomics.sub(enemy1Hps, ptrToEnemyBodyIndex[bodyEnemy.Zu], 5) // damage dealt
+    postMessage({
+      x: (bodyBullet.GetPosition().x + bodyEnemy.GetPosition().x) / 2,
+      y: (bodyBullet.GetPosition().y + bodyEnemy.GetPosition().y) / 2,
+      dmg: 5
+    })
+  }
+}
+
+contactListener.PreSolve = () => { };
+
+world.SetContactListener(contactListener);
 loop = () => {
-  world.Step(stepTime, 6, 2);
+  if (running === false) return
   for (let i = 0; i < disableRequest.length; i++) {
-    disableRequest[i].SetEnabled(false);
-    if (disableRequest[i].GetFixtureList().GetFilterData().categoryBits === Filter.Enemy1) {
-      //@ts-ignore
-      if (enemy1Hps[ptrToEnemyBodyIndex[disableRequest[i].Zu]] !== 0) {
-        //@ts-ignore
-        enemy1Hps[ptrToEnemyBodyIndex[disableRequest[i].Zu]] = 0;
-        Atomics.add(kills, 0, 1)
-      }
-    } else if (disableRequest[i].GetFixtureList().GetFilterData().categoryBits === Filter.AutoAttack1) {
+    disableRequest[i].GetFixtureList().SetFilterData(Filter.AutoAttack1)  // solve one time for this 
+  }
+  world.Step(stepTime, 8, 3);
+  for (let i = 0; i < disableRequest.length; i++) {
+    if (disableRequest[i].GetFixtureList().GetFilterData().categoryBits === Filter.AutoAttack1) {
       //@ts-ignore
       autoAttack1Enabled[ptrToAutoAttackBodyIndex[disableRequest[i].Zu]] = 0;
+      disableRequest[i].SetEnabled(false)
     }
   }
+
   disableRequest = [];
- 
+
   tempVec.x = playerPosition[0];
   tempVec.y = playerPosition[1];
 
   playerBody.SetTransform(tempVec, 0);
 
+  // update enemy direction towards player
   tempIterator = numberOfEnemy1;
   while (tempIterator--) {
     if (enemy1Hps[tempIterator] <= 0) continue; //skip dead enemy
@@ -234,6 +261,9 @@ loop = () => {
   }
 
   // update shared memory buffer
+  while (Atomics.load(lock, 0) != 0){}
+  Atomics.store(lock, 0, 1)
+
   tempIterator = numberOfEnemy1;
   while (tempIterator--) {
     // skip dead
@@ -241,15 +271,18 @@ loop = () => {
       continue;
     }
     if (enemy1Hps[tempIterator] <= 0) {
-      // skip dead
-      enemy1BodyPool[tempIterator].SetEnabled(false);
-      continue;
+      // check dead
+      if (enemy1BodyPool[tempIterator].IsEnabled() === true) {
+        Atomics.add(kills, 0, 1)
+        enemy1BodyPool[tempIterator].SetEnabled(false);
+      }
     }
     indexDouble = tempIterator * 2;
     enemy1positions[indexDouble] = enemy1BodyPool[tempIterator].GetPosition().x;
     enemy1positions[indexDouble + 1] = enemy1BodyPool[tempIterator].GetPosition().y;
   }
 
+  // calculate next enemy move direction
   calcDirectionWorker.postMessage({ cmd: "calc" });
 
   // update shared memory buffer
@@ -261,6 +294,8 @@ loop = () => {
     autoAttack1Positions[indexDouble] = autoAttack1BodyPool[tempIterator].GetPosition().x;
     autoAttack1Positions[indexDouble + 1] = autoAttack1BodyPool[tempIterator].GetPosition().y;
   }
+  Atomics.store(lock, 0, 0)
+
 
   // calculate elapsed and determine the interval to next step
   now = Date.now();
@@ -278,15 +313,32 @@ loop = () => {
   }
 };
 
-setTimeout(() => {
-  loopInterval = setInterval(loop, worker1interval);
-}, 1000);
-
 let autoAttackCounter = 0;
 let tempPlayerPosX, tempPlayerPosY;
 
 function fire() {
+  autoAttackCounter++;
+  if (autoAttackCounter === numberOfAutoAttack1) {
+    autoAttackCounter = 0;
+  }
+  tempPlayerPosX = playerPosition[0];
+  tempPlayerPosY = playerPosition[1];
 
+  tempVec.x = tempPlayerPosX - 0.1;
+  tempVec.y = tempPlayerPosY - 0.5;
+
+  autoAttack1BodyPool[autoAttackCounter].SetTransform(tempVec, 0);
+  autoAttack1Positions[autoAttackCounter * 2] = tempPlayerPosX;
+  autoAttack1Positions[autoAttackCounter * 2 + 1] = tempPlayerPosY;
+
+  tempVec.x = 0;
+  tempVec.y = -autoAttack1Speed;
+  autoAttack1BodyPool[autoAttackCounter].SetLinearVelocity(tempVec);
+  autoAttack1Enabled[autoAttackCounter] = 1;
+  autoAttack1BodyPool[autoAttackCounter].SetEnabled(true);
+}
+
+function flame() {
   autoAttackCounter++;
   if (autoAttackCounter === numberOfAutoAttack1) {
     autoAttackCounter = 0;

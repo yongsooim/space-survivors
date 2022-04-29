@@ -11,7 +11,7 @@ const counter = 0
 
 onmessage = (ev) => {
   if (ev.data.cmd === 'stop') {
-    // pause
+    running = false
   } else if (ev.data === 'start') {
     running = true
     now = Date.now()
@@ -27,7 +27,7 @@ onmessage = (ev) => {
   }
 }
 
-let timerId : number
+let timerId: number
 nextExecute = now + interval
 const counting = () => {
   // wakeup in advance

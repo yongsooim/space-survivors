@@ -27,3 +27,5 @@ export const worker2interval = 1000 / 60
 export const worker3interval = 1000 / 60
 
 export const magnetRange = 6
+
+export const numberOfDamageText = 5000

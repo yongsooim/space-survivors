@@ -2,6 +2,7 @@
 
 import Box2DFactory from 'box2d-wasm' // ....
 import { magnetRange, numberOfResource1, numberOfResource2, worker3interval } from '../type/const'
+import {SabSet} from './sabManage'
 
 let playerPosition: Float64Array
 let resource1positions: Float64Array
@@ -13,23 +14,38 @@ let resource1Collected: Int32Array
 // timer for loop
 let loopInterval = 0
 
+let running = false
+
 onmessage = (ev) => {
   if (ev.data.cmd === 'stop') {
+    running = false
     // pause
+  } else if (ev.data.cmd === 'start') {
+    running = true
   } else if (ev.data.cmd === 'close') {
     self.close()
   } else if (ev.data.cmd === 'generate') {
     // ev.data.x
     // ev.data.y
     // ev.data.amount
+//  } else {
+//    playerPosition = new Float64Array(ev.data[0])
+//    resource1positions = new Float64Array(ev.data[1])
+//    resource1remainTimes = new Int32Array(ev.data[2])
+//    resource2positions = new Float64Array(ev.data[3])
+//    resource2remainTimes = new Int32Array(ev.data[4])
+//    resource1Collected = new Int32Array(ev.data[5])
+//  }
   } else {
-    playerPosition = new Float64Array(ev.data[0])
-    resource1positions = new Float64Array(ev.data[1])
-    resource1remainTimes = new Int32Array(ev.data[2])
-    resource2positions = new Float64Array(ev.data[3])
-    resource2remainTimes = new Int32Array(ev.data[4])
-    resource1Collected = new Int32Array(ev.data[5])
+    let sab = ev.data as SabSet
+    playerPosition = new Float64Array(sab.playerPosition)
+    resource1positions = new Float64Array(sab.resource1Positions)
+    resource1remainTimes = new Int32Array(sab.resource1RemainTimes)
+    resource2positions = new Float64Array(sab.resource2Positions)
+    resource2remainTimes = new Int32Array(sab.resource2RemainTimes)
+    resource1Collected = new Int32Array(sab.resourceCollectedSab)
   }
+
 }
 
 const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
@@ -116,6 +132,7 @@ let tempPlayerPosX = 0
 let tempPlayerPosY = 0
 
 const loop = () => {
+  if(running === false) return
   for (tempIterator = counter; tempIterator < numberOfResource1; tempIterator++) {
     if (resource1BodyPool[tempIterator].IsEnabled() === false) continue
     tempPlayerPosX = playerPosition[0]
@@ -138,10 +155,6 @@ const loop = () => {
         resource1BodyPool[tempIterator].SetLinearVelocity(tempCalcVector)
       }
     }
-
-    // tempCalcVector.Normalize()
-    // tempCalcVector.op_mul(0.1)
-    // resourceBodyPool[tempIterator].SetLinearVelocity(tempCalcVector)
   }
 
   for (tempIterator = counter; tempIterator < numberOfResource2; tempIterator++) {
@@ -166,23 +179,15 @@ const loop = () => {
         resource2BodyPool[tempIterator].SetLinearVelocity(tempCalcVector)
       }
     }
-
-    // tempCalcVector.Normalize()
-    // tempCalcVector.op_mul(0.1)
-    // resourceBodyPool[tempIterator].SetLinearVelocity(tempCalcVector)
   }
 
   // update shared memory buffer
   tempIterator = numberOfResource1
   while (tempIterator--) {
-    if (resource1remainTimes[tempIterator] < 0) {
-      continue
-    }
-    Atomics.sub(resource1remainTimes, tempIterator, delta)
-
     if (resource1BodyPool[tempIterator].IsEnabled() === false) {
       continue
     }
+    Atomics.sub(resource1remainTimes, tempIterator, delta)
     if (resource1remainTimes[tempIterator] === 0) {
       resource1BodyPool[tempIterator].SetEnabled(false)
       continue
@@ -195,14 +200,11 @@ const loop = () => {
 
   tempIterator = numberOfResource2
   while (tempIterator--) {
-    if (resource2remainTimes[tempIterator] < 0) {
-      continue
-    }
-    Atomics.sub(resource2remainTimes, tempIterator, delta)
 
     if (resource2BodyPool[tempIterator].IsEnabled() === false) {
       continue
     }
+    Atomics.sub(resource2remainTimes, tempIterator, delta)
     if (resource2remainTimes[tempIterator] === 0) {
       resource2BodyPool[tempIterator].SetEnabled(false)
       continue

@@ -1,11 +1,12 @@
 // Util for shared array buffer between main thread and worker thread
 import { numberOfEnemy1, numberOfEnemy1double, numberOfWeapon1, numberOfWeapon1double, numberOfResource1, numberOfResource1double, numberOfAutoAttack1, numberOfResource2, numberOfResource2double } from '../type/const'
 
-class SabSet {
+export class SabSet {
   public timerSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
   public resourceCollectedSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
   public killSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
   public lifeSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
+  public lockSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT)
 
   public playerPosition = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * 2)
 
@@ -42,6 +43,7 @@ class SabSet {
   public resourceCollectedArr = new Int32Array(this.resourceCollectedSab)
   public killArr = new Int32Array(this.killSab)
   public lifeArr = new Int32Array(this.lifeSab)
+  public lockArr = new Int32Array(this.lockSab)
 }
 
 const sab = new SabSet()

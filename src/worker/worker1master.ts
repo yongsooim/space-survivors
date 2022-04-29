@@ -8,6 +8,8 @@ import { Sprite } from "pixi.js";
 import { player } from "../player/player";
 import { app } from "../main";
 import { sound } from "@pixi/sound";
+import { damageTextPool } from '../ui/damageText'
+
 
 const worker1 = new Worker();
 
@@ -46,9 +48,11 @@ const autoAttack1container = new PIXI.ParticleContainer(
 
 let tempSprite;
 export async function worker1init() {
+  worker1.postMessage(sab);
+
   tempIterator = numberOfEnemy1;
   while (tempIterator--) {
-    sab.enemy1HpsArr[tempIterator] = 1;
+    sab.enemy1HpsArr[tempIterator] = 10;
     tempSprite = new PIXI.Sprite(enemy1);
     tempSprite.scale.set(0.2);
     tempSprite.anchor.set(0.5);
@@ -74,13 +78,20 @@ export async function worker1init() {
 
   viewportContainer.addChild(enemy1container);
   viewportContainer.addChild(autoAttack1container);
+
+
+  setTimeout(() => {
+    worker1.postMessage({ cmd: 'start' })
+  }, 200)
+  sab.lockArr[0] = 0
 }
 
 export function enemy1update() {
+  while (Atomics.load(sab.lockArr, 0) != 0){}
+  Atomics.store(sab.lockArr, 0, 1)
   tempIterator = numberOfEnemy1;
   while (tempIterator--) {
     if (sab.enemy1HpsArr[tempIterator] <= 0) {
-      sab.enemy1HpsArr[tempIterator] = 0;
       enemy1container.children[tempIterator].alpha = 0;
       continue;
     }
@@ -91,7 +102,7 @@ export function enemy1update() {
 
   tempIterator = numberOfAutoAttack1;
   while (tempIterator--) {
-    if(sab.autoAttack1EnabledArr[tempIterator] === 0){
+    if (sab.autoAttack1EnabledArr[tempIterator] <= 0) {
       autoAttack1container.getChildAt(tempIterator).alpha = 0;
       continue
     }
@@ -100,18 +111,12 @@ export function enemy1update() {
     autoAttack1container.children[tempIterator].y = sab.autoAttack1PositionsArr[indexDouble + 1];
     autoAttack1container.getChildAt(tempIterator).alpha = 1;
   }
+  Atomics.store(sab.lockArr, 0, 0)
 }
 
-setTimeout(() => {
-  worker1.postMessage([
-    sab.playerPosition, 
-    sab.enemy1Positions, 
-    sab.enemy1Hps, sab.lifeSab, 
-    sab.autoAttack1Positions, 
-    sab.autoAttack1Enabled,
-    sab.killSab
-  ]);
-}, 1000);
+worker1.onmessage = (ev: any) => {
+  damageTextPool.show(ev.data.x, ev.data.y, ev.data.dmg)
+}
 
 window.onbeforeunload = () => {
   location.reload();
@@ -144,4 +149,9 @@ export function worker1fire() {
   worker1.postMessage({ cmd: "fire" });
 }
 
-export {};
+export function worker1flame() {
+
+  worker1.postMessage({ cmd: "flame" });
+}
+
+export { };

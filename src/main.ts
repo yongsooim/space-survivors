@@ -41,18 +41,21 @@ app.loader.add(resources).load(async () => {
   input.init()
   viewportContainer.addChild(player)
   aaPool.init()
-  worker1init()
-  worker3init()
+  await worker1init()
+  await worker3init()
   addText()
-  setTimeout(()=>{beatInit()}, 300)
 
-  // Listen for frame updates
-  app.ticker.add((delta: number) => {
-    input.update()
-    aaPool.update(delta)
-    enemy1update()
-    player.update(delta)
-  })
+  setTimeout(() => {
+    beatInit()
+    // Listen for frame updates
+    app.ticker.add((delta: number) => {
+      input.update()
+      aaPool.update(delta)
+      enemy1update()
+      player.update(delta)
+    })
+  }, 500)
+
 })
 
 // Set the name of the hidden property and the change event for visibility
@@ -70,7 +73,7 @@ if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and 
   visibilityChange = 'webkitvisibilitychange'
 }
 
-function handleVisibilityChange () {
+function handleVisibilityChange() {
   // @ts-ignore
   if (document[hidden]) {
     // console.log('hidden')

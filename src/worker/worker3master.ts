@@ -38,7 +38,7 @@ const resource2container = new PIXI.ParticleContainer(
 let tempIterator = 0
 let indexDouble = 0
 
-export async function worker3init () {
+export async function worker3init() {
   let resource1sprites
   tempIterator = numberOfResource1
   while (tempIterator--) {
@@ -63,18 +63,8 @@ export async function worker3init () {
     resource2container.addChild(resource2sprite)
   }
 
-  worker3.postMessage([
-    sab.playerPosition,
-    sab.resource1Positions,
-    sab.resource1RemainTimes,
-    sab.resource2Positions,
-    sab.resource2RemainTimes,
-    sab.resourceCollectedSab
-  ])
+  worker3.postMessage(sab)
 
-  setTimeout(()=>{
-
-  }, 1000)
   tempIterator = numberOfResource1
   while (tempIterator--) {
     sab.resource1RemainTimesArr[tempIterator] = 10000000
@@ -154,6 +144,10 @@ export async function worker3init () {
       resource2container.children[tempIterator].y = sab.resource2PositionsArr[indexDouble + 1]
     }
   })
+  
+  setTimeout(()=>{
+    worker3.postMessage({cmd:'start'})
+  }, 1000)
 }
 
 window.onbeforeunload = function () {

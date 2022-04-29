@@ -46,7 +46,7 @@ export const addText = () => {
   ui.addChild(resourceText)
   ui.addChild(infoText)
 
-  app.stage.addChild(ui)
+  //app.stage.addChild(ui)
 
   app.ticker.add(() => {
     resourceText.text = (`Time: ${sab.timerArr[0]}, Life: ${sab.lifeArr[0]} \nKilled :${sab.killArr[0]}, Collected : ${sab.resourceCollectedArr[0]}/100`)

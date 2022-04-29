@@ -12,10 +12,10 @@ onmessage = (ev) => {
     calculate()
   }
   else {
-    playerPosition = new Float64Array(ev.data[0])
-    enemy1positions = new Float64Array(ev.data[1])
-    enemy1direction = new Float64Array(ev.data[2])
-    life = new Int32Array(ev.data[3])
+    playerPosition = new Float64Array(ev.data[0].playerPosition)
+    enemy1positions = new Float64Array(ev.data[0].enemy1Positions)
+    life = new Int32Array(ev.data[0].lifeSab)
+    enemy1direction = new Float64Array(ev.data[1])
   }
 }
 
@@ -42,7 +42,13 @@ function calculate() {
  
     enemy1direction[tempIteratorDouble] = enemy1speed * diffX / length
     enemy1direction[tempIteratorDouble + 1] = enemy1speed * diffY / length
+
+    if(length < 2){
+      Atomics.sub(life, 0, 1)
+    }
   }
+
+  
   diff = Date.now() - now
   if(diff > 1)
     console.log(diff)

@@ -188,7 +188,7 @@ export function beatInit () {
 
   setTimeout(() => {
     heartbeatWorker.postMessage('start')
-  }, 500)
+  }, 1000)
 }
 
 // Set the name of the hidden property and the change event for visibility
