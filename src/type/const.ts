@@ -1,31 +1,29 @@
+const consts = {
+  numberOfEnemy1: 512,
+  enemy1speed: 0.0018,
 
-export const numberOfEnemy1 = 1000
-export const numberOfEnemy1double = numberOfEnemy1 * 2
-export const enemy1speed = 0.0018
+  spawnSize:200,
+  numberOfWeapon1: 1024,
 
-export const spawnSize = 300
+  numberOfResource1: 2048,
+  numberOfResource2: 2048,
 
-export const numberOfWeapon1 = 1000
-export const numberOfWeapon1double = numberOfWeapon1 * 2
+  numberOfAutoAttack1: 1024,
 
-export const numberOfResource1 = 2000
-export const numberOfResource1double = numberOfResource1 * 2
+  autoAttack1Speed: 0.06,
 
-export const numberOfResource2 = 2000
-export const numberOfResource2double = numberOfResource2 * 2
+  numberOfFlame1: 10,
 
-export const numberOfAutoAttack1 = 200
-export const autoAttack1Speed = 0.06
+  flame1Speed: 0.05,
+  playerSpeed: 0.06,
 
-export const numberOfFlame = 10
-export const flame1Speed = 0.6
+  worker1interval: 1000 / 60,
+  worker2interval: 1000 / 60,
+  worker3interval: 1000 / 60,
 
-export const playerSpeed = 0.06
+  magnetRange: 6,
 
-export const worker1interval = 1000 / 60
-export const worker2interval = 1000 / 60
-export const worker3interval = 1000 / 60
+  numberOfDamageText: 512,
+};
 
-export const magnetRange = 6
-
-export const numberOfDamageText = 5000
+export default consts;

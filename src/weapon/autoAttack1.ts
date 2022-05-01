@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { autoAttack1Speed, numberOfAutoAttack1 } from '../type/const'
+import consts from '../type/const'
 import { aa1Texture } from '../resource/spriteManage'
 import sab from '../worker/sabManage'
 import { viewport } from '../viewport/viewport'
@@ -17,9 +17,9 @@ let iteratorDouble = 0
 class AutoAttack1Pool {
   remainTime = 0;
   cursor = 0;
-  public objectPool = new Array<AutoAttack1>(numberOfAutoAttack1);
+  public objectPool = new Array<AutoAttack1>(consts.numberOfAutoAttack1);
   constructor () {
-    for (let i = 0; i < numberOfAutoAttack1; i++) {
+    for (let i = 0; i < consts.numberOfAutoAttack1; i++) {
       this.objectPool[i] = new AutoAttack1()
       this.objectPool[i].anchor.x = 0.5
       this.objectPool[i].anchor.y = 0.5
@@ -30,14 +30,14 @@ class AutoAttack1Pool {
   }
 
   init () {
-    for (let i = 0; i < numberOfAutoAttack1; i++) {
+    for (let i = 0; i < consts.numberOfAutoAttack1; i++) {
       viewport.addChild(this.objectPool[i])
     }
   }
 
   fire (x: number, y: number) {
     this.cursor++
-    if (this.cursor === numberOfAutoAttack1) {
+    if (this.cursor === consts.numberOfAutoAttack1) {
       this.cursor = 0
     }
     this.objectPool[this.cursor].visible = true
@@ -53,7 +53,7 @@ class AutoAttack1Pool {
   }
 
   update (delta: number) {
-    tempIterator = numberOfAutoAttack1
+    tempIterator = consts.numberOfAutoAttack1
 
     while (tempIterator--) {
       iteratorDouble = tempIterator * 2
@@ -68,7 +68,7 @@ class AutoAttack1Pool {
 
       // bullet is not disabled and remain time is not expired
       this.objectPool[tempIterator].remainTime -= (delta * 1000) / 60
-      this.objectPool[tempIterator].y -= autoAttack1Speed
+      this.objectPool[tempIterator].y -= consts.autoAttack1Speed
       sab.autoAttack1PositionsArr[iteratorDouble] = this.objectPool[tempIterator].x
       sab.autoAttack1PositionsArr[iteratorDouble + 1] = this.objectPool[tempIterator].y
     }

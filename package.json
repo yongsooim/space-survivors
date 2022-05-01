@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Electron Excalibur",
   "main": "electron/electron.js",
+  "Type": "module",
   "scripts": {
     "start": "yarn electron:dev",
     "build": "yarn app:build",
@@ -86,6 +87,7 @@
     "electron-reload": "^2.0.0-alpha.1",
     "is-mobile": "^3.1.1",
     "nipplejs": "^0.9.1",
+    "pixi-console": "^3.2.1",
     "pixi-heaven": "^0.3.1",
     "pixi-layers": "^0.3.1",
     "pixi-picture": "^2.0.3",

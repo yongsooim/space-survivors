@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import topLevelAwait from "vite-plugin-top-level-await";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import crossOriginIsolation from 'vite-plugin-cross-origin-isolation'
-import { hash } from './src/utils/functions.js' // found this solution at https://stackoverflow.com/questions/68046410/how-to-force-vite-clearing-cache-in-vue3
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,8 +12,9 @@ export default defineConfig({
   worker: {
     format: 'es'
   },
-  base: process.env.ELECTRON == "true" ? "./" : "./",
+  base: process.env.ELECTRON == "true" ? "./" : "/",
   plugins: [
+    
     {
       name: "configure-response-headers",
       configureServer: (server) => {

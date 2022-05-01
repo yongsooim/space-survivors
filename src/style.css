@@ -19,3 +19,17 @@ canvas {
   padding:0;
   margin:0;
 }
+
+
+.noScroll {
+  overflow: hidden !important;
+}
+body {
+  height: 200vh;
+}
+#StopSrollonHover {
+  display    : block;
+  margin-top : 25vh;
+  height     : 100px;
+  background :  yellow;
+}

@@ -1,116 +1,87 @@
-// this worker calculates collision between enemyt1 and autoAttack1
+// this worker calculates collision between enemy and player
 
-import Box2DFactory from 'box2d-wasm' // ....
-import { numberOfAutoAttack1, numberOfEnemy1, worker2interval } from '../type/const'
+import consts from "../type/const";
 
-let playerPosition: Float64Array
-let enemy1Positions: Float64Array
-let enemy1Hps: Int32Array
+let playerPosition: Float64Array;
+let enemy1Positions: Float64Array;
+let enemy1Directions: Float64Array;
+let enemy1Hps: Int32Array;
+let life: Int32Array;
+let lock: Int32Array;
 
-let lastExecuted = Date.now()
-let delta = 0
-let now = 0
-let stepTime = 0
+let lastExecuted = Date.now();
+let delta = 0;
+let now = 0;
+let stepTime = 0;
+let running = false;
 
-let loopInterval: number
+let port: MessagePort;
 
-let running = false
+let loopInterval: number;
+
 onmessage = (ev) => {
-  if (ev.data.cmd === 'stop') {
-    running = false
-  } else if (ev.data.cmd === 'start') {
-    running = true
-  } else if (ev.data.cmd === 'close') {
-    running = false
-    clearInterval(loopInterval)
-    loop = () => {}
-    self.close()
-  } else {
+  if (ev.data.cmd === "stop") {
+    running = false;
+  } else if (ev.data.cmd === "start") {
+    running = true;
+  } else if (ev.data.cmd === "close") {
+    running = false;
+    clearInterval(loopInterval);
+    self.close();
+  } else if (ev.data.cmd === "init") {
+    console.log(ev.data);
+    playerPosition = new Float64Array(ev.data.sab.playerPosition);
+    enemy1Positions = new Float64Array(ev.data.sab.enemy1Positions);
+    enemy1Directions = new Float64Array(ev.data.sab.enemy1Directions);
+    enemy1Hps = new Int32Array(ev.data.sab.enemy1Hps);
+    life = new Int32Array(ev.data.sab.life);
+    lock = new Int32Array(ev.data.sab.lock);
+    port = ev.ports[0];
+
+    port.onmessage = calc;
   }
-}
+};
 
-postMessage('')
+let tempIterator = 0;
+let indexDouble = 0;
+let playerX = 0, playerY = 0;
+let enemyX = 0, enemyY = 0;
+let diffX = 0,  diffY = 0;
+let directionX = 0, directionY = 0;
+let distance = 0;
 
-const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
-  ///
-  // By default, this looks for Box2D.wasm relative to public/build/bundle.js:
-  // @example (url, scriptDirectory) => `${scriptDirectory}${url}`
-  // But we want to look for Box2D.wasm relative to public/index.html instead.
-  //
-  locateFile: (url, scriptDirectory) => {
-    // console.log('url in main  :  ' + url)
-    // console.log('scriptDirectory in main  :  ' + scriptDirectory)
-    // console.log('finding at in main  :  ./assets/' + url)
-    // return './' + url  // for build, dist
-    // console.log(scriptDirectory)
-    return '/assets/' + url // for dev
-  }
-})
-const { b2BodyDef, b2_dynamicBody,b2QueryCallback, b2PolygonShape, b2Vec2, b2World, b2TestOverlap, b2AABB } = box2D
-// in metres per second squared
-const zero = new b2Vec2(0, 0)
-const gravity = zero
-const world = new b2World(gravity) // zero gravity
-
-const bd = new b2BodyDef()
-bd.set_type(b2_dynamicBody)
-
-const square = new b2PolygonShape()
-const boxSideLength = 0.8
-square.SetAsBox(boxSideLength, boxSideLength)
-const enemy1BodyPool = new Array<Box2D.b2Body>(numberOfEnemy1)
-const autoAttack1BodyPool = new Array<Box2D.b2Body>(numberOfAutoAttack1)
-
-// creating boxes
-for (let i = 0; i < numberOfEnemy1; i++) {
-  enemy1BodyPool[i] = world.CreateBody(bd)
-  enemy1BodyPool[i].CreateFixture(square, 1).SetFriction(1)
-  enemy1BodyPool[i].SetFixedRotation(true)
-  enemy1BodyPool[i].SetEnabled(true)
-}
-
-for (let i = 0; i < numberOfAutoAttack1; i++) {
-  square.SetAsBox(0.4, 0.4)
-  autoAttack1BodyPool[i] = world.CreateBody(bd)
-  autoAttack1BodyPool[i].CreateFixture(square, 1).SetFriction(1)
-  autoAttack1BodyPool[i].SetFixedRotation(true)
-  autoAttack1BodyPool[i].SetEnabled(true)
-}
-
-let indexDouble
-let tempIterator
-let tempIterator2
-
-const tempVec = new b2Vec2(0, 0)
-let loop = () => {}
-loop = () => {
-  if(running === false) return
-  // update positions ships
-  tempIterator = numberOfEnemy1
-  while (tempIterator--) {
-    indexDouble = tempIterator * 2
-    tempVec.Set(enemy1Positions[indexDouble], enemy1Positions[indexDouble + 1])
-    enemy1BodyPool[tempIterator].SetTransform(tempVec, 0)
+let divide = 30;
+let count = 0;
+let calc = () => {
+  if (running === false) return;
+  count++;
+  if (count === divide) {
+    count = 0;
   }
 
-  now = Date.now()
-  delta = now - lastExecuted
+  tempIterator = consts.numberOfEnemy1;
+  playerX = playerPosition[0];
+  playerY = playerPosition[1];
+  for (tempIterator = count; tempIterator < consts.numberOfEnemy1; tempIterator += divide) {
+    if (enemy1Hps[tempIterator] === 0) continue; //skip dead enemy
 
-  if (delta > worker2interval + 5) {
-    if (delta > 500) {
-      stepTime = 500
-    } else {
-      stepTime = delta
+    indexDouble = tempIterator * 2;
+    enemyX = enemy1Positions[indexDouble];
+    enemyY = enemy1Positions[indexDouble + 1];
+    diffX = playerX - enemyX;
+    diffY = playerY - enemyY;
+    distance = Math.sqrt(diffX * diffX + diffY * diffY);
+
+    if (distance < 2) {
+      self.postMessage({ cmd: "hit", x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
     }
-  } else {
-    stepTime = worker2interval
+
+    directionX = (consts.enemy1speed * diffX) / distance;
+    directionY = (consts.enemy1speed * diffY) / distance;
+
+    enemy1Directions[indexDouble] = directionX;
+    enemy1Directions[indexDouble + 1] = (consts.enemy1speed * diffY) / distance;
   }
+};
 
-  //world.Step(stepTime, 3, 8)
-
-  lastExecuted = now
-}
-
-setTimeout(() => {
-  loopInterval = setInterval(loop, worker2interval)
-}, 1000)
+postMessage({ cmd: "ready" });

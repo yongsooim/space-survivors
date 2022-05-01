@@ -4,6 +4,8 @@ import { app } from '../main'
 import { keyboard, Keys } from '../input/keyboard'
 import { Container } from 'pixi.js'
 
+// app.stage <- viewport <- viewportContainer
+
 export let viewport: Viewport
 export const viewportContainer = new Container()
 viewportContainer.zIndex = 999
@@ -15,13 +17,12 @@ export function initViewport () {
     disableOnContextMenu: true,
     divWheel: document.getElementById('pixi') as HTMLElement
   })
-  viewport.zIndex = 999
-  viewport
-    .pinch({ noDrag: true })
-    .wheel({ percent: 0, smooth: 10, trackpadPinch: true })
-    .setZoom(20)
-    .clampZoom({ minScale: 1, maxScale: 500 })
-    .follow(player)
+  //viewport
+  //  .pinch({ noDrag: true })
+  //  .wheel({ percent: 0, smooth: 10, trackpadPinch: true })
+  //  .setZoom(20)
+  //  .clampZoom({ minScale: 1, maxScale: 500 })
+  //  .follow(player)
 
   window.addEventListener('resize', () => {
     viewport.resize(window.innerWidth, window.innerHeight)

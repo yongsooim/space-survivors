@@ -11,7 +11,7 @@ export const initEmitter = () => {
       min: 0.05,
       max: 0.1
     },
-    frequency: 0.0005,
+    frequency: 0.001,
     emitterLifetime: 0,
     maxParticles: 1000,
     addAtBack: false,
@@ -131,6 +131,7 @@ export const initEmitter = () => {
     // number of seconds since the last update
     emitter.update((now - elapsed) * 0.001)
     elapsed = now
+    //console.log(emitter.particleCount)
   }
 
   // Start emitting

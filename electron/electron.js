@@ -1,8 +1,14 @@
 const path = require("path");
-const { app, powerSaveBlocker, BrowserWindow } = require("electron");
+const { app, powerSaveBlocker, BrowserWindow, session } = require("electron");
+
+app.commandLine.appendSwitch('enable-features', "SharedArrayBuffer")
+
+
+
+app.commandLine.appendSwitch ("disable-http-cache");
 
 const id = powerSaveBlocker.start('prevent-display-sleep')
-console.log(powerSaveBlocker.isStarted(id))
+//console.log(powerSaveBlocker.isStarted(id))
 
 powerSaveBlocker.stop(id)
 
@@ -13,15 +19,16 @@ app.commandLine.appendSwitch("disable-http-cache");
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 400,
-    height: 300,
+    width: 1600,
+    height: 900,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
-      nodeIntegration: false,
-      webSecurity: true,
-      allowEval: false, // This is the key!
+      nodeIntegration: true,
+      webSecurity: false,
+      allowEval: true, // This is the key!
     },
   });
+
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
@@ -35,7 +42,8 @@ function createWindow() {
   if (isDev) {
     mainWindow.webContents.openDevTools();
   } else {
-    require("electron").Menu.setApplicationMenu(null);
+    //require("electron").Menu.setApplicationMenu(null);
+    mainWindow.webContents.openDevTools();
     webContents.reloadIgnoringCache();
   }
 }
@@ -50,6 +58,18 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+
+  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+      ...details.responseHeaders,
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      }
+    })
+  })
+  
+
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

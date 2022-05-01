@@ -32,20 +32,34 @@ export function beatInit () {
       sound.play('kick')
       sound.play('loop')
       player.fire()
+      setTimeout(()=>{
+        player.fire()
+      }, 60)
 
       sab.timerArr[0]++
       break
 
     case 0o1:
+      player.fire()
+      setTimeout(()=>{
+        player.fire()
+      }, 60)
 
       break
 
     case 0o2:
       player.fire()
+      setTimeout(()=>{
+        player.fire()
+      }, 60)
 
       break
 
     case 0o3:
+      player.fire()
+      setTimeout(()=>{
+        player.fire()
+      }, 60)
 
       break
 
@@ -181,14 +195,14 @@ export function beatInit () {
 
     // use counter for sychro actions
 
-    if (sab.resourceCollectedArr[0] > 100) {
+    if (sab.expArr[0] > 100) {
       playerLevel = 2
     }
   }
 
   setTimeout(() => {
     heartbeatWorker.postMessage('start')
-  }, 1000)
+  }, 2000)
 }
 
 // Set the name of the hidden property and the change event for visibility
