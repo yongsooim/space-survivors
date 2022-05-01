@@ -16,6 +16,7 @@ import kick from '../asset/kick.wav'
 import hihat from '../asset/hihat_close.wav'
 import snare from '../asset/snare.wav'
 import loop from '../asset/loop.wav'
+import loop2 from '../asset/loop2.wav'
 import bass from '../asset/bass.wav'
 import * as PIXI from 'pixi.js'
 import { sound } from '@pixi/sound'
@@ -24,6 +25,7 @@ import { app } from '../main'
 sound.add('kick', kick)
 sound.add('hihat', hihat)
 sound.add('loop', loop)
+sound.add('loop2', loop2)
 sound.add('snare', snare)
 sound.add('bass', bass)
 sound.add('shot', shotWav)
@@ -62,4 +64,5 @@ export const resources: PIXI.IAddOptions[] = [
   { name: 'playerhitwav', url: playerhitwav },
   { name: 'pickupWav', url: pickupWav },
   { name: 'firePng', url: firePng },
+  { name: 'loop2', url: loop2 },
 ]

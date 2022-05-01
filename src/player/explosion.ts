@@ -149,6 +149,5 @@ export const initExplosion = () => {
 export let explosionShow = (x: number, y: number) =>{
   //explosion.spawnPos.set(x - player.position.x, y - player.position.y)
   explosion.spawnPos.set(x - player.position.x, y - player.position.y)
-  console.log(explosion)
   explosion.playOnce()
 }

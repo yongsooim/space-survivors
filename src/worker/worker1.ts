@@ -89,6 +89,7 @@ enum Filter {
   Enemy1 = 0x0001,
   AutoAttack1 = 0x0002,
   Player = 0x0004,
+  Flame = 0x0008,
 }
 
 let enemy1filter = new b2Filter();
@@ -105,6 +106,11 @@ let usedBulletFilter = new b2Filter();
 usedBulletFilter.categoryBits = Filter.AutoAttack1;
 usedBulletFilter.maskBits = 0;
 usedBulletFilter.groupIndex = 0;
+
+let flameFilter = new b2Filter();
+flameFilter.categoryBits = Filter.Flame;
+flameFilter.maskBits = Filter.Enemy1;
+flameFilter.groupIndex = 0;
 
 let playerFilter = new b2Filter();
 playerFilter.categoryBits = Filter.Player;
@@ -178,15 +184,15 @@ for (let i = 0; i < consts.numberOfFlame1; i++) {
   flame1BodyPool[i] = world.CreateBody(bd);
   flame1BodyPool[i].CreateFixture(square, 5).SetFriction(0);
   flame1BodyPool[i].GetFixtureList().SetRestitution(0);
-  //flame1BodyPool[i].GetFixtureList().SetSensor(true);
+  flame1BodyPool[i].GetFixtureList().SetSensor(true);
+  flame1BodyPool[i].GetFixtureList().SetFilterData(flameFilter);
 
   flame1BodyPool[i].SetLinearDamping(0);
   flame1BodyPool[i].SetAngularDamping(0);
   flame1BodyPool[i].SetSleepingAllowed(false);
   flame1BodyPool[i].SetFixedRotation(false);
   flame1BodyPool[i].SetAwake(true);
-  flame1BodyPool[i].SetBullet(true);
-  flame1BodyPool[i].SetEnabled(false);
+  flame1BodyPool[i].SetEnabled(true);
 
   //@ts-ignore
   ptrToFlameBodyIndex[flame1BodyPool[i].Zu as any] = i;
@@ -214,37 +220,44 @@ contactListener.BeginContact = (contact) => {
   fixA = contact.GetFixtureA();
   fixB = contact.GetFixtureB();
 
-  if (fixA.GetFilterData().categoryBits === Filter.AutoAttack1) {
-    bodyBullet = fixA.GetBody();
-    bodyEnemy = fixB.GetBody();
-  } else if (fixB.GetFilterData().categoryBits === Filter.AutoAttack1) {
-    bodyBullet = fixB.GetBody();
-    bodyEnemy = fixA.GetBody();
-  } else {
-    return;
+  
+  if (fixA.GetFilterData().categoryBits === Filter.AutoAttack1 || fixB.GetFilterData().categoryBits === Filter.AutoAttack1) {
+    if (fixA.GetFilterData().categoryBits === Filter.AutoAttack1) {
+      bodyBullet = fixA.GetBody();
+      bodyEnemy = fixB.GetBody();
+    } else if (fixB.GetFilterData().categoryBits === Filter.AutoAttack1) {
+      bodyBullet = fixB.GetBody();
+      bodyEnemy = fixA.GetBody();
+    } else {
+      return;
+    }
+
+    bodyBullet.GetFixtureList().SetFilterData(usedBulletFilter);
+    disableRequest.push(bodyBullet);
+
+    //@ts-ignore
+    if (enemy1Hps[ptrToEnemyBodyIndex[bodyEnemy.Zu]] >= 0) {
+      //@ts-ignore
+      tempVec.x = -2 * enemy1directions[ptrToEnemyBodyIndex[bodyEnemy.Zu] * 2];
+      //@ts-ignore
+      tempVec.y = -2 * enemy1directions[ptrToEnemyBodyIndex[bodyEnemy.Zu] * 2 + 1];
+      bodyEnemy.ApplyForce(tempVec, center, false);
+      //bodyEnemy.ApplyLinearImpulse(tempffVec, center, false);
+
+      //@ts-ignore
+      Atomics.sub(enemy1Hps, ptrToEnemyBodyIndex[bodyEnemy.Zu], 5); // damage dealt
+      postMessage({
+        cmd: "damage",
+        x: (bodyBullet.GetPosition().x + bodyEnemy.GetPosition().x) / 2,
+        y: (bodyBullet.GetPosition().y + bodyEnemy.GetPosition().y) / 2,
+        dmg: 5,
+      });
+    }
   }
 
-  
-  bodyBullet.GetFixtureList().SetFilterData(usedBulletFilter);
-  disableRequest.push(bodyBullet);
 
-  //@ts-ignore
-  if (enemy1Hps[ptrToEnemyBodyIndex[bodyEnemy.Zu]] >= 0) {
-    //@ts-ignore
-    tempVec.x = -enemy1directions[ptrToEnemyBodyIndex[bodyEnemy.Zu] * 2];
-    //@ts-ignore
-    tempVec.y = -enemy1directions[ptrToEnemyBodyIndex[bodyEnemy.Zu] * 2 + 1];
-    bodyEnemy.ApplyForce(tempVec, center, false);
-    //bodyEnemy.ApplyLinearImpulse(tempVec, center, false);
-
-    //@ts-ignore
-    Atomics.sub(enemy1Hps, ptrToEnemyBodyIndex[bodyEnemy.Zu], 5); // damage dealt
-    postMessage({
-      cmd: "damage",
-      x: (bodyBullet.GetPosition().x + bodyEnemy.GetPosition().x) / 2,
-      y: (bodyBullet.GetPosition().y + bodyEnemy.GetPosition().y) / 2,
-      dmg: 5,
-    });
+  if (fixA.GetFilterData().categoryBits === Filter.Flame || fixB.GetFilterData().categoryBits === Filter.Flame) {
+    console.log('hit')
   }
 };
 contactListener.EndContact = () => {};
@@ -350,6 +363,7 @@ function loop() {
   if (counter % 5 === 0) {
     if (disabledEnemy1list.length > 0) {
       let genIndex = disabledEnemy1list.pop() as number;
+      console.log(genIndex)
       if (enemy1Hps[genIndex] <= 0) {
         let tempDistance = Math.random() * consts.spawnSize + 20;
         let tempAngle = Math.random() * Math.PI * 2;

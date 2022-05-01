@@ -5,10 +5,10 @@ const consts = {
   spawnSize:200,
   numberOfWeapon1: 1024,
 
-  numberOfResource1: 2048,
-  numberOfResource2: 2048,
+  numberOfResource1: 512,
+  numberOfResource2: 512,
 
-  numberOfAutoAttack1: 1024,
+  numberOfAutoAttack1: 50,
 
   autoAttack1Speed: 0.06,
 
@@ -23,7 +23,7 @@ const consts = {
 
   magnetRange: 6,
 
-  numberOfDamageText: 512,
+  numberOfDamageText: 128,
 };
 
 export default consts;

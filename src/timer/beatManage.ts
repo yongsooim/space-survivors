@@ -8,11 +8,12 @@ const heartbeatWorker = new Worker()
 
 sound.volume('kick', 0.05)
 sound.volume('hihat', 0.05)
-sound.volume('loop', 0.05)
+sound.volume('loop2', 0.05)
 sound.volume('snare', 0.05)
 sound.volume('bass', 0.05)
 
 sound.volume('loop', 0)
+sound.volume('loop2', 0)
 
 
 const beatMax = 32
@@ -21,6 +22,8 @@ let beatCounter = 0
 let playerLevel = 1
 export function beatInit () {
   sound.volumeAll = 0.1
+sound.volume('loop2', 0.5)
+
   heartbeatWorker.onmessage = () => {
     if (++beatCounter >= beatMax) {
       // can have 0 ~ 31, 4 bar
@@ -30,7 +33,7 @@ export function beatInit () {
     switch (beatCounter) {
     case 0o0: // octal literal
       sound.play('kick')
-      sound.play('loop')
+      sound.play('loop2')
       player.fire()
       setTimeout(()=>{
         player.fire()
