@@ -11,7 +11,7 @@ import { viewport } from "../viewport/viewport";
 import { aaPool } from "../weapon/autoAttack1";
 import { initEmitter, emitter } from "./fire-emit";
 import { worker1fire, worker1flame } from "../worker/worker1master";
-import { explosion, initExplosion } from "./explosion";
+import { explosion } from "./explosion";
 
 class Player extends Container {
   level = 0;
@@ -34,15 +34,17 @@ class Player extends Container {
 
   init() {
     initEmitter();
-    initExplosion();
+    //explosion.init;
   }
   update(delta: number) {
     this.checkInput(delta);
 
-    if ((Math.PI * 7) / 8 <= this.vector.toAngle() && this.vector.toAngle() < (Math.PI * 9) / 8) {
-      //console.log("left");
-    } else if (this.vector.toAngle() <= Math.PI / 8 || this.vector.toAngle() > (Math.PI * 15) / 8) {
-      //console.log("right");
+    if (this.vector.size >= 0.3) {
+      if ((Math.PI * 7) / 8 <= this.vector.toAngle() && this.vector.toAngle() < (Math.PI * 9) / 8) {
+        //console.log("left rotate wing");
+      } else if (this.vector.toAngle() <= Math.PI / 8 || this.vector.toAngle() > (Math.PI * 15) / 8) {
+        //console.log("right rotate wing");
+      }
     }
   }
 
@@ -62,11 +64,11 @@ class Player extends Container {
     this.playerSprite.tint = 0xff0000;
     setTimeout(() => {
       this.playerSprite.tint = 0xffffff;
-    }, 300);
+    }, 350);
   }
 
   checkInput(delta: number) {
-    if (input.vector.x === 0 && input.vector.y === 0) {
+    if (input.vector.x === 0 && input.vector.y === 0) { // if no touch input
       // keyboard
       this.vector.x = 0;
       this.vector.y = 0;

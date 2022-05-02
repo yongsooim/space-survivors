@@ -10,7 +10,7 @@ import { damageTextPool } from "../ui/damageText";
 import { channel12 } from "./channel";
 import { isMobile } from "pixi.js";
 import firePng from '../asset/fire.png'
-import { explosion, explosionShow } from "../player/explosion";
+import { explosion, explosionShow, explosionPool } from "../player/explosion";
 
 const worker1 = new Worker();
 
@@ -70,7 +70,7 @@ worker1.onmessage = (ev: any) => {
     worker1Ready = true;
   } else if (ev.data.cmd === "damage") {
     damageTextPool.show(ev.data.x, ev.data.y, ev.data.dmg);
-    explosionShow(ev.data.x, ev.data.y);
+    explosionPool.show(ev.data.x, ev.data.y)
   }
 };
 
@@ -108,13 +108,13 @@ export function worker1init() {
     autoAttack1container.addChild(tempSprite);
   }
 
-  
+
   tempIterator = consts.numberOfFlame1;
   while (tempIterator--) {
     sab.flame1EnabledArr[tempIterator] = 0;
     tempSprite = new PIXI.Sprite(fireTexture);
     tempSprite.tint = 0xff0000
-    
+
     tempSprite.scale.set(0.02);
     tempSprite.rotation = Math.PI / 2
     tempSprite.anchor.set(0.5);
@@ -157,7 +157,7 @@ export function worker1init() {
       autoAttack1container.getChildAt(tempIterator).alpha = 1;
     }
 
-    
+
     tempIterator = consts.numberOfFlame1;
     while (tempIterator--) {
       if (sab.flame1EnabledArr[tempIterator] <= 0) {
@@ -216,4 +216,4 @@ export async function worker1check() {
   worker1.postMessage({ cmd: "check" });
 }
 
-export {};
+export { };

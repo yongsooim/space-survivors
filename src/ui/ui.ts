@@ -5,15 +5,16 @@ import sab from '../worker/sabManage'
 import { sprites, textures } from '../resource/spriteManage'
 
 const resourceText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' })
-
 const infoText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' })
 
+const uiScale = 0.001
+
 const char1 = new PIXI.Sprite(textures.char1)
-char1.scale.set(10)
+char1.scale.set(10 * uiScale)
 char1.anchor.set(0, 1)
 
 const ui1 = new PIXI.Sprite(textures.ui1)
-ui1.scale.set(6)
+ui1.scale.set(6 * uiScale)
 ui1.anchor.set(1, 1)
 ui1.interactive = true
 ui1.buttonMode = true
@@ -30,11 +31,11 @@ ui1.on('pointerdown', () => {
 export const addText = () => {
   const ui = new PIXI.Container()
 
-  resourceText.scale.set(1.2)
+  resourceText.scale.set(1.2 * uiScale)
   resourceText.anchor.set(0.5, 0)
   resourceText.position.set(app.view.width / 2, 10)
 
-  infoText.scale.set(1.5)
+  infoText.scale.set(1.5 * uiScale)
   infoText.anchor.set(0.5, 1)
   infoText.position.set(app.view.width / 2, app.view.height - 10)
 

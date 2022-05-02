@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { resources } from "./resource/resources";
-import { beatInit } from "./timer/beatManage";
+import { beatInit } from "./timer/beatMaster";
 import { player } from "./player/player";
 import { input } from "./input/input";
 import { worker1init, worker1Ready, worker1start } from "./worker/worker1master";
@@ -89,7 +89,7 @@ app.loader.add(resources).load(() => {
       viewport
         .pinch({ noDrag: true })
         .wheel({ percent: 0, smooth: 10, trackpadPinch: true })
-        .setZoom(20)
+        .setZoom(0.002)
         .clampZoom({ minScale: 1, maxScale: 500 })
         .follow(player);
       viewportContainer.addChild(player);

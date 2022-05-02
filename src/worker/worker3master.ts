@@ -155,6 +155,7 @@ export function worker3start() {
     viewportContainer.addChild(resource2container);
   }, 1000);
 }
+
 window.onbeforeunload = function () {
   location.reload();
   document.location.reload();

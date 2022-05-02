@@ -23,6 +23,7 @@ onmessage = (ev) => {
   } else if (ev.data.cmd === "start") {
     running = true;
   } else if (ev.data.cmd === "close") {
+    running = false;
     self.close();
   } else if (ev.data.cmd === "generate") {
     // ev.data.x
@@ -97,7 +98,7 @@ for (let i = 0; i < consts.numberOfResource1; i++) {
   resource1BodyPool[i].SetLinearDamping(0.2);
   resource1BodyPool[i].SetAngularDamping(0);
   resource1BodyPool[i].SetSleepingAllowed(true);
-  tempVector.Set((Math.random() - 0.5) * 100, (Math.random() - 0.5) * 100);
+  tempVector.Set((Math.random() - 0.5) * consts.spawnSize, (Math.random() - 0.5) * consts.spawnSize);
   resource1BodyPool[i].SetTransform(tempVector, 0);
   resource1BodyPool[i].SetFixedRotation(true);
   resource1BodyPool[i].SetEnabled(true);
@@ -112,7 +113,7 @@ for (let i = 0; i < consts.numberOfResource2; i++) {
   resource2BodyPool[i].SetLinearDamping(0.2);
   resource2BodyPool[i].SetAngularDamping(0);
   resource2BodyPool[i].SetSleepingAllowed(true);
-  tempVector.Set((Math.random() - 0.5) * 100, (Math.random() - 0.5) * 100);
+  tempVector.Set((Math.random() - 0.5) * consts.spawnSize, (Math.random() - 0.5) * consts.spawnSize);
   resource2BodyPool[i].SetTransform(tempVector, 0);
   resource2BodyPool[i].SetFixedRotation(true);
   resource2BodyPool[i].SetEnabled(true);

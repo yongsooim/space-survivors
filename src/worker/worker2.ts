@@ -54,11 +54,12 @@ let divide = 30;
 let count = 0;
 let calc = () => {
   if (running === false) return;
+
   count++;
   if (count === divide) {
     count = 0;
   }
-
+  
   tempIterator = consts.numberOfEnemy1;
   playerX = playerPosition[0];
   playerY = playerPosition[1];
@@ -73,7 +74,7 @@ let calc = () => {
     distance = Math.sqrt(diffX * diffX + diffY * diffY);
 
     if (distance < 2) {
-      self.postMessage({ cmd: "hit", x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
+      self.postMessage({ cmd: "hitText", x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
     }
 
     directionX = (consts.enemy1speed * diffX) / distance;
