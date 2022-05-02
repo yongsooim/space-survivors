@@ -245,15 +245,10 @@ class ExplosionPool {
     if(this.cursor >= consts.numberOfExplosion){
       this.cursor = 0
     }
-    this.pool[this.cursor].spawnPos.set(x - player.position.x, y - player.position.y)
+    this.pool[this.cursor].spawnPos.set(x , y)
     this.pool[this.cursor].playOnce()
   }
 }
 
-export let explosionShow = (x: number, y: number) => {
-  //explosion.spawnPos.set(x - player.position.x, y - player.position.y)
-  explosion.spawnPos.set(x - player.position.x, y - player.position.y)
-  explosion.playOnce()
-}
 
 export const explosionPool = new ExplosionPool()

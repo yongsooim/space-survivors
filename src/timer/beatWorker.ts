@@ -1,7 +1,7 @@
 // 120 bpm, 16 beat
 // 1 beat = 5000ms / 16 = 125ms
 const interval = 125
-const gap = 5 // how much earlier wakeup before nextExecute, and check loop until reach nextExecute
+const gap = 3 // how much earlier wakeup before nextExecute, and check loop until reach nextExecute
 let running = false
 let error = 0
 let now = Date.now()

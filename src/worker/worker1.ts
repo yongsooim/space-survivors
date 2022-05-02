@@ -2,6 +2,7 @@
 
 import Box2DFactory from "box2d-wasm"; // ....
 import consts from "../type/const";
+import { createEnemy1Pool } from "./enemy1";
 
 // Shared Aray Buffer setting
 export let playerPosition: Float64Array;
@@ -18,6 +19,8 @@ export let lock: Int32Array;
 
 let loopInterval: number;
 let running = false;
+
+let enemy1pool : any
 
 onmessage = (ev) => {
   if (ev.data.cmd === "stop") {
@@ -48,6 +51,9 @@ onmessage = (ev) => {
     flame1Enabled = new Int32Array(ev.data.sab.flame1Enabled);
     kills = new Int32Array(ev.data.sab.killSab);
     port = ev.ports[0];
+
+    enemy1pool = createEnemy1Pool(box2D, world, playerPosition, autoAttack1Enabled, enemy1filter, enemy1positions, enemy1directions, enemy1Hps, kills)
+
     postMessage({ cmd: "ready" });
   }
 };
@@ -75,11 +81,12 @@ const center = new b2Vec2(0.5, 0.5);
 const gravity = zero;
 export const world = new b2World(gravity); // zero gravity
 
+
 const bd = new b2BodyDef();
 bd.set_type(b2_dynamicBody);
 
 const square = new b2PolygonShape();
-const enemy1BodyPool = new Array<Box2D.b2Body>(consts.numberOfEnemy1);
+//const enemy1pool = new Array<Box2D.b2Body>(consts.numberOfEnemy1);
 const autoAttack1BodyPool = new Array<Box2D.b2Body>(consts.numberOfAutoAttack1);
 const flame1BodyPool = new Array<Box2D.b2Body>(consts.numberOfFlame1);
 
@@ -141,23 +148,23 @@ for (let i = 0; i < consts.numberOfEnemy1; i++) {
 }
 
 // creating boxes
-for (let i = 0; i < consts.numberOfEnemy1; i++) {
-  enemy1BodyPool[i] = world.CreateBody(bd);
-  enemy1BodyPool[i].CreateFixture(square, 1).SetFriction(0);
-  enemy1BodyPool[i].GetFixtureList().SetRestitution(0);
-  enemy1BodyPool[i].GetFixtureList().SetFilterData(enemy1filter);
-
-  enemy1BodyPool[i].SetLinearDamping(0);
-  enemy1BodyPool[i].SetAngularDamping(0);
-  enemy1BodyPool[i].SetSleepingAllowed(false);
-  tempVec.Set((Math.random() - 0.5) * consts.spawnSize, (Math.random() - 0.5) * consts.spawnSize);
-  enemy1BodyPool[i].SetTransform(tempVec, 0);
-  enemy1BodyPool[i].SetFixedRotation(true);
-  enemy1BodyPool[i].SetAwake(true);
-  enemy1BodyPool[i].SetEnabled(false);
-
-  ptrToEnemyBodyIndex[getPointer(enemy1BodyPool[i])] = i;
-}
+//for (let i = 0; i < consts.numberOfEnemy1; i++) {
+//  enemy1pool[i] = world.CreateBody(bd);
+//  enemy1pool[i].CreateFixture(square, 1).SetFriction(0);
+//  enemy1pool[i].GetFixtureList().SetRestitution(0);
+//  enemy1pool[i].GetFixtureList().SetFilterData(enemy1filter);
+//
+//  enemy1pool[i].SetLinearDamping(0);
+//  enemy1pool[i].SetAngularDamping(0);
+//  enemy1pool[i].SetSleepingAllowed(false);
+//  tempVec.Set((Math.random() - 0.5) * consts.spawnSize, (Math.random() - 0.5) * consts.spawnSize);
+//  enemy1pool[i].SetTransform(tempVec, 0);
+//  enemy1pool[i].SetFixedRotation(true);
+//  enemy1pool[i].SetAwake(true);
+//  enemy1pool[i].SetEnabled(false);
+//
+//  ptrToEnemyBodyIndex[getPointer(enemy1pool[i])] = i;
+//}
 
 square.SetAsBox(0.4, 0.4);
 for (let i = 0; i < consts.numberOfAutoAttack1; i++) {
@@ -232,17 +239,19 @@ contactListener.BeginContact = (contact) => {
     bodyBullet.GetFixtureList().SetFilterData(usedBulletFilter);
     disableRequest.push(bodyBullet);
 
-    if (enemy1Hps[ptrToEnemyBodyIndex[getPointer(bodyEnemy)]] >= 0) {
+    if (enemy1Hps[enemy1pool.ptrToIdx[getPointer(bodyEnemy)]] >= 0) {
       //knock back
-      tempVec.x = -4 * enemy1directions[ptrToEnemyBodyIndex[getPointer(bodyEnemy)] * 2];
-      tempVec.y = -4 * enemy1directions[ptrToEnemyBodyIndex[getPointer(bodyEnemy)] * 2 + 1];
+      tempVec.x = -4 * enemy1directions[enemy1pool.ptrToIdx[getPointer(bodyEnemy)] * 2];
+      tempVec.y = -4 * enemy1directions[enemy1pool.ptrToIdx[getPointer(bodyEnemy)] * 2 + 1];
       bodyEnemy.ApplyForce(tempVec, center, false);
 
-      Atomics.sub(enemy1Hps, ptrToEnemyBodyIndex[getPointer(bodyEnemy)], 5); // damage dealt
+      Atomics.sub(enemy1Hps, enemy1pool.ptrToIdx[getPointer(bodyEnemy)], 5); // damage dealt
       postMessage({
         cmd: "damage",
-        x: (bodyBullet.GetPosition().x + bodyEnemy.GetPosition().x) / 2,
-        y: (bodyBullet.GetPosition().y + bodyEnemy.GetPosition().y) / 2,
+        x: bodyBullet.GetPosition().x,
+        y: bodyBullet.GetPosition().y,
+        enemyX : bodyEnemy.GetPosition().x,
+        enemyY : bodyEnemy.GetPosition().y,
         dmg: 5,
       });
     }
@@ -262,6 +271,11 @@ world.SetContactListener(contactListener);
 let counter = 0;
 let cursor = 0;
 function loop() {
+
+  if(enemy1pool) {
+    //console.log(enemy1pool.pool[0].GetPosition().x, enemy1pool.pool[1].GetPosition().x)
+    console.log(enemy1pool.pool[0].IsEnabled(), enemy1pool.pool[1].IsEnabled())
+  }
   if (running === false) return;
   counter++;
 
@@ -271,24 +285,28 @@ function loop() {
   playerBody.SetTransform(tempVec, 0);
 
   // update shared memory buffer
-  tempIterator = consts.numberOfEnemy1;
-  while (tempIterator--) {
-    // skip dead
-    if (enemy1BodyPool[tempIterator].IsEnabled() === false) {
-      continue;
-    }
-    if (enemy1Hps[tempIterator] <= 0) {
-      // check dead
-      if (enemy1BodyPool[tempIterator].IsEnabled() === true) {
-        Atomics.add(kills, 0, 1);
-        enemy1BodyPool[tempIterator].SetEnabled(false);
-        disabledEnemy1list.push(tempIterator);
-      }
-    }
-    indexDouble = tempIterator * 2;
-    enemy1positions[indexDouble] = enemy1BodyPool[tempIterator].GetPosition().x;
-    enemy1positions[indexDouble + 1] = enemy1BodyPool[tempIterator].GetPosition().y;
-  }
+
+  enemy1pool.updateSabPosition()
+
+
+  //tempIterator = consts.numberOfEnemy1;
+  //while (tempIterator--) {
+  //  // skip dead
+  //  if (enemy1pool[tempIterator].IsEnabled() === false) {
+  //    continue;
+  //  }
+  //  if (enemy1Hps[tempIterator] <= 0) {
+  //    // check dead
+  //    if (enemy1pool[tempIterator].IsEnabled() === true) {
+  //      Atomics.add(kills, 0, 1);
+  //      enemy1pool[tempIterator].SetEnabled(false);
+  //      disabledEnemy1list.push(tempIterator);
+  //    }
+  //  }
+  //  indexDouble = tempIterator * 2;
+  //  enemy1positions[indexDouble] = enemy1pool[tempIterator].GetPosition().x;
+  //  enemy1positions[indexDouble + 1] = enemy1pool[tempIterator].GetPosition().y;
+  //}
 
   // update shared memory buffer
   tempIterator = consts.numberOfAutoAttack1;
@@ -309,20 +327,21 @@ function loop() {
     flame1Positions[indexDouble + 1] = flame1BodyPool[tempIterator].GetPosition().y;
   }
 
-  tempIterator = consts.numberOfEnemy1;
-  while (tempIterator--) {
-    tempVec.x = playerPosition[0];
-    tempVec.y = playerPosition[1];
-    tempVec.op_sub(enemy1BodyPool[tempIterator].GetPosition());
-    tempVec.Normalize();
-    tempVec.op_mul(consts.enemy1speed);
-
-    //enemy1BodyPool[tempIterator].SetLinearVelocity(tempVec);
-    indexDouble = tempIterator * 2;
-    tempVec.set_x(enemy1directions[indexDouble]);
-    tempVec.set_y(enemy1directions[indexDouble + 1]);
-    enemy1BodyPool[tempIterator].SetLinearVelocity(tempVec);
-  }
+  enemy1pool.updateVelocity()
+  //tempIterator = consts.numberOfEnemy1;
+  //while (tempIterator--) {
+  //  tempVec.x = playerPosition[0];
+  //  tempVec.y = playerPosition[1];
+  //  tempVec.op_sub(enemy1pool[tempIterator].GetPosition());
+  //  tempVec.Normalize();
+  //  tempVec.op_mul(consts.enemy1speed);
+//
+  //  //enemy1pool[tempIterator].SetLinearVelocity(tempVec);
+  //  indexDouble = tempIterator * 2;
+  //  tempVec.set_x(enemy1directions[indexDouble]);
+  //  tempVec.set_y(enemy1directions[indexDouble + 1]);
+  //  enemy1pool[tempIterator].SetLinearVelocity(tempVec);
+  //}
 
   world.Step(stepTime, 8, 3);
   for (let i = 0; i < disableRequest.length; i++) {
@@ -353,23 +372,25 @@ function loop() {
   }
 
   if (counter % 5 === 0) {
-    if (disabledEnemy1list.length > 0) {
-      let genIndex = disabledEnemy1list.pop() as number;
-      console.log(genIndex)
-      if (enemy1Hps[genIndex] <= 0) {
-        let tempDistance = Math.random() * 10 + consts.spawnSize / 2;
-        let tempAngle = Math.random() * Math.PI * 2;
-        let tempDiffX = Math.cos(tempAngle) * tempDistance;
-        let tempDiffY = Math.sin(tempAngle) * tempDistance;
-        tempVec.x = playerPosition[0] + tempDiffX;
-        tempVec.y = playerPosition[1] + tempDiffY;
-        enemy1positions[genIndex * 2] = tempVec.x;
-        enemy1positions[genIndex * 2 + 1] = tempVec.y;
-        enemy1BodyPool[genIndex].SetTransform(tempVec, 0);
-        enemy1Hps[genIndex] = 10;
-        enemy1BodyPool[genIndex].SetEnabled(true);
-      }
-    }
+    //console.log('gen')
+    enemy1pool.gen()
+
+    //if (disabledEnemy1list.length > 0) {
+    //  let genIndex = disabledEnemy1list.pop() as number;
+    //  if (enemy1Hps[genIndex] <= 0) {
+    //    let tempDistance = Math.random() * 10 + consts.spawnSize / 2;
+    //    let tempAngle = Math.random() * Math.PI * 2;
+    //    let tempDiffX = Math.cos(tempAngle) * tempDistance;
+    //    let tempDiffY = Math.sin(tempAngle) * tempDistance;
+    //    tempVec.x = playerPosition[0] + tempDiffX;
+    //    tempVec.y = playerPosition[1] + tempDiffY;
+    //    enemy1positions[genIndex * 2] = tempVec.x;
+    //    enemy1positions[genIndex * 2 + 1] = tempVec.y;
+    //    enemy1pool[genIndex].SetTransform(tempVec, 0);
+    //    enemy1Hps[genIndex] = 10;
+    //    enemy1pool[genIndex].SetEnabled(true);
+    //  }
+    //}
   }
 }
 

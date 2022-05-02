@@ -89,7 +89,7 @@ app.loader.add(resources).load(() => {
       viewport
         .pinch({ noDrag: true })
         .wheel({ percent: 0, smooth: 10, trackpadPinch: true })
-        .setZoom(0.002)
+        .setZoom(20)
         .clampZoom({ minScale: 1, maxScale: 500 })
         .follow(player);
       viewportContainer.addChild(player);

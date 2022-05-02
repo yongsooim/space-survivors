@@ -69,8 +69,8 @@ worker1.onmessage = (ev: any) => {
   if (ev.data.cmd === "ready") {
     worker1Ready = true;
   } else if (ev.data.cmd === "damage") {
-    damageTextPool.show(ev.data.x, ev.data.y, ev.data.dmg);
-    explosionPool.show(ev.data.x, ev.data.y)
+    damageTextPool.show((ev.data.x + ev.data.enemyX)/2, (ev.data.y + ev.data.enemyY)/2, 5);
+    explosionPool.show(ev.data.enemyX, ev.data.enemyY)
   }
 };
 
