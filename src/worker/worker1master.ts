@@ -1,16 +1,16 @@
-import Worker from "./worker1?worker";
-import sab from "./sabManage";
-import * as PIXI from "pixi.js";
-import { viewport, viewportContainer } from "../viewport/viewport";
-import consts from "../type/const";
-import { aa1Texture, enemy1, fireTexture, sprites } from "../resource/spriteManage";
-import { app } from "../main";
-import { sound } from "@pixi/sound";
-import { damageTextPool } from "../ui/damageText";
-import { channel12 } from "./channel";
-import { isMobile } from "pixi.js";
+import Worker from './worker1?worker';
+import sab from './sabManage';
+import * as PIXI from 'pixi.js';
+import { viewport, viewportContainer } from '../viewport/viewport';
+import consts from '../type/const';
+import { aa1Texture, enemy1, fireTexture, sprites } from '../resource/spriteManage';
+import { app } from '../main';
+import { sound } from '@pixi/sound';
+import { damageTextPool } from '../ui/damageText';
+import { channel12 } from './channel';
+import { isMobile } from 'pixi.js';
 import firePng from '../asset/fire.png'
-import { explosion, explosionShow, explosionPool } from "../player/explosion";
+import { explosion, explosionShow, explosionPool } from '../player/explosion';
 
 const worker1 = new Worker();
 
@@ -66,16 +66,17 @@ const flame1container = new PIXI.ParticleContainer(
 let tempSprite;
 export let worker1Ready = false;
 worker1.onmessage = (ev: any) => {
-  if (ev.data.cmd === "ready") {
+  if (ev.data.cmd === 'ready') {
     worker1Ready = true;
-  } else if (ev.data.cmd === "damage") {
+  } else if (ev.data.cmd === 'damage') {
     damageTextPool.show(ev.data.x, ev.data.y, ev.data.dmg);
     explosionPool.show(ev.data.x, ev.data.y)
+    explosionShow(ev.data.x, ev.data.y)
   }
 };
 
 export function worker1init() {
-  worker1.postMessage({ cmd: "init", sab: sab }, [channel12.port1]);
+  worker1.postMessage({ cmd: 'init', sab: sab }, [channel12.port1]);
 
   //calc request
   channel12.port1.onmessage = () => {
@@ -174,13 +175,13 @@ export function worker1init() {
 }
 
 export function worker1start() {
-  worker1.postMessage({ cmd: "start" });
+  worker1.postMessage({ cmd: 'start' });
 }
 
 window.onbeforeunload = () => {
   location.reload();
   document.location.reload();
-  worker1.postMessage({ cmd: "close" });
+  worker1.postMessage({ cmd: 'close' });
   worker1.terminate();
   PIXI.utils.clearTextureCache();
 };
@@ -190,30 +191,30 @@ window.onbeforeunload = () => {
 // }
 
 window.onclose = () => {
-  worker1.postMessage({ cmd: "close" });
+  worker1.postMessage({ cmd: 'close' });
   worker1.terminate();
   PIXI.utils.clearTextureCache();
 };
 
-window.document.addEventListener("beforeunload", () => {
+window.document.addEventListener('beforeunload', () => {
   worker1.terminate();
-  worker1.postMessage("");
+  worker1.postMessage('');
   PIXI.utils.clearTextureCache();
 });
 
 export function worker1fire() {
-  sound.volume("shot", 0.3);
-  sound.play("shot");
+  sound.volume('shot', 0.3);
+  sound.play('shot');
 
-  worker1.postMessage({ cmd: "fire" });
+  worker1.postMessage({ cmd: 'fire' });
 }
 
 export function worker1flame() {
-  worker1.postMessage({ cmd: "flame" });
+  worker1.postMessage({ cmd: 'flame' });
 }
 
 export async function worker1check() {
-  worker1.postMessage({ cmd: "check" });
+  worker1.postMessage({ cmd: 'check' });
 }
 
 export { };

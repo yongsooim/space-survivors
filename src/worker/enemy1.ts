@@ -1,6 +1,6 @@
 
-import Box2DFactory from "box2d-wasm"; // ....
-import consts from "../type/const";
+import Box2DFactory from 'box2d-wasm'; // ....
+import consts from '../type/const';
 import { world, Filter, playerPosition, autoAttack1Positions, autoAttack1Enabled, enemy1filter, enemy1positions, enemy1directions, enemy1Hps, kills } from './worker1'
 
 const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
@@ -16,7 +16,7 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
     // console.log('findng at in main  :  ./assets/' + url)
     //return './' + url  // for build, dist
     // console.log(scriptDirectory)
-    return "/assets/" + url; // for dev
+    return '/assets/' + url; // for dev
   },
 });
 
@@ -61,32 +61,52 @@ class Enemy1Pool {
     }
   }
 
-  updatePosition() { // position to render in sab
+  checkDead() {
+    tempIterator = consts.numberOfEnemy1;
+    while (tempIterator--) {
+
+      if (this.pool[tempIterator].IsEnabled() === false) continue // skip already dead
+
+      if (enemy1Hps[tempIterator] <= 0) {
+        // check enemy dead
+        Atomics.add(kills, 0, 1);
+        this.pool[tempIterator].SetEnabled(false);
+        this.disabledList.push(tempIterator);
+      }
+    }
+  }
+
+  updateSabPosition() { // position to render in sab
     // update shared memory buffer
     tempIterator = consts.numberOfEnemy1;
     while (tempIterator--) {
-      // skip dead
-      if (this.pool[tempIterator].IsEnabled() === false) {
-        continue;
-      }
-      if (enemy1Hps[tempIterator] <= 0) {
-        // check enemy dead
-        if (this.pool[tempIterator].IsEnabled() === true) {
-          Atomics.add(kills, 0, 1);
-          this.pool[tempIterator].SetEnabled(false);
-          this.disabledList.push(tempIterator);
-        }
-      }
+      if (this.pool[tempIterator].IsEnabled() === false) continue; // skip dead
       indexDouble = tempIterator * 2;
       enemy1positions[indexDouble] = this.pool[tempIterator].GetPosition().x;
       enemy1positions[indexDouble + 1] = this.pool[tempIterator].GetPosition().y;
     }
   }
 
+
+  updateVelocity() { // position to render in sab
+    // update shared memory buffer
+    tempIterator = consts.numberOfEnemy1;
+    while (tempIterator--) {
+      indexDouble = tempIterator * 2;
+      tempVec.set_x(enemy1directions[indexDouble]);
+      tempVec.set_y(enemy1directions[indexDouble + 1]);
+      this.pool[tempIterator].SetLinearVelocity(tempVec);
+    }
+  }
+
+  disableByPtr(ptr: number) {
+    autoAttack1Enabled[this.ptrToIdx[ptr]] = 0;
+    this.pool[this.ptrToIdx[ptr]].SetEnabled(false);
+  }
+
   gen() {
     if (this.disabledList.length > 0) {
       let genIndex = this.disabledList.pop() as number;
-      console.log(genIndex)
       if (enemy1Hps[genIndex] <= 0) {
         let tempDistance = Math.random() * 10 + consts.spawnSize / 2;
         let tempAngle = Math.random() * Math.PI * 2;
@@ -99,7 +119,7 @@ class Enemy1Pool {
         enemy1positions[genIndex * 2] = tempVec.x;
         enemy1positions[genIndex * 2 + 1] = tempVec.y;
         enemy1Hps[genIndex] = 10;
-        
+
         this.pool[genIndex].SetTransform(tempVec, 0);
         this.pool[genIndex].SetEnabled(true);
       }

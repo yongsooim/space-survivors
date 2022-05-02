@@ -1,12 +1,12 @@
-import { Scene } from "pixi-scenegraph";
-import * as PIXI from "pixi.js";
-import { app } from "../main";
-import { viewportContainer } from "../viewport/viewport";
+import { Scene } from 'pixi-scenegraph';
+import * as PIXI from 'pixi.js';
+import { app } from '../main';
+import { viewportContainer } from '../viewport/viewport';
 
 class MainMenu extends PIXI.Container {
   count = 0;
-  titleText = new PIXI.Text("Space Survivors 2022", { fontFamily: "Consolas", fontSize: 18, fill: 0xffffff, align: "center" });
-  pressText = new PIXI.Text("Press Any to Start", { fontFamily: "Consolas", fontSize: 16, fill: 0xffffff, align: "center" });
+  titleText = new PIXI.Text('Space Survivors 2022', { fontFamily: 'Consolas', fontSize: 18, fill: 0xffffff, align: 'center' });
+  pressText = new PIXI.Text('Press Any to Start', { fontFamily: 'Consolas', fontSize: 16, fill: 0xffffff, align: 'center' });
 
   init() {
     this.position.set(0);
@@ -19,7 +19,7 @@ class MainMenu extends PIXI.Container {
     this.pressText.scale.set(2);
     this.pressText.position.set(0, 20);
 
-    this.pressText.text = "Loading...";
+    this.pressText.text = 'Loading...';
     this.addChild(this.titleText);
     this.addChild(this.pressText);
 

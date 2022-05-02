@@ -1,17 +1,17 @@
-import { Container } from "pixi.js";
-import { textures } from "../resource/spriteManage";
-import * as PIXI from "pixi.js";
-import { input } from "../input/input";
-import { Direction } from "../type/type";
-import consts from "../type/const";
-import sab from "../worker/sabManage";
-import { Vector } from "../class/Vector";
-import { keyboard, Keys } from "../input/keyboard";
-import { viewport } from "../viewport/viewport";
-import { aaPool } from "../weapon/autoAttack1";
-import { initEmitter, emitter } from "./fire-emit";
-import { worker1fire, worker1flame } from "../worker/worker1master";
-import { explosion } from "./explosion";
+import { Container } from 'pixi.js';
+import { textures } from '../resource/spriteManage';
+import * as PIXI from 'pixi.js';
+import { input } from '../input/input';
+import { Direction } from '../type/type';
+import consts from '../type/const';
+import sab from '../worker/sabManage';
+import { Vector } from '../class/Vector';
+import { keyboard, Keys } from '../input/keyboard';
+import { viewport } from '../viewport/viewport';
+import { aaPool } from '../weapon/autoAttack1';
+import { initEmitter, emitter } from './fire-emit';
+import { worker1fire, worker1flame } from '../worker/worker1master';
+import { explosion } from './explosion';
 
 class Player extends Container {
   level = 0;
@@ -41,9 +41,9 @@ class Player extends Container {
 
     if (this.vector.size >= 0.3) {
       if ((Math.PI * 7) / 8 <= this.vector.toAngle() && this.vector.toAngle() < (Math.PI * 9) / 8) {
-        //console.log("left rotate wing");
+        //console.log('left rotate wing');
       } else if (this.vector.toAngle() <= Math.PI / 8 || this.vector.toAngle() > (Math.PI * 15) / 8) {
-        //console.log("right rotate wing");
+        //console.log('right rotate wing');
       }
     }
   }

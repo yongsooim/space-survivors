@@ -20,9 +20,9 @@ const beatMax = 32
 let beatCounter = 0
 
 let playerLevel = 1
-export function beatInit () {
+export function beatInit() {
   sound.volumeAll = 0.1
-sound.volume('loop2', 0.5)
+  sound.volume('loop2', 0.5)
 
   heartbeatWorker.onmessage = () => {
     if (++beatCounter >= beatMax) {
@@ -31,169 +31,169 @@ sound.volume('loop2', 0.5)
     }
 
     switch (beatCounter) {
-    case 0o0: // octal literal
-      sound.play('kick')
-      sound.play('loop2')
-      player.fire()
-      setTimeout(()=>{
+      case 0o0: // octal literal
+        sound.play('kick')
+        sound.play('loop2')
         player.fire()
-      }, 60)
+        setTimeout(() => {
+          player.fire()
+        }, 60)
 
-      sab.timerArr[0]++
-      break
+        sab.timerArr[0]++
+        break
 
-    case 0o1:
-      player.fire()
-      setTimeout(()=>{
+      case 0o1:
         player.fire()
-      }, 60)
+        setTimeout(() => {
+          player.fire()
+        }, 60)
 
-      break
+        break
 
-    case 0o2:
-      player.fire()
-      setTimeout(()=>{
+      case 0o2:
         player.fire()
-      }, 60)
+        setTimeout(() => {
+          player.fire()
+        }, 60)
 
-      break
+        break
 
-    case 0o3:
-      player.fire()
-      setTimeout(()=>{
+      case 0o3:
         player.fire()
-      }, 60)
+        setTimeout(() => {
+          player.fire()
+        }, 60)
 
-      break
+        break
 
-    case 0o4:
-      if (playerLevel === 2) {
+      case 0o4:
+        if (playerLevel === 2) {
+          sound.play('kick')
+          player.fire()
+        }
+        break
+
+      case 0o5:
+        break
+
+      case 0o6:
+        player.fire()
+        break
+
+      case 0o7:
+        break
+
+      case 0o10:
         sound.play('kick')
         player.fire()
-      }
-      break
 
-    case 0o5:
-      break
+        sab.timerArr[0]++
 
-    case 0o6:
-      player.fire()
-      break
+        break
 
-    case 0o7:
-      break
+      case 0o11:
+        break
 
-    case 0o10:
-      sound.play('kick')
-      player.fire()
+      case 0o12:
+        player.fire()
+        break
 
-      sab.timerArr[0]++
+      case 0o13:
+        break
 
-      break
+      case 0o14:
+        if (playerLevel === 2) {
+          sound.play('kick')
+          player.fire()
+        }
 
-    case 0o11:
-      break
+        break
 
-    case 0o12:
-      player.fire()
-      break
+      case 0o15:
+        player.fire()
+        break
 
-    case 0o13:
-      break
+      case 0o16:
+        break
 
-    case 0o14:
-      if (playerLevel === 2) {
+      case 0o17:
+        player.fire()
+        break
+
+      case 0o20:
         sound.play('kick')
         player.fire()
-      }
 
-      break
+        sab.timerArr[0]++
 
-    case 0o15:
-      player.fire()
-      break
+        break
 
-    case 0o16:
-      break
+      case 0o21:
+        break
 
-    case 0o17:
-      player.fire()
-      break
+      case 0o22:
+        player.fire()
+        break
 
-    case 0o20:
-      sound.play('kick')
-      player.fire()
+      case 0o23:
+        break
 
-      sab.timerArr[0]++
+      case 0o24:
+        if (playerLevel === 2) {
+          sound.play('kick')
+          player.fire()
+        }
 
-      break
+        break
 
-    case 0o21:
-      break
+      case 0o25:
+        break
 
-    case 0o22:
-      player.fire()
-      break
+      case 0o26:
+        player.fire()
+        break
 
-    case 0o23:
-      break
+      case 0o27:
+        break
 
-    case 0o24:
-      if (playerLevel === 2) {
+      case 0o30:
         sound.play('kick')
         player.fire()
-      }
 
-      break
+        sab.timerArr[0]++
 
-    case 0o25:
-      break
+        break
 
-    case 0o26:
-      player.fire()
-      break
+      case 0o31:
+        break
 
-    case 0o27:
-      break
-
-    case 0o30:
-      sound.play('kick')
-      player.fire()
-
-      sab.timerArr[0]++
-
-      break
-
-    case 0o31:
-      break
-
-    case 0o32:
-      player.fire()
-      break
-
-    case 0o33:
-      break
-
-    case 0o34:
-      if (playerLevel === 2) {
-        sound.play('kick')
+      case 0o32:
         player.fire()
-      }
-      break
+        break
 
-    case 0o35:
-      break
+      case 0o33:
+        break
 
-    case 0o36:
-      player.fire()
-      break
+      case 0o34:
+        if (playerLevel === 2) {
+          sound.play('kick')
+          player.fire()
+        }
+        break
 
-    case 0o37:
-      sound.volume('snare', 0.4)
-      sound.play('snare')
-      player.flame()
+      case 0o35:
+        break
 
-      break
+      case 0o36:
+        player.fire()
+        break
+
+      case 0o37:
+        sound.volume('snare', 0.4)
+        sound.play('snare')
+        player.flame()
+
+        break
     }
 
     // use counter for sychro actions
@@ -222,7 +222,7 @@ if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and 
   hidden = 'webkitHidden'
   visibilityChange = 'webkitvisibilitychange'
 }
-function handleVisibilityChange () {
+function handleVisibilityChange() {
   // @ts-ignore
   if (document[hidden]) {
     // console.log('hidden')

@@ -1,23 +1,23 @@
-import * as PIXI from "pixi.js";
-import { resources } from "./resource/resources";
-import { beatInit } from "./timer/beatMaster";
-import { player } from "./player/player";
-import { input } from "./input/input";
-import { worker1init, worker1Ready, worker1start } from "./worker/worker1master";
-import { worker2start } from "./worker/worker2master";
-import { worker3init, worker3start } from "./worker/worker3master";
-import { PixiConsole, PixiConsoleConfig } from "pixi-console";
-import { Scene, SceneManager } from "pixi-scenegraph";
-import { mainMenu } from "./scene/mainMenu";
+import * as PIXI from 'pixi.js';
+import { resources } from './resource/resources';
+import { beatInit } from './timer/beatMaster';
+import { player } from './player/player';
+import { input } from './input/input';
+import { worker1init, worker1Ready, worker1start } from './worker/worker1master';
+import { worker2start } from './worker/worker2master';
+import { worker3init, worker3start } from './worker/worker3master';
+import { PixiConsole, PixiConsoleConfig } from 'pixi-console';
+import { Scene, SceneManager } from 'pixi-scenegraph';
+import { mainMenu } from './scene/mainMenu';
 
-import { initViewport, viewport, viewportContainer } from "./viewport/viewport";
-import { initStat } from "./stat/stat";
-import { addText } from "./ui/ui";
-import { bgInit } from "./tile/background";
-import { tileInit } from "./tile/tile";
-import { aaPool } from "./weapon/autoAttack1";
-import { SCALE_MODES } from "pixi.js";
-import { scaleBy } from "@pixi/particle-emitter/lib/ParticleUtils";
+import { initViewport, viewport, viewportContainer } from './viewport/viewport';
+import { initStat } from './stat/stat';
+import { addText } from './ui/ui';
+import { bgInit } from './tile/background';
+import { tileInit } from './tile/tile';
+import { aaPool } from './weapon/autoAttack1';
+import { SCALE_MODES } from 'pixi.js';
+import { scaleBy } from '@pixi/particle-emitter/lib/ParticleUtils';
 
 PIXI.utils.skipHello();
 PIXI.settings.FILTER_MULTISAMPLE = PIXI.MSAA_QUALITY.NONE;
@@ -25,7 +25,7 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 PIXI.settings.PREFER_ENV = PIXI.ENV.WEBGL2;
 
 //export const scm = new SceneManager({
-//  view: document.getElementById("pixi") as HTMLCanvasElement,
+//  view: document.getElementById('pixi') as HTMLCanvasElement,
 //  resizeTo: window,
 //  antialias: false,
 //  backgroundColor: 0x000000,
@@ -36,7 +36,7 @@ PIXI.settings.PREFER_ENV = PIXI.ENV.WEBGL2;
 //export const app = scm.Application;
 
 export const app = new PIXI.Application({
-  view: document.getElementById("pixi") as HTMLCanvasElement,
+  view: document.getElementById('pixi') as HTMLCanvasElement,
   resizeTo: window,
   antialias: false,
   backgroundColor: 0x000000,
@@ -50,11 +50,11 @@ app.loader.onProgress.add((e) => {
   //console.log(e);
 });
 app.loader.onComplete.add((e) => {
-  console.log("loading done");
+  console.log('loading done');
   resourceLoadDone = true;
 });
 app.loader.onError.add((e) => {
-  console.log("ERROR: " + e.message);
+  console.log('ERROR: ' + e.message);
 });
 
 bgInit();
@@ -107,18 +107,18 @@ app.loader.add(resources).load(() => {
 
 // Set the name of the hidden property and the change event for visibility
 let hidden: string, visibilityChange;
-if (typeof document.hidden !== "undefined") {
+if (typeof document.hidden !== 'undefined') {
   // Opera 12.10 and Firefox 18 and later support
-  hidden = "hidden";
-  visibilityChange = "visibilitychange";
+  hidden = 'hidden';
+  visibilityChange = 'visibilitychange';
   // @ts-ignore
-} else if (typeof document.msHidden !== "undefined") {
-  hidden = "msHidden";
-  visibilityChange = "msvisibilitychange";
+} else if (typeof document.msHidden !== 'undefined') {
+  hidden = 'msHidden';
+  visibilityChange = 'msvisibilitychange';
   // @ts-ignore
-} else if (typeof document.webkitHidden !== "undefined") {
-  hidden = "webkitHidden";
-  visibilityChange = "webkitvisibilitychange";
+} else if (typeof document.webkitHidden !== 'undefined') {
+  hidden = 'webkitHidden';
+  visibilityChange = 'webkitvisibilitychange';
 }
 
 function handleVisibilityChange() {
@@ -139,7 +139,7 @@ function handleVisibilityChange() {
 document.addEventListener(visibilityChange as string, handleVisibilityChange, false);
 
 document.addEventListener(
-  "scroll",
+  'scroll',
   (e) => {
     e.preventDefault();
   },

@@ -1,6 +1,6 @@
 // this worker calculates collision between enemy and player
 
-import consts from "../type/const";
+import consts from '../type/const';
 
 let playerPosition: Float64Array;
 let enemy1Positions: Float64Array;
@@ -20,15 +20,15 @@ let port: MessagePort;
 let loopInterval: number;
 
 onmessage = (ev) => {
-  if (ev.data.cmd === "stop") {
+  if (ev.data.cmd === 'stop') {
     running = false;
-  } else if (ev.data.cmd === "start") {
+  } else if (ev.data.cmd === 'start') {
     running = true;
-  } else if (ev.data.cmd === "close") {
+  } else if (ev.data.cmd === 'close') {
     running = false;
     clearInterval(loopInterval);
     self.close();
-  } else if (ev.data.cmd === "init") {
+  } else if (ev.data.cmd === 'init') {
     console.log(ev.data);
     playerPosition = new Float64Array(ev.data.sab.playerPosition);
     enemy1Positions = new Float64Array(ev.data.sab.enemy1Positions);
@@ -74,7 +74,7 @@ let calc = () => {
     distance = Math.sqrt(diffX * diffX + diffY * diffY);
 
     if (distance < 2) {
-      self.postMessage({ cmd: "hitText", x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
+      self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
     }
 
     directionX = (consts.enemy1speed * diffX) / distance;
@@ -85,4 +85,4 @@ let calc = () => {
   }
 };
 
-postMessage({ cmd: "ready" });
+postMessage({ cmd: 'ready' });

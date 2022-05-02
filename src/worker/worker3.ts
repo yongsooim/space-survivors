@@ -1,8 +1,8 @@
 // this worker calculates the interaction between resource and player
 
-import Box2DFactory from "box2d-wasm"; // ....
-import consts from "../type/const";
-import { SabSet } from "./sabManage";
+import Box2DFactory from 'box2d-wasm'; // ....
+import consts from '../type/const';
+import { SabSet } from './sabManage';
 
 let playerPosition: Float64Array;
 let resource1positions: Float64Array;
@@ -17,15 +17,15 @@ let loopInterval = 0;
 let running = false;
 
 onmessage = (ev) => {
-  if (ev.data.cmd === "stop") {
+  if (ev.data.cmd === 'stop') {
     running = false;
     // pause
-  } else if (ev.data.cmd === "start") {
+  } else if (ev.data.cmd === 'start') {
     running = true;
-  } else if (ev.data.cmd === "close") {
+  } else if (ev.data.cmd === 'close') {
     running = false;
     self.close();
-  } else if (ev.data.cmd === "generate") {
+  } else if (ev.data.cmd === 'generate') {
     // ev.data.x
     // ev.data.y
     // ev.data.amount
@@ -55,7 +55,7 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
     // console.log('findng at in main  :  ./assets/' + url)
     //return './' + url  // for build, dist
     // console.log(scriptDirectory)\
-    return "/assets/" + url; // for dev
+    return '/assets/' + url; // for dev
   },
 });
 
@@ -153,7 +153,7 @@ const loop = () => {
         resource1BodyPool[tempIterator].SetEnabled(false);
         Atomics.store(resource1remainTimes, tempIterator, 0);
         Atomics.add(exp, 0, 1);
-        postMessage({ cmd: "get" });
+        postMessage({ cmd: 'get' });
       } else {
         tempCalcVector.Normalize();
         tempCalcVector.op_mul(0.04 * (consts.magnetRange + 0.1 - length));
@@ -178,7 +178,7 @@ const loop = () => {
         resource2BodyPool[tempIterator].SetEnabled(false);
         Atomics.store(resource2remainTimes, tempIterator, 0);
         Atomics.add(exp, 0, 3);
-        postMessage({ cmd: "get" });
+        postMessage({ cmd: 'get' });
       } else {
         tempCalcVector.Normalize();
         tempCalcVector.op_mul(0.03 * (consts.magnetRange + 0.1 - length));
@@ -242,6 +242,6 @@ setTimeout(() => {
   loopInterval = setInterval(loop, consts.worker3interval);
 }, 1000);
 
-postMessage("ready");
+postMessage('ready');
 
 export default Worker;
