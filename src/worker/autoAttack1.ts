@@ -1,15 +1,26 @@
 
-import Box2DFactory from 'box2d-wasm'; // ....
-import consts from '../type/const';
+import Box2DFactory from "box2d-wasm"; // ....
+import consts from "../type/const";
 import { world, Filter, playerPosition, autoAttack1Positions, autoAttack1Enabled, autoAttack1filter } from './worker1'
 
 const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
+  ///
+  // By default, this looks for Box2D.wasm relative to public/build/bundle.js:
+  // @example (url, scriptDirectory) => `${scriptDirectory}${url}`
+  // But we want to look for Box2D.wasm relative to public/index.html instead.
+  //
+  // locateFile: (url, scriptDirectory) => {
   locateFile: (url) => {
-    return '/assets/' + url; // for dev
+    // console.log('url in main  :  ' + url)
+    // console.log('scriptDirectory in main  :  ' + scriptDirectory)
+    // console.log('findng at in main  :  ./assets/' + url)
+    //return './' + url  // for build, dist
+    // console.log(scriptDirectory)
+    return "/assets/" + url; // for dev
   },
 });
 
-const { b2BodyDef, b2_dynamicBody, b2PolygonShape, b2Vec2, getPointer, b2Filter } = box2D;
+const { b2BodyDef, b2_dynamicBody, b2PolygonShape, b2Vec2, b2World, JSContactListener, wrapPointer, getPointer, b2Filter, b2Contact } = box2D;
 
 const zero = new b2Vec2(0, 0);
 const center = new b2Vec2(0.5, 0.5);
@@ -50,7 +61,7 @@ class AutoAttack1Pool {
     }
   }
 
-  updateSabPosition() { // position to render in sab
+  updatePosition() { // position to render in sab
     tempIterator = consts.numberOfAutoAttack1;
     while (tempIterator--) {
       if (autoAttack1Enabled[tempIterator] === 0) continue; // skip disabled
@@ -67,7 +78,7 @@ class AutoAttack1Pool {
       this.cursor = 0;
     }
 
-    // add sab to render
+    // update sab to render
     autoAttack1Positions[this.cursor * 2] = playerPosition[0] - 0.1;
     autoAttack1Positions[this.cursor * 2 + 1] = tempVec.y - 1
 
@@ -83,10 +94,6 @@ class AutoAttack1Pool {
     autoAttack1Enabled[this.cursor] = 1;
     this.pool[this.cursor].SetEnabled(true);
     this.pool[this.cursor].GetFixtureList().SetFilterData(autoAttack1filter);
-  }
-  disableByPtr(ptr: number) {
-    autoAttack1Enabled[this.ptrToIdx[ptr]] = 0;
-    this.pool[this.ptrToIdx[ptr]].SetEnabled(false);
   }
 }
 

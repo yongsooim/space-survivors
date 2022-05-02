@@ -1,9 +1,9 @@
-import * as particles from '@pixi/particle-emitter';
-import firePng from '../asset/fire.png';
-import particlePng from '../asset/particle.png';
-import consts from '../type/const';
-import { viewport, viewportContainer } from '../viewport/viewport';
-import { player } from './player';
+import * as particles from "@pixi/particle-emitter";
+import firePng from "../asset/fire.png";
+import particlePng from "../asset/particle.png";
+import consts from "../type/const";
+import { viewport, viewportContainer } from "../viewport/viewport";
+import { player } from "./player";
 
 export let explosion = new particles.Emitter(viewportContainer, {
   autoUpdate: true,
@@ -21,7 +21,7 @@ export let explosion = new particles.Emitter(viewportContainer, {
   },
   behaviors: [
     {
-      type: 'alpha',
+      type: "alpha",
       config: {
         alpha: {
           list: [
@@ -38,7 +38,7 @@ export let explosion = new particles.Emitter(viewportContainer, {
       },
     },
     {
-      type: 'moveSpeed',
+      type: "moveSpeed",
       config: {
         speed: {
           list: [
@@ -55,7 +55,7 @@ export let explosion = new particles.Emitter(viewportContainer, {
       },
     },
     {
-      type: 'scale',
+      type: "scale",
       config: {
         scale: {
           list: [
@@ -73,39 +73,39 @@ export let explosion = new particles.Emitter(viewportContainer, {
       },
     },
     {
-      type: 'color',
+      type: "color",
       config: {
         color: {
           list: [
             {
               time: 0,
-              value: 'fb1010',
+              value: "fb1010",
             },
             {
               time: 1,
-              value: 'f5b830',
+              value: "f5b830",
             },
           ],
         },
       },
     },
     {
-      type: 'rotationStatic',
+      type: "rotationStatic",
       config: {
         min: 0,
         max: 360,
       },
     },
     {
-      type: 'textureRandom',
+      type: "textureRandom",
       config: {
         textures: [particlePng],
       },
     },
     {
-      type: 'spawnShape',
+      type: "spawnShape",
       config: {
-        type: 'torus',
+        type: "torus",
         data: {
           x: 0,
           y: 0,
@@ -141,7 +141,7 @@ class ExplosionPool {
         },
         behaviors: [
           {
-            type: 'alpha',
+            type: "alpha",
             config: {
               alpha: {
                 list: [
@@ -158,7 +158,7 @@ class ExplosionPool {
             },
           },
           {
-            type: 'moveSpeed',
+            type: "moveSpeed",
             config: {
               speed: {
                 list: [
@@ -175,7 +175,7 @@ class ExplosionPool {
             },
           },
           {
-            type: 'scale',
+            type: "scale",
             config: {
               scale: {
                 list: [
@@ -193,39 +193,39 @@ class ExplosionPool {
             },
           },
           {
-            type: 'color',
+            type: "color",
             config: {
               color: {
                 list: [
                   {
                     time: 0,
-                    value: 'fb1010',
+                    value: "fb1010",
                   },
                   {
                     time: 1,
-                    value: 'f5b830',
+                    value: "f5b830",
                   },
                 ],
               },
             },
           },
           {
-            type: 'rotationStatic',
+            type: "rotationStatic",
             config: {
               min: 0,
               max: 360,
             },
           },
           {
-            type: 'textureRandom',
+            type: "textureRandom",
             config: {
               textures: [particlePng],
             },
           },
           {
-            type: 'spawnShape',
+            type: "spawnShape",
             config: {
-              type: 'torus',
+              type: "torus",
               data: {
                 x: 0,
                 y: 0,

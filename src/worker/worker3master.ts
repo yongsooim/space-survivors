@@ -1,21 +1,21 @@
-import * as PIXI from 'pixi.js';
-import Worker from './worker3?worker';
-import consts from '../type/const';
-import { viewport, viewportContainer } from '../viewport/viewport';
-import particlePng from '../asset/particle.png';
-import { player } from '../player/player';
-import sab from './sabManage';
+import * as PIXI from "pixi.js";
+import Worker from "./worker3?worker";
+import consts from "../type/const";
+import { viewport, viewportContainer } from "../viewport/viewport";
+import particlePng from "../asset/particle.png";
+import { player } from "../player/player";
+import sab from "./sabManage";
 
-import { textures } from '../resource/spriteManage';
-import { app } from '../main';
-import { sound } from '@pixi/sound';
+import { textures } from "../resource/spriteManage";
+import { app } from "../main";
+import { sound } from "@pixi/sound";
 const worker3 = new Worker();
 
-sound.volume('pickup', 0.2);
+sound.volume("pickup", 0.2);
 
 worker3.onmessage = (ev) => {
-  if (ev.data.cmd === 'get') {
-    sound.play('pickup');
+  if (ev.data.cmd === "get") {
+    sound.play("pickup");
   }
 };
 
@@ -150,7 +150,7 @@ export function worker3init() {
 
 export function worker3start() {
   setTimeout(() => {
-    worker3.postMessage({ cmd: 'start' });
+    worker3.postMessage({ cmd: "start" });
     viewportContainer.addChild(resource1container);
     viewportContainer.addChild(resource2container);
   }, 1000);
@@ -159,16 +159,16 @@ export function worker3start() {
 window.onbeforeunload = function () {
   location.reload();
   document.location.reload();
-  worker3.postMessage({ cmd: 'close' });
+  worker3.postMessage({ cmd: "close" });
   worker3.terminate();
 };
 
 window.onclose = function () {
-  worker3.postMessage({ cmd: 'close' });
+  worker3.postMessage({ cmd: "close" });
   worker3.terminate();
 };
 
-window.document.addEventListener('beforeunload', () => {
-  worker3.postMessage({ cmd: 'close' });
+window.document.addEventListener("beforeunload", () => {
+  worker3.postMessage({ cmd: "close" });
   worker3.terminate();
 });

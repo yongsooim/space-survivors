@@ -1,5 +1,5 @@
 // Util for shared array buffer between main thread and worker thread
-import consts from '../type/const';
+import consts from "../type/const";
 
 export class SabSet {
 
