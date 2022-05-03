@@ -1,22 +1,18 @@
-/**
- * Forked from Box2D.js
- * @see https://github.com/kripken/box2d.js/blob/f75077b/helpers/embox2d-helpers.js
- * @author dmagunov + Huy Nguyen + fork contributions from Alex Birch
- * @see https://github.com/kripken/box2d.js/blob/49dddd6/helpers/embox2d-html5canvas-debugDraw.js
- * @author dmagunov + fork contributions from Alex Birch
- * @license Zlib https://opensource.org/licenses/Zlib
- * License evidence: https://github.com/kripken/box2d.js/blob/master/README.markdown#box2djs
- *   "box2d.js is zlib licensed, just like Box2D."
- *
- * @typedef {import('box2d-wasm')} Box2DFactory
- * @param {CanvasRenderingContext2D} ctx
- * @param {number} pixelsPerMeter
- * @param {typeof Box2D & EmscriptenModule} box2D
- */
-
 import consts from "../type/const";
 
-//@ts-ignore
+export declare class Enemy1Pool { // for alias
+  cursor: number
+  pool: Box2D.b2Body[]
+  ptrToIdx: number[]
+  disabledList: number[]
+  checkDead(): void
+  updateSabPosition(): void
+  updateSabPosition(): void
+  updateVelocity(): void
+  disableByPtr(ptr: number): void
+  gen(): void
+}
+
 export const createEnemy1Pool = (
   box2D: typeof Box2D & EmscriptenModule,
   world: Box2D.b2World,
@@ -43,8 +39,8 @@ export const createEnemy1Pool = (
   class Enemy1Pool {
     cursor = 0;
     pool = new Array<Box2D.b2Body>(consts.numberOfEnemy1);
-    ptrToIdx = {} as any;
-    disabledList : number[] = [] 
+    ptrToIdx: number[] = []
+    disabledList: number[] = []
 
     constructor() {
       //creating boxes

@@ -2,7 +2,7 @@
 
 import Box2DFactory from "box2d-wasm"; // ....
 import consts from "../type/const";
-import { createEnemy1Pool } from "./enemy1";
+import { createEnemy1Pool, Enemy1Pool } from "./enemy1";
 
 // Shared Aray Buffer setting
 export let playerPosition: Float64Array;
@@ -20,7 +20,7 @@ export let lock: Int32Array;
 let loopInterval: number;
 let running = false;
 
-let enemy1pool : any
+let enemy1pool : Enemy1Pool
 
 onmessage = (ev) => {
   if (ev.data.cmd === "stop") {
@@ -137,9 +137,8 @@ playerBody.SetEnabled(true);
 
 square.SetAsBox(0.8, 0.6);
 
-let ptrToEnemyBodyIndex = {} as any;
-let ptrToAutoAttackBodyIndex = {} as any;
-let ptrToFlameBodyIndex = {} as any;
+let ptrToAutoAttackBodyIndex = [] as number[];
+let ptrToFlameBodyIndex = [] as number[];
 
 let disabledEnemy1list = [] as number[];
 

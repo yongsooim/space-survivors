@@ -10,7 +10,7 @@ import { damageTextPool } from "../ui/damageText";
 import { channel12 } from "./channel";
 import { isMobile } from "pixi.js";
 import firePng from '../asset/fire.png'
-import { explosion, explosionShow, explosionPool } from "../player/explosion";
+import { explosion, explosionPool } from "../player/explosion";
 
 const worker1 = new Worker();
 
