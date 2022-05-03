@@ -8,6 +8,7 @@ import { Container } from 'pixi.js'
 
 export let viewport: Viewport
 export const viewportContainer = new Container()
+export const viewportContainerBg = new Container()
 viewportContainer.zIndex = 999
 export function initViewport () {
   viewport = new Viewport({
@@ -28,6 +29,7 @@ export function initViewport () {
     viewport.resize(window.innerWidth, window.innerHeight)
   })
 
+  viewport.addChild(viewportContainerBg)
   viewport.addChild(viewportContainer)
   app.stage.addChild(viewport)
 

@@ -7,8 +7,8 @@ import { worker1init, worker1Ready, worker1start } from './worker/worker1master'
 import { worker2start } from './worker/worker2master'
 import { worker3init, worker3start } from './worker/worker3master'
 import { PixiConsole, PixiConsoleConfig } from 'pixi-console'
-import { Scene, SceneManager } from 'pixi-scenegraph'
 import { mainMenu } from './scene/mainMenu'
+
 
 import { initViewport, viewport, viewportContainer } from './viewport/viewport'
 import { initStat } from './stat/stat'
@@ -16,22 +16,12 @@ import { addText } from './ui/ui'
 import { bgInit } from './tile/background'
 import { tileInit } from './tile/tile'
 import { aaPool } from './weapon/autoAttack1'
+import { renderUpdate } from './render/render'
 
 PIXI.utils.skipHello()
 PIXI.settings.FILTER_MULTISAMPLE = PIXI.MSAA_QUALITY.NONE
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 PIXI.settings.PREFER_ENV = PIXI.ENV.WEBGL2
-
-// export const scm = new SceneManager({
-//  view: document.getElementById("pixi") as HTMLCanvasElement,
-//  resizeTo: window,
-//  antialias: false,
-//  backgroundColor: 0x000000,
-//  autoDensity: true,
-// });
-// scm.AddScene(mainMenu);
-// scm.ActivateScene(mainMenu); // or by name scm.ActivateScene('scene_name')
-// export const app = scm.Application;
 
 export const app = new PIXI.Application({
   view: document.getElementById('pixi') as HTMLCanvasElement,
@@ -55,20 +45,31 @@ app.loader.onError.add((e) => {
   console.log('ERROR: ' + e.message)
 })
 
-bgInit()
-initViewport()
-
-mainMenu.init()
-viewportContainer.addChild(mainMenu)
+//
+//const consoleConfig = new PixiConsoleConfig();
+//consoleConfig.consoleWidth = 800;
+//consoleConfig.consoleHeight = 600;
+// 
+//const pixiConsole = new PixiConsole(consoleConfig);
+//app.stage.addChild(pixiConsole);
+// 
+////const secondConsole = new PixiConsole(consoleConfig); // Error PixiConsole is singleton..
+//pixiConsole == PixiConsole.getInstance(); // true
 
 app.loader.add(resources).load(() => {
   // initStat()
 
-  // initViewport();
-
+  bgInit()
+  initViewport()
+  
+  mainMenu.init()
+  viewportContainer.addChild(mainMenu)
+  
   input.init()
 
+  
   worker1init()
+  
   worker3init()
 
   let count = 0
@@ -97,7 +98,9 @@ app.loader.add(resources).load(() => {
         input.update()
         aaPool.update(delta)
         player.update(delta)
+        renderUpdate()
       })
+
     }
   })
 })

@@ -196,6 +196,7 @@ export function beatInit() {
 
       case 0o40:
         sound.play('kick')
+        sound.play('loop2')
         player.fire()
         break
       case 0o41:

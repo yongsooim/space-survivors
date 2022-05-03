@@ -34,6 +34,7 @@ export const createAutoAttack1Pool = (box2D: typeof Box2D & EmscriptenModule, wo
         this.pool[i].CreateFixture(square, 1).SetFriction(0)
         this.pool[i].GetFixtureList().SetRestitution(0)
         this.pool[i].GetFixtureList().SetFilterData(autoAttack1Filter)
+        this.pool[i].GetFixtureList().SetSensor(true)
 
         this.pool[i].SetLinearDamping(0)
         this.pool[i].SetAngularDamping(0)

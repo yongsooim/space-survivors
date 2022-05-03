@@ -5,8 +5,8 @@ const consts = {
   spawnSize: 100,
   numberOfWeapon1: 512,
 
-  numberOfResource1: 512,
-  numberOfResource2: 512,
+  numberOfResource1: 1024,
+  numberOfResource2: 2048,
 
   numberOfAutoAttack1: 50,
 
@@ -21,7 +21,8 @@ const consts = {
   worker2Interval: 1000 / 60,
   worker3Interval: 1000 / 60,
 
-  magnetRange: 6,
+  magnetRange: 4,
+  getRange: 1,
 
   numberOfDamageText: 128,
   numberOfExplosion: 128

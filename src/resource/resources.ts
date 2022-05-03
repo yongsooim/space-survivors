@@ -62,7 +62,8 @@ export const resources: PIXI.IAddOptions[] = [
   { name: 'particles', url: particlesPng },
   { name: 'shot', url: shotWav },
   { name: 'playerhitwav', url: playerhitwav },
-  { name: 'pickupWav', url: pickupWav },
+  { name: 'pickup', url: pickupWav },
   { name: 'firePng', url: firePng },
-  { name: 'loop2', url: loop2 }
+  { name: 'loop2', url: loop2 },
+  
 ]

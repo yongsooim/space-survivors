@@ -81,9 +81,6 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       this.pool[this.cursor].SetTransform(tempVec, 0)
       sa.flame1Positions.x[this.cursor] = tempPlayerPosX
       sa.flame1Positions.y[this.cursor] = tempPlayerPosY
-
-      tempVec.Set(0, consts.flame1Speed)
-
       this.pool[this.cursor].SetTransform(tempVec, 0)
       sa.flame1Enabled[this.cursor] = 1
 
