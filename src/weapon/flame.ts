@@ -1,12 +1,10 @@
-import * as PIXI from "pixi.js";
-import { numberOfFlame } from "../type/const";
+import * as PIXI from 'pixi.js'
+import { numberOfFlame } from '../type/const'
 import * as particles from '@pixi/particle-emitter'
 import firePng from '../asset/fire.png'
 import particlePng from '../asset/particle.png'
-import { viewportContainer } from "../viewport/viewport";
-import { player } from "../player/player";
-
-
+import { viewportContainer } from '../viewport/viewport'
+import { player } from '../player/player'
 
 class Flame {
   fired = false;
@@ -15,8 +13,7 @@ class Flame {
 
   objectPool = [] as any[]
 
-
-  flame(x: number, y: number) {
+  flame (x: number, y: number) {
     this.cursor++
     if (this.cursor === numberOfFlame) {
       this.cursor = 0
@@ -28,7 +25,6 @@ class Flame {
 
     this.emitter.spawnPos = player.position
     this.emitter.emitNow()
-    
   }
 
   emitter = new particles.Emitter(viewportContainer, {

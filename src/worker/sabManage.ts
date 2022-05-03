@@ -1,38 +1,36 @@
 // Util for shared array buffer between main thread and worker thread
-import consts from "../type/const";
+import consts from '../type/const'
 
 export class SabSet {
-
   /** postfix Arr is for array used in main */
 
-  timerSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
-  timerArr = new Int32Array(this.timerSab);
+  timer = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
+  timerArr = new Int32Array(this.timer);
 
-  expSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
-  expArr = new Int32Array(this.expSab);
+  exp = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
+  expArr = new Int32Array(this.exp);
 
-  killSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
-  killArr = new Int32Array(this.killSab);
+  kills = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
+  killArr = new Int32Array(this.kills);
 
-  lifeSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
-  lifeArr = new Int32Array(this.lifeSab);
-
-  lockSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
-  lockArr = new Int32Array(this.lockSab);
+  life = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
+  lifeArr = new Int32Array(this.life);
 
   playerPosition = {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT)
   }
+
   playerPositionArr = {
     x: new Float64Array(this.playerPosition.x),
-    y: new Float64Array(this.playerPosition.x)
+    y: new Float64Array(this.playerPosition.y)
   }
 
   enemy1Positions = {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
-    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1)
   }
+
   enemy1PositionsArr = {
     x: new Float64Array(this.enemy1Positions.x),
     y: new Float64Array(this.enemy1Positions.y)
@@ -40,7 +38,7 @@ export class SabSet {
 
   enemy1Directions = {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
-    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1)
   }
 
   enemy1Hps = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1);
@@ -50,9 +48,10 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1)
   }
+
   autoAttack1PositionsArr = {
     x: new Float64Array(this.autoAttack1Positions.x),
-    y: new Float64Array(this.autoAttack1Positions.y),
+    y: new Float64Array(this.autoAttack1Positions.y)
   }
 
   autoAttack1Enabled = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1);
@@ -62,6 +61,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1)
   }
+
   flame1PositionsArr = {
     x: new Float64Array(this.flame1Positions.x),
     y: new Float64Array(this.flame1Positions.y)
@@ -74,6 +74,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource1),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource1)
   }
+
   resource1PositionsArr = {
     x: new Float64Array(this.resource1Positions.x),
     y: new Float64Array(this.resource1Positions.y)
@@ -86,6 +87,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2)
   }
+
   resource2PositionsArr = {
     x: new Float64Array(this.resource2Positions.x),
     y: new Float64Array(this.resource2Positions.y)
@@ -95,6 +97,6 @@ export class SabSet {
   resource2RemainTimesArr = new Int32Array(this.resource2RemainTimes);
 }
 
-const sab = new SabSet();
+const sab = new SabSet()
 
-export default sab;
+export default sab

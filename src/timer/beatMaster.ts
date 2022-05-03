@@ -15,14 +15,13 @@ sound.volume('bass', 0.05)
 sound.volume('loop', 0)
 sound.volume('loop2', 0)
 
-
 const beatMax = 32
 let beatCounter = 0
 
 let playerLevel = 1
 export function beatInit () {
   sound.volumeAll = 0.1
-sound.volume('loop2', 0.5)
+  sound.volume('loop2', 0.5)
 
   heartbeatWorker.onmessage = () => {
     if (++beatCounter >= beatMax) {
@@ -35,7 +34,7 @@ sound.volume('loop2', 0.5)
       sound.play('kick')
       sound.play('loop2')
       player.fire()
-      setTimeout(()=>{
+      setTimeout(() => {
         player.fire()
       }, 60)
 
@@ -44,7 +43,7 @@ sound.volume('loop2', 0.5)
 
     case 0o1:
       player.fire()
-      setTimeout(()=>{
+      setTimeout(() => {
         player.fire()
       }, 60)
 
@@ -52,7 +51,7 @@ sound.volume('loop2', 0.5)
 
     case 0o2:
       player.fire()
-      setTimeout(()=>{
+      setTimeout(() => {
         player.fire()
       }, 60)
 
@@ -60,7 +59,7 @@ sound.volume('loop2', 0.5)
 
     case 0o3:
       player.fire()
-      setTimeout(()=>{
+      setTimeout(() => {
         player.fire()
       }, 60)
 

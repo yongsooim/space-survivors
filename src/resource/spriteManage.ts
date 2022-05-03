@@ -11,7 +11,7 @@ export const baseTextures = {
   char: new PIXI.BaseTexture(resourcePaths.charPng),
   particle: new PIXI.BaseTexture(resourcePaths.particlePng),
   particles: new PIXI.BaseTexture(resourcePaths.particlesPng),
-  fire: new PIXI.BaseTexture(resourcePaths.firePng),
+  fire: new PIXI.BaseTexture(resourcePaths.firePng)
 }
 
 export const textures = {
@@ -38,7 +38,7 @@ export const textures = {
   char1: new PIXI.Texture(baseTextures.char, new PIXI.Rectangle(0 * 8, 0 * 8, 8, 8)),
 
   ui1: new PIXI.Texture(baseTextures.ui, new PIXI.Rectangle(11 * 8, 0 * 8, 13, 13)),
-  fire: new PIXI.Texture(baseTextures.fire),
+  fire: new PIXI.Texture(baseTextures.fire)
 }
 
 export const enemy1 = new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(9 * 8, 0 * 8, 8, 8))
@@ -57,5 +57,5 @@ export const sprites = {
   playerSprite: new PIXI.Sprite(textures.ship1),
   ship2: new PIXI.Sprite(textures.ship1),
   bg: new PIXI.Sprite(bg),
-  autoAttack: new PIXI.Sprite(aa),
+  autoAttack: new PIXI.Sprite(aa)
 }

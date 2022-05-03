@@ -2,7 +2,7 @@ const consts = {
   numberOfEnemy1: 1024,
   enemy1speed: 0.0018,
 
-  spawnSize:100,
+  spawnSize: 100,
   numberOfWeapon1: 512,
 
   numberOfResource1: 512,
@@ -25,6 +25,6 @@ const consts = {
 
   numberOfDamageText: 128,
   numberOfExplosion: 128
-};
+}
 
-export default consts;
+export default consts

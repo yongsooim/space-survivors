@@ -17,7 +17,7 @@ export function initViewport () {
     disableOnContextMenu: true,
     divWheel: document.getElementById('pixi') as HTMLElement
   })
-  //viewport
+  // viewport
   //  .pinch({ noDrag: true })
   //  .wheel({ percent: 0, smooth: 10, trackpadPinch: true })
   //  .setZoom(20)

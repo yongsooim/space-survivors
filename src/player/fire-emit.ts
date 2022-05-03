@@ -131,7 +131,7 @@ export const initEmitter = () => {
     // number of seconds since the last update
     emitter.update((now - elapsed) * 0.001)
     elapsed = now
-    //console.log(emitter.particleCount)
+    // console.log(emitter.particleCount)
   }
 
   // Start emitting
