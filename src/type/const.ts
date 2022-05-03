@@ -17,9 +17,9 @@ const consts = {
   flame1Speed: 0.05,
   playerSpeed: 0.06,
 
-  worker1interval: 1000 / 60,
-  worker2interval: 1000 / 60,
-  worker3interval: 1000 / 60,
+  worker1Interval: 1000 / 60,
+  worker2Interval: 1000 / 60,
+  worker3Interval: 1000 / 60,
 
   magnetRange: 6,
 

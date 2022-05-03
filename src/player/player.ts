@@ -113,8 +113,8 @@ class Player extends Container {
     this.position.x += this.vector.x * delta * consts.playerSpeed;
     this.position.y += this.vector.y * delta * consts.playerSpeed;
 
-    sab.playerPositionArr[0] = this.x;
-    sab.playerPositionArr[1] = this.y;
+    sab.playerPositionArr.x[0] = this.x;
+    sab.playerPositionArr.y[0] = this.y;
   }
 }
 

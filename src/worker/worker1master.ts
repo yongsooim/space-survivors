@@ -140,9 +140,8 @@ export function worker1init() {
         continue;
       }
       enemy1container.children[tempIterator].alpha = 1
-      indexDouble = tempIterator * 2;
-      enemy1container.children[tempIterator].x = sab.enemy1PositionsArr[indexDouble];
-      enemy1container.children[tempIterator].y = sab.enemy1PositionsArr[indexDouble + 1];
+      enemy1container.children[tempIterator].x = sab.enemy1PositionsArr.x[tempIterator];
+      enemy1container.children[tempIterator].y = sab.enemy1PositionsArr.y[tempIterator];
     }
 
     tempIterator = consts.numberOfAutoAttack1;
@@ -151,12 +150,10 @@ export function worker1init() {
         autoAttack1container.getChildAt(tempIterator).alpha = 0;
         continue;
       }
-      indexDouble = tempIterator * 2;
-      autoAttack1container.children[tempIterator].x = sab.autoAttack1PositionsArr[indexDouble];
-      autoAttack1container.children[tempIterator].y = sab.autoAttack1PositionsArr[indexDouble + 1];
+      autoAttack1container.children[tempIterator].x = sab.autoAttack1PositionsArr.x[tempIterator];
+      autoAttack1container.children[tempIterator].y = sab.autoAttack1PositionsArr.y[tempIterator];
       autoAttack1container.getChildAt(tempIterator).alpha = 1;
     }
-
 
     tempIterator = consts.numberOfFlame1;
     while (tempIterator--) {
@@ -164,9 +161,8 @@ export function worker1init() {
         flame1container.getChildAt(tempIterator).alpha = 0;
         continue;
       }
-      indexDouble = tempIterator * 2;
-      flame1container.children[tempIterator].x = sab.flame1PositionsArr[indexDouble];
-      flame1container.children[tempIterator].y = sab.flame1PositionsArr[indexDouble + 1];
+      flame1container.children[tempIterator].x = sab.flame1PositionsArr.x[tempIterator];
+      flame1container.children[tempIterator].y = sab.flame1PositionsArr.y[tempIterator];
       flame1container.getChildAt(tempIterator).alpha = 1;
     }
   });

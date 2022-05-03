@@ -7,7 +7,7 @@ import { sprites, textures } from '../resource/spriteManage'
 const resourceText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' })
 const infoText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' })
 
-const uiScale = 1
+const uiScale = 0.0001
 
 const char1 = new PIXI.Sprite(textures.char1)
 char1.scale.set(10 * uiScale)

@@ -4,7 +4,7 @@ import consts from "../type/const";
 export class SabSet {
 
   /** postfix Arr is for array used in main */
-  
+
   timerSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
   timerArr = new Int32Array(this.timerSab);
 
@@ -20,44 +20,79 @@ export class SabSet {
   lockSab = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT);
   lockArr = new Int32Array(this.lockSab);
 
-  playerPosition = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * 2);
-  playerPositionArr = new Float64Array(this.playerPosition);
+  playerPosition = {
+    x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT)
+  }
+  playerPositionArr = {
+    x: new Float64Array(this.playerPosition.x),
+    y: new Float64Array(this.playerPosition.x)
+  }
 
-  enemy1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1* 2);
-  enemy1PositionsArr = new Float64Array(this.enemy1Positions);
+  enemy1Positions = {
+    x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
+  }
+  enemy1PositionsArr = {
+    x: new Float64Array(this.enemy1Positions.x),
+    y: new Float64Array(this.enemy1Positions.y)
+  }
 
-  enemy1Directions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1 * 2); // not used in main
-  
+  enemy1Directions = {
+    x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
+  }
+
   enemy1Hps = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1);
   enemy1HpsArr = new Int32Array(this.enemy1Hps);
 
-  autoAttack1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1 * 2);
-  autoAttack1PositionsArr = new Float64Array(this.autoAttack1Positions);
+  autoAttack1Positions = {
+    x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1)
+  }
+  autoAttack1PositionsArr = {
+    x: new Float64Array(this.autoAttack1Positions.x),
+    y: new Float64Array(this.autoAttack1Positions.y),
+  }
 
   autoAttack1Enabled = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1);
   autoAttack1EnabledArr = new Int32Array(this.autoAttack1Enabled);
 
-  flame1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1 * 2);
-  flame1PositionsArr = new Float64Array(this.flame1Positions);
+  flame1Positions = {
+    x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1)
+  }
+  flame1PositionsArr = {
+    x: new Float64Array(this.flame1Positions.x),
+    y: new Float64Array(this.flame1Positions.y)
+  }
 
   flame1Enabled = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1);
   flame1EnabledArr = new Int32Array(this.flame1Enabled);
 
-  resource1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource1 * 2);
-  resource1PositionsArr = new Float64Array(this.resource1Positions);
+  resource1Positions = {
+    x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource1),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource1)
+  }
+  resource1PositionsArr = {
+    x: new Float64Array(this.resource1Positions.x),
+    y: new Float64Array(this.resource1Positions.y)
+  }
 
   resource1RemainTimes = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfResource1);
   resource2RemainTimes = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfResource2);
 
-  resource2Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2 * 2);
-  resource2PositionsArr = new Float64Array(this.resource2Positions);
+  resource2Positions = {
+    x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2),
+    y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2)
+  }
+  resource2PositionsArr = {
+    x: new Float64Array(this.resource2Positions.x),
+    y: new Float64Array(this.resource2Positions.y)
+  }
 
   resource1RemainTimesArr = new Int32Array(this.resource1RemainTimes);
   resource2RemainTimesArr = new Int32Array(this.resource2RemainTimes);
-  
-  weapon1Positions = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfWeapon1 * 2);
-  weapon1Enabled = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfWeapon1);
-
 }
 
 const sab = new SabSet();

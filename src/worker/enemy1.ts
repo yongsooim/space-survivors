@@ -1,4 +1,5 @@
 import consts from "../type/const";
+import { Isa } from './worker1'
 
 export declare class Enemy1Pool { // for alias
   cursor: number
@@ -7,23 +8,13 @@ export declare class Enemy1Pool { // for alias
   disabledList: number[]
   checkDead(): void
   updateSabPosition(): void
-  updateSabPosition(): void
   updateVelocity(): void
   disableByPtr(ptr: number): void
+  getIndex(body: Box2D.b2Body): number
   gen(): void
 }
 
-export const createEnemy1Pool = (
-  box2D: typeof Box2D & EmscriptenModule,
-  world: Box2D.b2World,
-  playerPosition: Float64Array,
-  autoAttack1Enabled: Int32Array,
-  enemy1filter: Box2D.b2Filter,
-  enemy1positions: Float64Array,
-  enemy1directions: Float64Array,
-  enemy1Hps: Int32Array,
-  kills: Int32Array
-) => {
+export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: Box2D.b2World, enemy1filter: Box2D.b2Filter, sa: Isa) => {
   const { b2_dynamicBody, b2BodyDef, b2PolygonShape, b2Vec2, getPointer } = box2D;
 
   const square = new b2PolygonShape();
@@ -69,10 +60,8 @@ export const createEnemy1Pool = (
       tempIterator = consts.numberOfEnemy1;
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue; // skip already dead
-
-        if (enemy1Hps[tempIterator] <= 0) {
-          // check enemy dead
-          Atomics.add(kills, 0, 1);
+        if (sa.enemy1Hps[tempIterator] <= 0) {
+          Atomics.add(sa.kills, 0, 1);
           this.pool[tempIterator].SetEnabled(false);
           this.disabledList.push(tempIterator);
         }
@@ -80,49 +69,49 @@ export const createEnemy1Pool = (
     }
 
     updateSabPosition() {
-      // position to render in sab
-      // update shared memory buffer
       tempIterator = consts.numberOfEnemy1;
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue; // skip dead
         indexDouble = tempIterator * 2;
-        enemy1positions[indexDouble] = this.pool[tempIterator].GetPosition().x;
-        enemy1positions[indexDouble + 1] = this.pool[tempIterator].GetPosition().y;
+        sa.enemy1Positions.x[tempIterator] = this.pool[tempIterator].GetPosition().x;
+        sa.enemy1Positions.y[tempIterator] = this.pool[tempIterator].GetPosition().y;
       }
     }
 
     updateVelocity() {
-      // position to render in sab
-      // update shared memory buffer
       tempIterator = consts.numberOfEnemy1;
       while (tempIterator--) {
         indexDouble = tempIterator * 2;
-        tempVec.set_x(enemy1directions[indexDouble]);
-        tempVec.set_y(enemy1directions[indexDouble + 1]);
+        tempVec.set_x(sa.enemy1Directions.x[tempIterator]);
+        tempVec.set_y(sa.enemy1Directions.y[tempIterator]);
         this.pool[tempIterator].SetLinearVelocity(tempVec);
       }
     }
 
     disableByPtr(ptr: number) {
-      autoAttack1Enabled[this.ptrToIdx[ptr]] = 0;
+      sa.autoAttack1Enabled[this.ptrToIdx[ptr]] = 0;
       this.pool[this.ptrToIdx[ptr]].SetEnabled(false);
+    }
+
+    getIndex(body: Box2D.b2Body) {
+      return this.ptrToIdx[getPointer(body)]
     }
 
     gen() {
       if (this.disabledList.length > 0) {
         let genIndex = this.disabledList.pop() as number;
-        if (enemy1Hps[genIndex] <= 0) {
+        if (sa.enemy1Hps[genIndex] <= 0) {
           let tempDistance = Math.random() * 10 + consts.spawnSize / 2;
           let tempAngle = Math.random() * Math.PI * 2;
           let tempDiffX = Math.cos(tempAngle) * tempDistance;
           let tempDiffY = Math.sin(tempAngle) * tempDistance;
 
-          tempVec.x = playerPosition[0] + tempDiffX;
-          tempVec.y = playerPosition[1] + tempDiffY;
+          tempVec.x = sa.playerPosition.x[0] + tempDiffX;
+          tempVec.y = sa.playerPosition.y[0] + tempDiffY;
 
-          enemy1positions[genIndex * 2] = tempVec.x;
-          enemy1positions[genIndex * 2 + 1] = tempVec.y;
-          enemy1Hps[genIndex] = 10;
+          sa.enemy1Positions.x[tempIterator] = tempVec.x;
+          sa.enemy1Positions.y[tempIterator] = tempVec.y;
+          sa.enemy1Hps[genIndex] = 10;
 
           this.pool[genIndex].SetTransform(tempVec, 0);
           this.pool[genIndex].SetEnabled(true);

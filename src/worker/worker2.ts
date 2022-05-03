@@ -1,11 +1,9 @@
 // this worker calculates collision between enemy and player
 
 import consts from "../type/const";
+import { SabSet } from './sabManage'
 
-let playerPosition: Float64Array;
-let enemy1Positions: Float64Array;
-let enemy1Directions: Float64Array;
-let enemy1Hps: Int32Array;
+
 let life: Int32Array;
 let lock: Int32Array;
 
@@ -19,6 +17,29 @@ let port: MessagePort;
 
 let loopInterval: number;
 
+export declare interface Isa {
+  playerPosition: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  enemy1Positions: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  enemy1Directions: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  enemy1Hps: Int32Array,
+  autoAttack1Positions: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  life: Int32Array,
+}
+
+export let sa: Isa
+
 onmessage = (ev) => {
   if (ev.data.cmd === "stop") {
     running = false;
@@ -30,58 +51,73 @@ onmessage = (ev) => {
     self.close();
   } else if (ev.data.cmd === "init") {
     console.log(ev.data);
-    playerPosition = new Float64Array(ev.data.sab.playerPosition);
-    enemy1Positions = new Float64Array(ev.data.sab.enemy1Positions);
-    enemy1Directions = new Float64Array(ev.data.sab.enemy1Directions);
-    enemy1Hps = new Int32Array(ev.data.sab.enemy1Hps);
-    life = new Int32Array(ev.data.sab.life);
-    lock = new Int32Array(ev.data.sab.lock);
+    let tempSab = ev.data.sab as SabSet
+    sa = {
+      playerPosition : {
+        x: new Float64Array(tempSab.playerPosition.x),
+        y: new Float64Array(tempSab.playerPosition.y),
+      },
+      enemy1Positions : {
+        x: new Float64Array(tempSab.enemy1Positions.x),
+        y: new Float64Array(tempSab.enemy1Positions.y),
+      },
+      enemy1Directions : {
+        x: new Float64Array(tempSab.enemy1Directions.x),
+        y: new Float64Array(tempSab.enemy1Directions.y),
+      },
+      enemy1Hps : new Int32Array(tempSab.enemy1Hps),
+      autoAttack1Positions: {
+        x: new Float64Array(tempSab.autoAttack1Positions.x),
+        y: new Float64Array(tempSab.autoAttack1Positions.y),
+      },
+      life : new Int32Array(tempSab.lifeSab),
+
+    }
     port = ev.ports[0];
 
     port.onmessage = calc;
   }
 };
 
-let tempIterator = 0;
-let indexDouble = 0;
-let playerX = 0, playerY = 0;
-let enemyX = 0, enemyY = 0;
-let diffX = 0,  diffY = 0;
-let directionX = 0, directionY = 0;
-let distance = 0;
+let tempIterator = 0
+let indexDouble = 0
+let playerX = 0, playerY = 0
+let enemyX = 0, enemyY = 0
+let diffX = 0,  diffY = 0
+let directionX = 0, directionY = 0
+let distance = 0
 
-let divide = 30;
-let count = 0;
+let divide = 30
+let count = 0
 let calc = () => {
   if (running === false) return;
 
-  count++;
+  count++
   if (count === divide) {
-    count = 0;
+    count = 0
   }
   
-  tempIterator = consts.numberOfEnemy1;
-  playerX = playerPosition[0];
-  playerY = playerPosition[1];
+  tempIterator = consts.numberOfEnemy1
+  playerX = sa.playerPosition.x[0]
+  playerY = sa.playerPosition.y[0]
   for (tempIterator = count; tempIterator < consts.numberOfEnemy1; tempIterator += divide) {
-    if (enemy1Hps[tempIterator] === 0) continue; //skip dead enemy
+    if (sa.enemy1Hps[tempIterator] === 0) continue; //skip dead enemy
 
-    indexDouble = tempIterator * 2;
-    enemyX = enemy1Positions[indexDouble];
-    enemyY = enemy1Positions[indexDouble + 1];
-    diffX = playerX - enemyX;
-    diffY = playerY - enemyY;
-    distance = Math.sqrt(diffX * diffX + diffY * diffY);
+    enemyX = sa.enemy1Positions.x[tempIterator]
+    enemyY = sa.enemy1Positions.y[tempIterator]
+    diffX = playerX - enemyX
+    diffY = playerY - enemyY
+    distance = Math.sqrt(diffX * diffX + diffY * diffY)
 
     if (distance < 2) {
-      self.postMessage({ cmd: "hitText", x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
+      self.postMessage({ cmd: "hitText", x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
     }
 
-    directionX = (consts.enemy1speed * diffX) / distance;
-    directionY = (consts.enemy1speed * diffY) / distance;
+    directionX = (consts.enemy1speed * diffX) / distance
+    directionY = (consts.enemy1speed * diffY) / distance
 
-    enemy1Directions[indexDouble] = directionX;
-    enemy1Directions[indexDouble + 1] = (consts.enemy1speed * diffY) / distance;
+    sa.enemy1Directions.x[tempIterator] = directionX
+    sa.enemy1Directions.y[tempIterator] = directionY
   }
 };
 
