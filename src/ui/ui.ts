@@ -10,11 +10,11 @@ const infoText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill:
 const uiScale = 0.0001
 
 const char1 = new PIXI.Sprite(textures.char1)
-char1.scale.set(10 * uiScale)
+char1.scale.set(8 * uiScale)
 char1.anchor.set(0, 1)
 
 const ui1 = new PIXI.Sprite(textures.ui1)
-ui1.scale.set(6 * uiScale)
+ui1.scale.set(5 * uiScale)
 ui1.anchor.set(1, 1)
 ui1.interactive = true
 ui1.buttonMode = true

@@ -104,20 +104,21 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       if (this.disabledList.length > 0) {
         const genIndex = this.disabledList.pop() as number
         if (sa.enemy1Hps[genIndex] <= 0) {
-          const tempDistance = Math.random() * 10 + consts.spawnSize / 2
-          const tempAngle = Math.random() * Math.PI * 2
-          const tempDiffX = Math.cos(tempAngle) * tempDistance
-          const tempDiffY = Math.sin(tempAngle) * tempDistance
+          const spawnDistance = Math.random() * 10 + consts.spawnSize / 2
+          const spawnAngle = Math.random() * Math.PI * 2
+          const spawnDiffX = Math.cos(spawnAngle) * spawnDistance
+          const spawnDiffY = Math.sin(spawnAngle) * spawnDistance
 
-          tempVec.x = sa.playerPosition.x[0] + tempDiffX
-          tempVec.y = sa.playerPosition.y[0] + tempDiffY
+          tempVec.x = sa.playerPosition.x[0] + spawnDiffX
+          tempVec.y = sa.playerPosition.y[0] + spawnDiffY
+          
+          this.pool[genIndex].SetTransform(tempVec, 0)
 
           sa.enemy1Positions.x[tempIterator] = tempVec.x
           sa.enemy1Positions.y[tempIterator] = tempVec.y
-          sa.enemy1Hps[genIndex] = 10
-
-          this.pool[genIndex].SetTransform(tempVec, 0)
+          
           this.pool[genIndex].SetEnabled(true)
+          sa.enemy1Hps[genIndex] = 10
         }
       }
     }

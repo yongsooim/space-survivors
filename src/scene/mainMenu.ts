@@ -5,18 +5,18 @@ import { viewportContainer } from '../viewport/viewport'
 
 class MainMenu extends PIXI.Container {
   count = 0;
-  titleText = new PIXI.Text('Space Survivors 2022', { fontFamily: 'Consolas', fontSize: 18, fill: 0xffffff, align: 'center' });
-  pressText = new PIXI.Text('Press Any to Start', { fontFamily: 'Consolas', fontSize: 16, fill: 0xffffff, align: 'center' });
+  titleText = new PIXI.Text('Space Survivors 2022', { fontFamily: 'Consolas', fontSize: 26, fill: 0xffffff, align: 'center' });
+  pressText = new PIXI.Text('Press Any to Start', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' });
 
   init () {
     this.position.set(0)
 
     this.titleText.anchor.set(0.5)
-    this.titleText.scale.set(2)
+    this.titleText.scale.set(1.5)
     this.titleText.position.set(0, -100)
 
     this.pressText.anchor.set(0.5)
-    this.pressText.scale.set(2)
+    this.pressText.scale.set(1.5)
     this.pressText.position.set(0, 20)
 
     this.pressText.text = 'Loading...'

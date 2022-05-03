@@ -4,6 +4,7 @@ import Box2DFactory from 'box2d-wasm' // ....
 import consts from '../type/const'
 import { createEnemy1Pool, Enemy1Pool } from './enemy1'
 import { createAutoAttack1Pool, AutoAttack1Pool } from './autoAttack1'
+import { createFlame1Pool, Flame1Pool } from './flame1'
 import { SabSet } from './sabManage'
 /** shared arrays in worker1 */
 export declare interface Isa {
@@ -11,8 +12,9 @@ export declare interface Isa {
   enemy1Positions: { x: Float64Array, y: Float64Array, }
   enemy1Directions: { x: Float64Array, y: Float64Array, }
   autoAttack1Positions: { x: Float64Array, y: Float64Array, }
-  autoAttack1Enabled: Int32Array, flame1Positions: { x: Float64Array, y: Float64Array, }
+  flame1Positions: { x: Float64Array, y: Float64Array, }
   enemy1Hps: Int32Array,
+  autoAttack1Enabled: Int32Array, 
   flame1Enabled: Int32Array,
   kills: Int32Array,
 }
@@ -27,6 +29,7 @@ let running = false
 
 let enemy1Pool: Enemy1Pool
 let autoAttack1Pool: AutoAttack1Pool
+let flame1Pool: Flame1Pool
 
 onmessage = (ev) => {
   if (ev.data.cmd === 'stop') {
@@ -46,7 +49,7 @@ onmessage = (ev) => {
     autoAttack1Pool.fire()
     // fire();
   } else if (ev.data.cmd === 'flame') {
-    flame()
+    flame1Pool.fire()
   } else if (ev.data.cmd === 'init') {
     const tempSab = ev.data.sab as SabSet
 
@@ -80,6 +83,7 @@ onmessage = (ev) => {
     port = ev.ports[0]
     enemy1Pool = createEnemy1Pool(box2D, world, sa)
     autoAttack1Pool = createAutoAttack1Pool(box2D, world, sa)
+    flame1Pool = createFlame1Pool(box2D, world, sa)
     postMessage({ cmd: 'ready' })
   }
 }
@@ -117,32 +121,20 @@ const bd = new b2BodyDef()
 bd.set_type(b2_dynamicBody)
 
 const square = new b2PolygonShape()
-// const enemy1pool = new Array<Box2D.b2Body>(consts.numberOfEnemy1);
-const autoAttack1BodyPool = new Array<Box2D.b2Body>(consts.numberOfAutoAttack1)
-const flame1BodyPool = new Array<Box2D.b2Body>(consts.numberOfFlame1)
 
 const tempVec = new b2Vec2(0, 0)
-let tempIterator
 
 export const autoAttack1Filter = new b2Filter()
 autoAttack1Filter.categoryBits = Filter.AutoAttack1
 autoAttack1Filter.maskBits = Filter.Enemy1
-autoAttack1Filter.groupIndex = 0
 
 export const usedBulletFilter = new b2Filter()
 usedBulletFilter.categoryBits = Filter.AutoAttack1
 usedBulletFilter.maskBits = 0
-usedBulletFilter.groupIndex = 0
-
-export const flameFilter = new b2Filter()
-flameFilter.categoryBits = Filter.Flame
-flameFilter.maskBits = Filter.Enemy1
-flameFilter.groupIndex = 0
 
 export const playerFilter = new b2Filter()
 playerFilter.categoryBits = Filter.Player
 playerFilter.maskBits = Filter.Enemy1
-playerFilter.groupIndex = 0
 
 square.SetAsBox(0.6, 0.6)
 const playerBody = world.CreateBody(bd)
@@ -154,52 +146,6 @@ playerBody.SetLinearDamping(0)
 playerBody.SetAngularDamping(0)
 playerBody.SetSleepingAllowed(false)
 playerBody.SetEnabled(true)
-
-square.SetAsBox(0.8, 0.6)
-
-const ptrToAutoAttackBodyIndex = [] as number[]
-const ptrToFlameBodyIndex = [] as number[]
-const disabledEnemy1list = [] as number[]
-
-for (let i = 0; i < consts.numberOfEnemy1; i++) {
-  disabledEnemy1list[i] = i
-}
-
-square.SetAsBox(0.4, 0.4)
-for (let i = 0; i < consts.numberOfAutoAttack1; i++) {
-  autoAttack1BodyPool[i] = world.CreateBody(bd)
-  autoAttack1BodyPool[i].CreateFixture(square, 5).SetFriction(0)
-  autoAttack1BodyPool[i].GetFixtureList().SetRestitution(0)
-  autoAttack1BodyPool[i].GetFixtureList().SetFilterData(autoAttack1Filter)
-  autoAttack1BodyPool[i].GetFixtureList().SetSensor(true)
-
-  autoAttack1BodyPool[i].SetLinearDamping(0)
-  autoAttack1BodyPool[i].SetAngularDamping(0)
-  autoAttack1BodyPool[i].SetSleepingAllowed(false)
-  autoAttack1BodyPool[i].SetFixedRotation(false)
-  autoAttack1BodyPool[i].SetAwake(true)
-  autoAttack1BodyPool[i].SetBullet(true)
-  autoAttack1BodyPool[i].SetEnabled(false)
-
-  ptrToAutoAttackBodyIndex[getPointer(autoAttack1BodyPool[i])] = i
-}
-
-for (let i = 0; i < consts.numberOfFlame1; i++) {
-  flame1BodyPool[i] = world.CreateBody(bd)
-  flame1BodyPool[i].CreateFixture(square, 5).SetFriction(0)
-  flame1BodyPool[i].GetFixtureList().SetRestitution(0)
-  flame1BodyPool[i].GetFixtureList().SetSensor(true)
-  flame1BodyPool[i].GetFixtureList().SetFilterData(flameFilter)
-
-  flame1BodyPool[i].SetLinearDamping(0)
-  flame1BodyPool[i].SetAngularDamping(0)
-  flame1BodyPool[i].SetSleepingAllowed(false)
-  flame1BodyPool[i].SetFixedRotation(false)
-  flame1BodyPool[i].SetAwake(true)
-  flame1BodyPool[i].SetEnabled(true)
-
-  ptrToFlameBodyIndex[getPointer(flame1BodyPool[i])] = i
-}
 
 let lastExecuted = Date.now()
 let delta = 0
@@ -232,7 +178,7 @@ contactListener.BeginContact = (contact) => {
     disableRequest.push(bodyBullet)
 
     const tempIndex = enemy1Pool.getIndex(bodyEnemy)
-    if (sa.enemy1Hps[tempIndex] >= 0) {
+    if (sa.enemy1Hps[tempIndex] > 0) {
       // knock back
       tempVec.Set(-4 * sa.enemy1Directions.x[tempIndex], -4 * sa.enemy1Directions.y[tempIndex])
       bodyEnemy.ApplyForce(tempVec, center, false)
@@ -268,25 +214,15 @@ function loop() {
   playerBody.SetTransform(tempVec, 0)
 
   // update shared memory buffer
-  tempIterator = consts.numberOfFlame1
-  while (tempIterator--) {
-    if (sa.flame1Enabled[tempIterator] === 0) continue // skip disabled
-
-    sa.flame1Positions.x[tempIterator] = flame1BodyPool[tempIterator].GetPosition().x
-    sa.flame1Positions.y[tempIterator] = flame1BodyPool[tempIterator].GetPosition().y
-  }
-
   autoAttack1Pool.updateSabPosition()
+  flame1Pool.updateSabPosition()
   enemy1Pool.updateSabPosition()
   enemy1Pool.updateVelocity()
 
-  world.Step(stepTime, 8, 3)
+  world.Step(stepTime, 8, 3) /** World STEP */
+
   for (let i = 0; i < disableRequest.length; i++) {
     if (disableRequest[i].GetFixtureList().GetFilterData().categoryBits === Filter.AutoAttack1) {
-      //sa.autoAttack1Enabled[ptrToAutoAttackBodyIndex[getPointer(disableRequest[i])]] = 0
-      //disableRequest[i].SetEnabled(false)
-      //sa.autoAttack1Enabled[autoAttack1Pool.ptrToIdx[getPointer(disableRequest[i])]] = 0
-      //disableRequest[i].SetEnabled(false)
       autoAttack1Pool.disableByPtr(getPointer(disableRequest[i]))
     }
   }
@@ -294,7 +230,7 @@ function loop() {
   disableRequest = []
 
   // request for calculate to worker2
-  // try async sometime..
+  // maybe try async calculation...
   port.postMessage(0)
 
   // calculate elapsed and determine the interval to next step
@@ -315,28 +251,6 @@ function loop() {
   if (counter % 10 === 0) {
     enemy1Pool.gen()
   }
-}
-
-let tempPlayerPosX, tempPlayerPosY
-
-let flameCounter = 0
-function flame() {
-  flameCounter++
-  if (flameCounter === consts.numberOfFlame1) {
-    flameCounter = 0
-  }
-  tempPlayerPosX = sa.playerPosition.x[0]
-  tempPlayerPosY = sa.playerPosition.y[0]
-  tempVec.Set(tempPlayerPosX - 0.1, tempPlayerPosY + 0.5)
-  flame1BodyPool[flameCounter].SetTransform(tempVec, 0)
-  sa.flame1Positions.x[flameCounter] = tempPlayerPosX
-  sa.flame1Positions.y[flameCounter + 1] = tempPlayerPosY
-
-  tempVec.Set(0, consts.flame1Speed)
-  flame1BodyPool[flameCounter].SetLinearVelocity(tempVec)
-  sa.flame1Enabled[flameCounter] = 1
-  flame1BodyPool[flameCounter].SetEnabled(true)
-  flame1BodyPool[flameCounter].GetFixtureList().SetSensor(true)
 }
 
 export default Worker

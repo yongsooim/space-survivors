@@ -90,7 +90,7 @@ export function worker3init () {
   while (tempIterator--) {
     resource2container.children[tempIterator].x = sab.resource2PositionsArr.x[tempIterator]
     resource2container.children[tempIterator].y = sab.resource2PositionsArr.y[tempIterator]
-    resource2container.children[tempIterator].alpha = 0.3
+    resource2container.children[tempIterator].alpha = 0.5
   }
 
   app.ticker.add(() => {

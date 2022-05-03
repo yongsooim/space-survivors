@@ -100,7 +100,7 @@ const calc = () => {
   playerX = sa.playerPosition.x[0]
   playerY = sa.playerPosition.y[0]
   for (tempIterator = count; tempIterator < consts.numberOfEnemy1; tempIterator += divide) {
-    if (sa.enemy1Hps[tempIterator] === 0) continue // skip dead enemy
+    if (sa.enemy1Hps[tempIterator] <= 0) continue // skip dead enemy
 
     enemyX = sa.enemy1Positions.x[tempIterator]
     enemyY = sa.enemy1Positions.y[tempIterator]
