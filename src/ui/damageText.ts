@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 import consts from '../type/const'
 import { viewportContainer } from '../viewport/viewport'
 import { app } from '../main'
+import { sound } from '@pixi/sound';
 
 class DamageTextPool {
   cursor = 0;
@@ -28,6 +29,9 @@ class DamageTextPool {
     this.cursor++
     if (this.cursor >= consts.numberOfDamageText) this.cursor = 0
 
+    sound.volume('enemyhitwav', 0.5)
+
+    sound.play('enemyhitwav')
     const currentCursor = this.cursor
     this.pool[currentCursor].alpha = 1
     this.pool[currentCursor].text = damage.toString()
@@ -38,7 +42,7 @@ class DamageTextPool {
       this.pool[currentCursor].alpha -= 0.01 * delta
       const speed = this.pool[currentCursor].alpha * this.pool[currentCursor].alpha
       if (this.pool[currentCursor].alpha >= 0.9) {
-        this.pool[currentCursor].position.y -= 0.01 * speed
+        this.pool[currentCursor].position.y -= 0.03 * speed
       } else {
         this.pool[currentCursor].position.y += 0.02 * speed
       }
@@ -66,7 +70,7 @@ class DamageTextPool {
       this.hitpool[currentCursor].alpha -= 0.01 * delta
       const speed = this.hitpool[currentCursor].alpha * this.hitpool[currentCursor].alpha
       if (this.hitpool[currentCursor].alpha >= 0.9) {
-        this.hitpool[currentCursor].position.y -= 0.01 * speed
+        this.hitpool[currentCursor].position.y -= 0.03 * speed
       } else {
         this.hitpool[currentCursor].position.y += 0.02 * speed
       }

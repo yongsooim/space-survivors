@@ -7,6 +7,8 @@ import charPng from '../asset/char.png'
 import particlePng from '../asset/particle.png'
 import particlesPng from '../asset/particles.png'
 import playerhitwav from '../asset/playerhit.wav'
+import enemyhitwav from '../asset/enemyhit.wav'
+import flamewav from '../asset/flame.wav'
 import firePng from '../asset/fire.png'
 
 import fireWav from '../asset/Laser_Shoot9.wav'
@@ -31,6 +33,8 @@ sound.add('bass', bass)
 sound.add('shot', shotWav)
 sound.add('pickup', pickupWav)
 sound.add('playerhit', playerhitwav)
+sound.add('enemyhitwav', enemyhitwav)
+sound.add('flamewav', flamewav)
 
 export const resourcePaths = {
   shipPng,
@@ -65,5 +69,7 @@ export const resources: PIXI.IAddOptions[] = [
   { name: 'pickup', url: pickupWav },
   { name: 'firePng', url: firePng },
   { name: 'loop2', url: loop2 },
+  { name: 'enemyhitwav', url: enemyhitwav },
+  { name: 'flamewav', url: flamewav },
   
 ]

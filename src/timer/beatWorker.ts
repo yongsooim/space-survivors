@@ -16,7 +16,7 @@ onmessage = (ev) => {
     running = true
     now = Date.now()
     nextExecute = now + interval
-    counting()
+    timerId = setTimeout(counting, interval - gap - error)
   } else if (ev.data === 'stop') {
     clearTimeout(timerId)
     running = false

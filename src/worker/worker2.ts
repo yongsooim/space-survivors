@@ -16,6 +16,7 @@ let port: MessagePort
 
 let loopInterval: number
 
+let tempIterator = 0
 
 console.log('worker2')
 
@@ -84,7 +85,6 @@ onmessage = (ev) => {
   }
 }
 
-let tempIterator = 0
 let playerX = 0; let playerY = 0
 let enemyX = 0; let enemyY = 0
 let diffX = 0; let diffY = 0

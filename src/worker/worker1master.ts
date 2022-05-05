@@ -32,7 +32,8 @@ worker1.onmessage = (ev: any) => {
     worker1Ready = true;
     worker1.postMessage({ cmd: "start" });
   } else if (ev.data.cmd === "damage") {
-    damageTextPool.show((ev.data.x + ev.data.enemyX) / 2, (ev.data.y + ev.data.enemyY) / 2, 5);
+    damageTextPool.show((ev.data.x + ev.data.enemyX) / 2, (ev.data.y + ev.data.enemyY) / 2, ev.data.damage);
+    console.log( ev.data.damage)
     explosionPool.show(ev.data.enemyX, ev.data.enemyY);
   }
 };

@@ -111,8 +111,8 @@ const loop = () => {
       sa.exp[0] += 1;
       postMessage({ cmd: "get" });
     } else if (distance < consts.magnetRange) {
-      sa.resource1Positions.x[i] += (diffX * (consts.magnetRange - distance + 3) * delta) / 1000;
-      sa.resource1Positions.y[i] += (diffY * (consts.magnetRange - distance + 3) * delta) / 1000;
+      sa.resource1Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000;
+      sa.resource1Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000;
     }
   }
   
@@ -131,8 +131,8 @@ const loop = () => {
       sa.exp[0] += 1;
       postMessage({ cmd: "get" });
     } else if (distance < consts.magnetRange) {
-      sa.resource2Positions.x[i] += (diffX * (consts.magnetRange - distance + 3) * delta) / 1000;
-      sa.resource2Positions.y[i] += (diffY * (consts.magnetRange - distance + 3) * delta) / 1000;
+      sa.resource2Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000;
+      sa.resource2Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000;
     }
   }
 

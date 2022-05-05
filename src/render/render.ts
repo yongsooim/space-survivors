@@ -19,7 +19,7 @@ const enemy1container = new PIXI.ParticleContainer(
     position: true,
   },
   consts.numberOfEnemy1,
-  true
+  true,
 );
 
 const autoAttack1container = new PIXI.ParticleContainer(
@@ -54,6 +54,10 @@ const flame1container = new PIXI.ParticleContainer(
 
 let tempSprite;
 
+
+enemy1container.interactiveChildren = false
+enemy1container.sortableChildren = false
+enemy1container.interactive = false
 tempIterator = consts.numberOfEnemy1;
 while (tempIterator--) {
   sab.enemy1HpsArr[tempIterator] = 0;
@@ -67,6 +71,9 @@ while (tempIterator--) {
   enemy1container.addChild(tempSprite);
 }
 
+autoAttack1container.interactiveChildren = false
+autoAttack1container.sortableChildren = false
+autoAttack1container.interactive = false
 tempIterator = consts.numberOfAutoAttack1;
 while (tempIterator--) {
   sab.autoAttack1EnabledArr[tempIterator] = 0;
@@ -75,17 +82,20 @@ while (tempIterator--) {
   tempSprite.anchor.set(0.5);
   tempSprite.position.set(9999);
   tempSprite.alpha = 0;
+  
   tempSprite.cacheAsBitmapResolution = 1;
   tempSprite.cacheAsBitmap = true;
   autoAttack1container.addChild(tempSprite);
 }
 
+flame1container.interactiveChildren = false
+flame1container.sortableChildren = false
+flame1container.interactive = false
 tempIterator = consts.numberOfFlame1;
 while (tempIterator--) {
   sab.flame1EnabledArr[tempIterator] = 0;
   tempSprite = new PIXI.Sprite(fireTexture);
   tempSprite.tint = 0xff0000;
-
   tempSprite.scale.set(0.02);
   tempSprite.rotation = Math.PI / 2;
   tempSprite.anchor.set(0.5);
@@ -101,13 +111,12 @@ viewportContainer.addChild(autoAttack1container);
 viewportContainer.addChild(flame1container);
 
 export const renderUpdate = () => {
-  let tempIterator = consts.numberOfEnemy1;
+  tempIterator = consts.numberOfEnemy1;
   while (tempIterator--) {
     if (sab.enemy1HpsArr[tempIterator] <= 0) {
       enemy1container.children[tempIterator].alpha = 0;
     } else {
-      enemy1container.children[tempIterator].x = sab.enemy1PositionsArr.x[tempIterator];
-      enemy1container.children[tempIterator].y = sab.enemy1PositionsArr.y[tempIterator];
+      enemy1container.children[tempIterator].position.set(sab.enemy1PositionsArr.x[tempIterator], sab.enemy1PositionsArr.y[tempIterator])
       enemy1container.children[tempIterator].alpha = 0.8;
     }
   }
@@ -118,8 +127,7 @@ export const renderUpdate = () => {
       autoAttack1container.getChildAt(tempIterator).alpha = 0;
       continue;
     }
-    autoAttack1container.children[tempIterator].x = sab.autoAttack1PositionsArr.x[tempIterator];
-    autoAttack1container.children[tempIterator].y = sab.autoAttack1PositionsArr.y[tempIterator];
+    autoAttack1container.children[tempIterator].position.set(sab.autoAttack1PositionsArr.x[tempIterator], sab.autoAttack1PositionsArr.y[tempIterator])
     autoAttack1container.getChildAt(tempIterator).alpha = 1;
   }
 
@@ -129,8 +137,7 @@ export const renderUpdate = () => {
       flame1container.getChildAt(tempIterator).alpha = 0;
       continue;
     }
-    flame1container.children[tempIterator].x = sab.flame1PositionsArr.x[tempIterator];
-    flame1container.children[tempIterator].y = sab.flame1PositionsArr.y[tempIterator];
+    flame1container.children[tempIterator].position.set(sab.flame1PositionsArr.x[tempIterator], sab.flame1PositionsArr.y[tempIterator])
     flame1container.getChildAt(tempIterator).alpha = 1;
   }
 };

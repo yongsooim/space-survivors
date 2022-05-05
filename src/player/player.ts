@@ -12,6 +12,7 @@ import { aaPool } from '../weapon/autoAttack1'
 import { initEmitter, emitter } from './fire-emit'
 import { worker1fire, worker1flame } from '../worker/worker1master'
 import { explosion } from './explosion'
+import { sound } from '@pixi/sound'
 
 class Player extends Container {
   level = 0;
@@ -56,6 +57,8 @@ class Player extends Container {
 
   flame () {
     worker1flame()
+    sound.volume('flamewav', 0.4)
+    sound.play('flamewav')
     emitter.maxLifetime = 0.5
     setTimeout(() => {
       emitter.maxLifetime = 0.1

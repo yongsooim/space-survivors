@@ -11,13 +11,14 @@ import { app } from '../main'
 import { sound } from '@pixi/sound'
 const worker3 = new Worker()
 
-sound.volume('pickup', 0.2)
 
 worker3.onmessage = (ev) => {
   if (ev.data.cmd === 'get') {
+    sound.volume('pickup', 0.2)
     sound.play('pickup')
   }
 }
+
 
 const resource1container = new PIXI.ParticleContainer(
   consts.numberOfResource1,
@@ -28,6 +29,9 @@ const resource1container = new PIXI.ParticleContainer(
   consts.numberOfResource1,
   false
 )
+resource1container.interactiveChildren = false
+resource1container.sortableChildren = false
+resource1container.interactive = false
 
 const resource2container = new PIXI.ParticleContainer(
   consts.numberOfResource2,
@@ -39,11 +43,16 @@ const resource2container = new PIXI.ParticleContainer(
   consts.numberOfResource2,
   false
 )
+resource2container.interactiveChildren = false
+resource2container.sortableChildren = false
+resource2container.interactive = false
+
 
 let tempIterator = 0
 
 export function worker3init () {
   let resource1sprites
+  
   tempIterator = consts.numberOfResource1
   while (tempIterator--) {
     resource1sprites = new PIXI.Sprite(textures.particles[Math.floor(Math.random() * 15.9)])
@@ -101,8 +110,7 @@ export function worker3init () {
         continue
       }
 
-      resource1container.children[tempIterator].x = sab.resource1PositionsArr.x[tempIterator]
-      resource1container.children[tempIterator].y = sab.resource1PositionsArr.y[tempIterator]
+      resource1container.children[tempIterator].position.set(sab.resource1PositionsArr.x[tempIterator], sab.resource1PositionsArr.y[tempIterator])
     }
 
     tempIterator = consts.numberOfResource2
@@ -113,8 +121,7 @@ export function worker3init () {
       }
 
       resource2container.children[tempIterator].rotation = sab.resource2RotationsArr[tempIterator]
-      resource2container.children[tempIterator].x = sab.resource2PositionsArr.x[tempIterator]
-      resource2container.children[tempIterator].y = sab.resource2PositionsArr.y[tempIterator]
+      resource2container.children[tempIterator].position.set(sab.resource2PositionsArr.x[tempIterator], sab.resource2PositionsArr.y[tempIterator])
     }
   })
 }

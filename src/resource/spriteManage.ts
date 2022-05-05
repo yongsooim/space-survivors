@@ -14,6 +14,19 @@ export const baseTextures = {
   fire: new PIXI.BaseTexture(resourcePaths.firePng)
 }
 
+
+export const enemy1 = new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(9 * 8, 0 * 8, 8, 8))
+
+export const aa1Texture = new PIXI.Texture(baseTextures.proj, new PIXI.Rectangle(4 * 8, 0 * 8, 8, 8))
+export const fireTexture = new PIXI.Texture(baseTextures.fire)
+
+const bgBase = new PIXI.BaseTexture(resourcePaths.bgPng)
+const bg = new PIXI.Texture(bgBase)
+const bg2 = new PIXI.Texture(bgBase, new PIXI.Rectangle(0 * 32, 0 * 64, 32, 64))
+
+const proj = new PIXI.BaseTexture(resourcePaths.projPng)
+export const aa = new PIXI.Texture(proj, new PIXI.Rectangle(4 * 8, 0 * 8, 8, 8))
+
 export const textures = {
   ship1: new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(1 * 8, 2 * 8, 8, 8)),
   particle: new PIXI.Texture(baseTextures.particle),
@@ -41,17 +54,6 @@ export const textures = {
   fire: new PIXI.Texture(baseTextures.fire)
 }
 
-export const enemy1 = new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(9 * 8, 0 * 8, 8, 8))
-
-export const aa1Texture = new PIXI.Texture(baseTextures.proj, new PIXI.Rectangle(4 * 8, 0 * 8, 8, 8))
-export const fireTexture = new PIXI.Texture(baseTextures.fire)
-
-const bgBase = new PIXI.BaseTexture(resourcePaths.bgPng)
-const bg = new PIXI.Texture(bgBase)
-const bg2 = new PIXI.Texture(bgBase, new PIXI.Rectangle(0 * 32, 0 * 64, 32, 64))
-
-const proj = new PIXI.BaseTexture(resourcePaths.projPng)
-export const aa = new PIXI.Texture(proj, new PIXI.Rectangle(4 * 8, 0 * 8, 8, 8))
 
 export const sprites = {
   playerSprite: new PIXI.Sprite(textures.ship1),

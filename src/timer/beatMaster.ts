@@ -21,7 +21,8 @@ let beatCounter = 0
 let playerLevel = 1
 export function beatInit() {
   sound.volumeAll = 0.1
-  sound.volume('loop2', 0.5)
+  sound.volume('loop2', 0.25)
+  sound.volume('kick', 0.5)
 
   heartbeatWorker.onmessage = () => {
     if (++beatCounter >= beatMax) {
@@ -39,6 +40,7 @@ export function beatInit() {
         }, 60)
 
         sab.timerArr[0]++
+        
         break
 
       case 0o1:
@@ -85,6 +87,7 @@ export function beatInit() {
       case 0o10:
         sound.play('kick')
         player.fire()
+        player.flame()
 
         sab.timerArr[0]++
 
@@ -113,6 +116,7 @@ export function beatInit() {
         break
 
       case 0o16:
+        player.flame()
         break
 
       case 0o17:
@@ -132,6 +136,7 @@ export function beatInit() {
 
       case 0o22:
         player.fire()
+        player.flame()
         break
 
       case 0o23:
@@ -150,6 +155,7 @@ export function beatInit() {
 
       case 0o26:
         player.fire()
+        player.flame()
         break
 
       case 0o27:
@@ -168,6 +174,7 @@ export function beatInit() {
 
       case 0o32:
         player.fire()
+        player.flame()
         break
 
       case 0o33:
@@ -192,18 +199,34 @@ export function beatInit() {
         sound.play('snare')
         player.flame()
 
+
         break
 
       case 0o40:
         sound.play('kick')
         sound.play('loop2')
         player.fire()
+        player.flame()
+        sab.timerArr[0]++
+
         break
-      case 0o41:
+      case 0o41:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o42:
+      case 0o42:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o43:
+      case 0o43:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
 
 
@@ -211,23 +234,45 @@ export function beatInit() {
         sound.play('kick')
         player.fire()
         break
-      case 0o45:
+      case 0o45:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o46:
+      case 0o46:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o47:
+      case 0o47:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
 
 
       case 0o50:
         sound.play('kick')
         player.fire()
+        sab.timerArr[0]++
         break
-      case 0o51:
+      case 0o51:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o52:
+      case 0o52:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o53:
+        player.flame()
+        case 0o53:
         break
 
 
@@ -235,22 +280,48 @@ export function beatInit() {
         sound.play('kick')
         player.fire()
         break
-      case 0o55:
+      case 0o55:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o56:
+      case 0o56:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o57:
+      case 0o57:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
 
       case 0o60:
         sound.play('kick')
         player.fire()
+        sab.timerArr[0]++
         break
-      case 0o61:
+      case 0o61:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o62:
+      case 0o62:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o63:
+        player.flame()
+        case 0o63:        player.fire()
+        setTimeout(() => {
+          player.fire()
+        }, 60)
+
         break
 
 
@@ -258,23 +329,45 @@ export function beatInit() {
         sound.play('kick')
         player.fire()
         break
-      case 0o65:
+      case 0o65:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o66:
+      case 0o66:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
       case 0o67:
+        player.flame()
         break
 
 
       case 0o70:
         sound.play('kick')
         player.fire()
+        sab.timerArr[0]++
         break
-      case 0o71:
+      case 0o71:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o72:
+      case 0o72:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
-      case 0o73:
+      case 0o73:        player.fire()
+      setTimeout(() => {
+        player.fire()
+      }, 60)
+
         break
 
         
@@ -287,6 +380,7 @@ export function beatInit() {
       case 0o76:
         break
       case 0o77:
+        player.flame()
         break
     }
 

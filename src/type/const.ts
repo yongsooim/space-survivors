@@ -1,12 +1,12 @@
 const consts = {
-  numberOfEnemy1: 5000,
+  numberOfEnemy1: 1024,
   enemy1speed: 0.0018,
 
   spawnSize: 100,
   numberOfWeapon1: 512,
 
-  numberOfResource1: 100,
-  numberOfResource2: 100,
+  numberOfResource1: 4096,
+  numberOfResource2: 1024,
 
   numberOfAutoAttack1: 50,
 
@@ -21,7 +21,7 @@ const consts = {
   worker2Interval: 1000 / 60,
   worker3Interval: 1000 / 60,
 
-  magnetRange: 4,
+  magnetRange: 6,
   getRange: 1,
 
   numberOfDamageText: 128,

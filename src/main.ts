@@ -15,7 +15,7 @@ import { initStat } from './stat/stat'
 import { addText } from './ui/ui'
 import { bgInit } from './tile/background'
 import { tileInit } from './tile/tile'
-import { aaPool } from './weapon/autoAttack1'
+
 import { renderUpdate } from './render/render'
 
 PIXI.utils.skipHello()
@@ -81,7 +81,7 @@ app.loader.add(resources).load(() => {
       started = true
       mainMenu.exit()
 
-      aaPool.init()
+
       addText()
       player.init()
       viewport
@@ -96,7 +96,6 @@ app.loader.add(resources).load(() => {
       beatInit()
       app.ticker.add((delta: number) => {
         input.update()
-        aaPool.update(delta)
         player.update(delta)
         renderUpdate()
       })

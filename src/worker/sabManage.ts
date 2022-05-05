@@ -30,7 +30,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1)
   }
-
+  
   enemy1PositionsArr = {
     x: new Float64Array(this.enemy1Positions.x),
     y: new Float64Array(this.enemy1Positions.y)

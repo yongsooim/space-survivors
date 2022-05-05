@@ -9,7 +9,7 @@ export declare class Flame1Pool {
   disableByPtr(ptr: number): void
   fire(): void
 }
-
+let tempIterator = 0;
 export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: Box2D.b2World, sa: Isa) => {
 
   const { b2_dynamicBody, b2BodyDef, b2PolygonShape, b2Vec2, getPointer, b2Filter } = box2D
@@ -40,6 +40,7 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
         this.pool[i].CreateFixture(square, 1).SetFriction(0)
         this.pool[i].GetFixtureList().SetRestitution(0)
         this.pool[i].GetFixtureList().SetFilterData(flame1Filter)
+        this.pool[i].GetFixtureList().SetSensor(true)
 
         this.pool[i].SetLinearDamping(0)
         this.pool[i].SetAngularDamping(0)
@@ -50,12 +51,13 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
         this.pool[i].SetAwake(true)
         this.pool[i].SetEnabled(false)
 
+
         this.ptrToIdx[getPointer(this.pool[i])] = i
       }
     }
 
     updateSabPosition() {
-  let tempIterator = 0
+  tempIterator = 0
 
       tempIterator = consts.numberOfFlame1
       while (tempIterator--) {

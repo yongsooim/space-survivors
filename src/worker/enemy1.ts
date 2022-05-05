@@ -14,7 +14,7 @@ export declare class Enemy1Pool {
   getIndex(body: Box2D.b2Body): number;
   gen(): void;
 }
-
+let tempIterator = 0
 export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: Box2D.b2World, sa: Isa) => {
   const { b2_dynamicBody, b2BodyDef, b2PolygonShape, b2Vec2, getPointer, b2Filter } = box2D;
 
@@ -23,7 +23,7 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
 
   const bd = new b2BodyDef();
   bd.set_type(b2_dynamicBody);
-
+  
   const tempVec = new b2Vec2(0, 0);
 
   class Enemy1Pool {
@@ -36,7 +36,7 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
 
     constructor() {
       this.defaultFilter.categoryBits = Filter.Enemy1;
-      this.defaultFilter.maskBits = Filter.AutoAttack1 | Filter.Enemy1 | Filter.Player;
+      this.defaultFilter.maskBits = Filter.AutoAttack1 | Filter.Enemy1 | Filter.Player |  Filter.Flame;
       this.defaultFilter.groupIndex = 0;
 
       // creating boxes
@@ -62,8 +62,6 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
     }
 
     checkDead() {
-      let tempIterator = 0;
-
       tempIterator = consts.numberOfEnemy1;
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue; // skip already dead
@@ -74,21 +72,20 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
         }
       }
     }
-
     updateSabPosition() {
-      let tempIterator = consts.numberOfEnemy1;
-
+      tempIterator = consts.numberOfEnemy1;
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue; // skip dead
         sa.enemy1Positions.x[tempIterator] = this.pool[tempIterator].GetPosition().x;
         sa.enemy1Positions.y[tempIterator] = this.pool[tempIterator].GetPosition().y;
       }
-    }
-    updateVelocity() {
-      let tempIterator = 0;
 
+    }
+
+    updateVelocity() {
       tempIterator = consts.numberOfEnemy1;
       while (tempIterator--) {
+        if (this.pool[tempIterator].IsEnabled() === false) continue; // skip dead
         tempVec.Set(sa.enemy1Directions.x[tempIterator], sa.enemy1Directions.y[tempIterator]);
         this.pool[tempIterator].SetLinearVelocity(tempVec);
       }

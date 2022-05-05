@@ -36,7 +36,6 @@ onmessage = (ev) => {
     running = false;
     clearInterval(loopInterval);
     sa.playerPosition = { x: new Float64Array(), y: new Float64Array() };
-    sa.enemy1Positions = { x: new Float64Array(), y: new Float64Array() };
     sa.enemy1Hps = new Int32Array();
     self.close();
   } else if (ev.data.cmd === "fire") {
@@ -168,8 +167,9 @@ contactListener.BeginContact = (contact) => {
     const tempIndex = enemy1Pool.getIndex(bodyEnemy);
     if (sa.enemy1Hps[tempIndex] > 0) {
       // knock back
-      tempVec.Set(-4 * sa.enemy1Directions.x[tempIndex], -4 * sa.enemy1Directions.y[tempIndex]);
-      bodyEnemy.ApplyForce(tempVec, center, false);
+      tempVec.Set(-30 * sa.enemy1Directions.x[tempIndex], -30 * sa.enemy1Directions.y[tempIndex]);
+      bodyEnemy.ApplyLinearImpulse(tempVec, center, true);
+      //bodyEnemy.ApplyForce(tempVec, center, false);
 
       Atomics.sub(sa.enemy1Hps, tempIndex, 5); // damage dealt
       postMessage({
@@ -178,13 +178,40 @@ contactListener.BeginContact = (contact) => {
         y: bodyBullet.GetPosition().y,
         enemyX: bodyEnemy.GetPosition().x,
         enemyY: bodyEnemy.GetPosition().y,
-        dmg: 5,
+        damage: 5,
       });
     }
   }
 
   if (fixA.GetFilterData().categoryBits === Filter.Flame || fixB.GetFilterData().categoryBits === Filter.Flame) {
+    //contact.SetEnabled(false);
     console.log("hit");
+
+    if (fixA.GetFilterData().categoryBits === Filter.Flame) {
+      bodyBullet = fixA.GetBody();
+      bodyEnemy = fixB.GetBody();
+    } else if (fixB.GetFilterData().categoryBits === Filter.Flame) {
+      bodyBullet = fixB.GetBody();
+      bodyEnemy = fixA.GetBody();
+    } else {
+      return;
+    }
+    
+    //disableRequest.push(bodyBullet);
+
+    const tempIndex = enemy1Pool.getIndex(bodyEnemy);
+    if (sa.enemy1Hps[tempIndex] > 0) {
+
+      Atomics.sub(sa.enemy1Hps, tempIndex, 8); // damage dealt
+      postMessage({
+        cmd: "damage",
+        x: bodyBullet.GetPosition().x,
+        y: bodyBullet.GetPosition().y,
+        enemyX: bodyEnemy.GetPosition().x,
+        enemyY: bodyEnemy.GetPosition().y,
+        damage: 8,
+      });
+    }
   }
 };
 contactListener.EndContact = () => {};
@@ -193,7 +220,12 @@ contactListener.PreSolve = () => {};
 
 world.SetContactListener(contactListener);
 
+
+let sum = 0
+let count = 0
+
 let counter = 0;
+
 function loop() {
   if (running === false) return;
   counter++;
@@ -210,7 +242,7 @@ function loop() {
   flame1Pool.updateSabPosition();
   enemy1Pool.updateSabPosition();
   enemy1Pool.updateVelocity();
-
+  
   world.Step(stepTime, 8, 3);
 
   for (let i = 0; i < disableRequest.length; i++) {
@@ -239,7 +271,22 @@ function loop() {
     stepTime = consts.worker1Interval;
   }
 
-  if (counter % 30 === 0) {
+  if (counter % 1 === 0) {
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
+    enemy1Pool.gen();
     enemy1Pool.gen();
   }
 }
