@@ -101,16 +101,13 @@ viewportContainer.addChild(autoAttack1container);
 viewportContainer.addChild(flame1container);
 
 export const renderUpdate = () => {
-  tempIterator = consts.numberOfEnemy1;
+  let tempIterator = consts.numberOfEnemy1;
   while (tempIterator--) {
     if (sab.enemy1HpsArr[tempIterator] <= 0) {
       enemy1container.children[tempIterator].alpha = 0;
     } else {
       enemy1container.children[tempIterator].x = sab.enemy1PositionsArr.x[tempIterator];
       enemy1container.children[tempIterator].y = sab.enemy1PositionsArr.y[tempIterator];
-      if (enemy1container.children[tempIterator].x === 0 || enemy1container.children[tempIterator].y === 0) {
-        console.log(sab.enemy1PositionsArr.x[tempIterator], sab.enemy1PositionsArr.y[tempIterator], tempIterator);
-      }
       enemy1container.children[tempIterator].alpha = 0.8;
     }
   }

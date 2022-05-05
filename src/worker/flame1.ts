@@ -1,5 +1,5 @@
 import consts from '../type/const'
-import { Filter, Isa } from './worker1'
+import { Filter, Isa } from './workerGlobal'
 
 export declare class Flame1Pool {
   cursor: number
@@ -25,7 +25,6 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
   const bd = new b2BodyDef()
   bd.set_type(b2_dynamicBody)
 
-  let tempIterator = 0
   const tempVec = new b2Vec2(0, 0)
 
   class Flame1Pool {
@@ -35,6 +34,7 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
 
     constructor() {
       // creating boxes
+      
       for (let i = 0; i < consts.numberOfFlame1; i++) {
         this.pool[i] = world.CreateBody(bd)
         this.pool[i].CreateFixture(square, 1).SetFriction(0)
@@ -55,6 +55,8 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
     }
 
     updateSabPosition() {
+  let tempIterator = 0
+
       tempIterator = consts.numberOfFlame1
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue // skip dead

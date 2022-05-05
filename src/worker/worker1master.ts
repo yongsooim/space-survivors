@@ -49,18 +49,15 @@ window.onbeforeunload = () => {
   location.reload();
   document.location.reload();
   worker1.postMessage({ cmd: "close" });
-  worker1.terminate();
   PIXI.utils.clearTextureCache();
 };
 
 window.onclose = () => {
   worker1.postMessage({ cmd: "close" });
-  worker1.terminate();
   PIXI.utils.clearTextureCache();
 };
 
 window.document.addEventListener("beforeunload", () => {
-  worker1.terminate();
   worker1.postMessage("");
   PIXI.utils.clearTextureCache();
 });
@@ -79,5 +76,44 @@ export function worker1flame() {
 export async function worker1check() {
   worker1.postMessage({ cmd: "check" });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+// Set the name of the hidden property and the change event for visibility
+let hidden: string, visibilityChange
+if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and later support
+  hidden = 'hidden'
+  visibilityChange = 'visibilitychange'
+  // @ts-ignore
+} else if (typeof document.msHidden !== 'undefined') {
+  hidden = 'msHidden'
+  visibilityChange = 'msvisibilitychange'
+  // @ts-ignore
+} else if (typeof document.webkitHidden !== 'undefined') {
+  hidden = 'webkitHidden'
+  visibilityChange = 'webkitvisibilitychange'
+}
+function handleVisibilityChange() {
+  // @ts-ignore
+  if (document[hidden]) {
+    // console.log('hidden')
+    worker1.postMessage({cmd:'stop'})
+  } else {
+    // console.log('show')
+    worker1.postMessage({cmd:'start'})
+  }
+}
+
+document.addEventListener(visibilityChange as string, handleVisibilityChange, false)
+
 
 export {};

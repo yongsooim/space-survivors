@@ -87,11 +87,14 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2)
   }
-
   resource2PositionsArr = {
     x: new Float64Array(this.resource2Positions.x),
     y: new Float64Array(this.resource2Positions.y)
   }
+
+  resource2Rotations = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2)
+  resource2RotationsArr = new Float64Array(this.resource2Rotations)
+
 
   resource1RemainTimesArr = new Int32Array(this.resource1RemainTimes);
   resource2RemainTimesArr = new Int32Array(this.resource2RemainTimes);

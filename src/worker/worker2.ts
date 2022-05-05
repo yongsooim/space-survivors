@@ -16,6 +16,9 @@ let port: MessagePort
 
 let loopInterval: number
 
+
+console.log('worker2')
+
 /** Interface of shared array */
 export declare interface Isa {
   playerPosition: {
@@ -43,8 +46,10 @@ export let sa: Isa
 onmessage = (ev) => {
   if (ev.data.cmd === 'stop') {
     running = false
+    clearInterval(loopInterval)
   } else if (ev.data.cmd === 'start') {
     running = true
+    loopInterval = setInterval(calc, consts.worker2Interval)
   } else if (ev.data.cmd === 'close') {
     running = false
     clearInterval(loopInterval)
@@ -106,7 +111,7 @@ const calc = () => {
     enemyY = sa.enemy1Positions.y[tempIterator]
     diffX = playerX - enemyX
     diffY = playerY - enemyY
-    distance = Math.sqrt(diffX * diffX + diffY * diffY)
+    distance = Math.sqrt(diffX ** 2 + diffY ** 2)
 
     if (distance < 2) {
       self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })

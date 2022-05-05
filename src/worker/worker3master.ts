@@ -101,18 +101,6 @@ export function worker3init () {
         continue
       }
 
-      if (sab.resource1RemainTimesArr[tempIterator] <= 1000) {
-        resource1container.children[tempIterator].alpha = 0.1
-      } else if (sab.resource1RemainTimesArr[tempIterator] <= 2000) {
-        resource1container.children[tempIterator].alpha = 0.15
-      } else if (sab.resource1RemainTimesArr[tempIterator] <= 3000) {
-        resource1container.children[tempIterator].alpha = 0.2
-      } else if (sab.resource1RemainTimesArr[tempIterator] <= 4000) {
-        resource1container.children[tempIterator].alpha = 0.3
-      } else if (sab.resource1RemainTimesArr[tempIterator] <= 5000) {
-        resource1container.children[tempIterator].alpha = 0.4
-      }
-
       resource1container.children[tempIterator].x = sab.resource1PositionsArr.x[tempIterator]
       resource1container.children[tempIterator].y = sab.resource1PositionsArr.y[tempIterator]
     }
@@ -124,19 +112,7 @@ export function worker3init () {
         continue
       }
 
-      if (sab.resource2RemainTimesArr[tempIterator] <= 1000) {
-        resource2container.children[tempIterator].alpha = 0.1
-      } else if (sab.resource2RemainTimesArr[tempIterator] <= 2000) {
-        resource2container.children[tempIterator].alpha = 0.15
-      } else if (sab.resource2RemainTimesArr[tempIterator] <= 3000) {
-        resource2container.children[tempIterator].alpha = 0.2
-      } else if (sab.resource2RemainTimesArr[tempIterator] <= 4000) {
-        resource2container.children[tempIterator].alpha = 0.3
-      } else if (sab.resource2RemainTimesArr[tempIterator] <= 5000) {
-        resource2container.children[tempIterator].alpha = 0.4
-      }
-
-      resource2container.children[tempIterator].rotation += 0.02
+      resource2container.children[tempIterator].rotation = sab.resource2RotationsArr[tempIterator]
       resource2container.children[tempIterator].x = sab.resource2PositionsArr.x[tempIterator]
       resource2container.children[tempIterator].y = sab.resource2PositionsArr.y[tempIterator]
     }
@@ -155,15 +131,12 @@ window.onbeforeunload = function () {
   location.reload()
   document.location.reload()
   worker3.postMessage({ cmd: 'close' })
-  worker3.terminate()
 }
 
 window.onclose = function () {
   worker3.postMessage({ cmd: 'close' })
-  worker3.terminate()
 }
 
 window.document.addEventListener('beforeunload', () => {
   worker3.postMessage({ cmd: 'close' })
-  worker3.terminate()
 })

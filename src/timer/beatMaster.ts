@@ -302,6 +302,8 @@ export function beatInit() {
   }, 2000)
 }
 
+
+
 // Set the name of the hidden property and the change event for visibility
 let hidden: string, visibilityChange
 if (typeof document.hidden !== 'undefined') { // Opera 12.10 and Firefox 18 and later support

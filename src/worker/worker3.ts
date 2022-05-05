@@ -26,6 +26,7 @@ export declare interface Isa {
   };
   resource2RemainTimes: Int32Array;
   exp: Int32Array;
+  resource2Rotations: Float64Array
 }
 export let sa: Isa;
 
@@ -58,6 +59,8 @@ onmessage = (ev) => {
       },
       resource2RemainTimes: new Int32Array(sab.resource2RemainTimes),
       exp: new Int32Array(sab.exp),
+      resource2Rotations: new Float64Array(sab.resource2Rotations),
+
     };
     init();
   }
@@ -72,6 +75,7 @@ function init() {
   for (let i = 0; i < consts.numberOfResource2; i++) {
     sa.resource2Positions.x[i] = (Math.random() - 0.5) * consts.spawnSize;
     sa.resource2Positions.y[i] = (Math.random() - 0.5) * consts.spawnSize;
+    sa.resource2Rotations[i] = Math.random() * Math.PI * 2
   }
 }
 
@@ -100,7 +104,7 @@ const loop = () => {
     if (sa.resource1RemainTimes[i] <= 0) continue;
     diffX = tempPlayerPosX - sa.resource1Positions.x[i];
     diffY = tempPlayerPosY - sa.resource1Positions.y[i];
-    distance = Math.sqrt(diffX * diffX + diffY * diffY);
+    distance = Math.sqrt(diffX ** 2 + diffY ** 2);
   
     if (distance < consts.getRange) {
       sa.resource1RemainTimes[i] = 0;
@@ -119,6 +123,9 @@ const loop = () => {
     diffY = tempPlayerPosY - sa.resource2Positions.y[i];
     distance = Math.sqrt(diffX * diffX + diffY * diffY);
   
+
+    sa.resource2Rotations[i] += 0.02
+
     if (distance < consts.getRange) {
       sa.resource2RemainTimes[i] = 0;
       sa.exp[0] += 1;

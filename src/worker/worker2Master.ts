@@ -28,17 +28,14 @@ window.onbeforeunload = function (e) {
   location.reload()
   document.location.reload()
   worker2.postMessage({ cmd: 'close' })
-  worker2.terminate()
 }
 
 window.onclose = function (e) {
   worker2.postMessage({ cmd: 'close' })
-  worker2.terminate()
 }
 
 window.document.addEventListener('beforeunload', (e) => {
   worker2.postMessage({ cmd: 'close' })
-  worker2.terminate()
 })
 
 export {}

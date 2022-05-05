@@ -1,5 +1,5 @@
 import consts from "../type/const";
-import { Isa, Filter } from "./worker1";
+import { Isa, Filter } from "./workerGlobal";
 
 export declare class Enemy1Pool {
   // for alias
@@ -24,7 +24,6 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
   const bd = new b2BodyDef();
   bd.set_type(b2_dynamicBody);
 
-  let tempIterator = 0;
   const tempVec = new b2Vec2(0, 0);
 
   class Enemy1Pool {
@@ -63,6 +62,8 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
     }
 
     checkDead() {
+      let tempIterator = 0;
+
       tempIterator = consts.numberOfEnemy1;
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue; // skip already dead
@@ -75,15 +76,17 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
     }
 
     updateSabPosition() {
-      tempIterator = consts.numberOfEnemy1;
+      let tempIterator = consts.numberOfEnemy1;
+
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue; // skip dead
         sa.enemy1Positions.x[tempIterator] = this.pool[tempIterator].GetPosition().x;
         sa.enemy1Positions.y[tempIterator] = this.pool[tempIterator].GetPosition().y;
       }
     }
-
     updateVelocity() {
+      let tempIterator = 0;
+
       tempIterator = consts.numberOfEnemy1;
       while (tempIterator--) {
         tempVec.Set(sa.enemy1Directions.x[tempIterator], sa.enemy1Directions.y[tempIterator]);
@@ -112,7 +115,6 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
         tempVec.y = sa.playerPosition.y[0] + spawnDiffY;
         sa.enemy1Positions.x[genIndex] = tempVec.x;
         sa.enemy1Positions.y[genIndex] = tempVec.y;
-
 
         this.pool[genIndex].SetTransform(tempVec, 0);
         this.pool[genIndex].SetEnabled(true);

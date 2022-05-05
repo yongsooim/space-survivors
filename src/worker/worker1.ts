@@ -6,38 +6,32 @@ import { createEnemy1Pool, Enemy1Pool } from "./enemy1";
 import { createAutoAttack1Pool, AutoAttack1Pool } from "./autoAttack1";
 import { createFlame1Pool, Flame1Pool } from "./flame1";
 import { SabSet } from "./sabManage";
+import { Isa, Filter } from './workerGlobal'
 /** shared arrays in worker1 */
-export declare interface Isa {
-  playerPosition: { x: Float64Array; y: Float64Array };
-  enemy1Positions: { x: Float64Array; y: Float64Array };
-  enemy1Directions: { x: Float64Array; y: Float64Array };
-  autoAttack1Positions: { x: Float64Array; y: Float64Array };
-  flame1Positions: { x: Float64Array; y: Float64Array };
-  enemy1Hps: Int32Array;
-  autoAttack1Enabled: Int32Array;
-  flame1Enabled: Int32Array;
-  kills: Int32Array;
-}
 
 /** shared arrays */
 export let sa: Isa;
-
 export let port: MessagePort;
 
 let loopInterval: number;
+let loaded = false
 let running = false;
 
 let enemy1Pool: Enemy1Pool;
 let autoAttack1Pool: AutoAttack1Pool;
 let flame1Pool: Flame1Pool;
 
+console.log('?')
 onmessage = (ev) => {
   if (ev.data.cmd === "stop") {
+    clearInterval(loopInterval);
     running = false;
+
     // pause
   } else if (ev.data.cmd === "start") {
-    running = true;
     loopInterval = setInterval(loop, consts.worker1Interval);
+    lastExecuted = Date.now()
+    running = true;
   } else if (ev.data.cmd === "close") {
     running = false;
     clearInterval(loopInterval);
@@ -89,7 +83,7 @@ onmessage = (ev) => {
   }
 };
 
-const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
+export const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
   ///
   // By default, this looks for Box2D.wasm relative to public/build/bundle.js:
   // @example (url, scriptDirectory) => `${scriptDirectory}${url}`
@@ -104,14 +98,9 @@ const box2D: typeof Box2D & EmscriptenModule = await Box2DFactory({
     return "/assets/" + url; // for dev
   },
 });
+
 const { b2BodyDef, b2_dynamicBody, b2PolygonShape, b2Vec2, b2World, JSContactListener, wrapPointer, getPointer, b2Filter, b2Contact } = box2D;
 
-export enum Filter {
-  Enemy1 = 0x0001,
-  AutoAttack1 = 0x0002,
-  Player = 0x0004,
-  Flame = 0x0008,
-}
 
 const zero = new b2Vec2(0, 0);
 const center = new b2Vec2(0.5, 0.5);
@@ -125,13 +114,6 @@ const square = new b2PolygonShape();
 
 const tempVec = new b2Vec2(0, 0);
 
-export const autoAttack1Filter = new b2Filter();
-autoAttack1Filter.categoryBits = Filter.AutoAttack1;
-autoAttack1Filter.maskBits = Filter.Enemy1;
-
-export const usedBulletFilter = new b2Filter();
-usedBulletFilter.categoryBits = Filter.AutoAttack1;
-usedBulletFilter.maskBits = 0;
 
 export const playerFilter = new b2Filter();
 playerFilter.categoryBits = Filter.Player;
@@ -147,6 +129,10 @@ playerBody.SetLinearDamping(0);
 playerBody.SetAngularDamping(0);
 playerBody.SetSleepingAllowed(false);
 playerBody.SetEnabled(true);
+
+const usedBulletFilter = new b2Filter();
+usedBulletFilter.categoryBits = Filter.AutoAttack1;
+usedBulletFilter.maskBits = 0;
 
 let lastExecuted = Date.now();
 let delta = 0;
@@ -176,6 +162,7 @@ contactListener.BeginContact = (contact) => {
     }
 
     bodyBullet.GetFixtureList().SetFilterData(usedBulletFilter);
+    
     disableRequest.push(bodyBullet);
 
     const tempIndex = enemy1Pool.getIndex(bodyEnemy);
@@ -216,13 +203,15 @@ function loop() {
 
   enemy1Pool.checkDead();
 
+  //port.postMessage(0);
+
   // update shared memory buffer
   autoAttack1Pool.updateSabPosition();
   flame1Pool.updateSabPosition();
   enemy1Pool.updateSabPosition();
   enemy1Pool.updateVelocity();
 
-  world.Step(stepTime, 8, 3); /** World STEP */
+  world.Step(stepTime, 8, 3);
 
   for (let i = 0; i < disableRequest.length; i++) {
     if (disableRequest[i].GetFixtureList().GetFilterData().categoryBits === Filter.AutoAttack1) {
@@ -234,7 +223,6 @@ function loop() {
 
   // request for calculate to worker2
   // maybe try async calculation...
-  port.postMessage(0);
 
   // calculate elapsed and determine the interval to next step
   now = Date.now();
@@ -251,11 +239,10 @@ function loop() {
     stepTime = consts.worker1Interval;
   }
 
-  if (counter % 10 === 0) {
+  if (counter % 30 === 0) {
     enemy1Pool.gen();
   }
 }
 
 postMessage({ cmd: "loaded" });
-console.log('?')
-export default Worker;
+loaded = true

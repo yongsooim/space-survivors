@@ -1,12 +1,12 @@
 const consts = {
-  numberOfEnemy1: 1024,
+  numberOfEnemy1: 5000,
   enemy1speed: 0.0018,
 
   spawnSize: 100,
   numberOfWeapon1: 512,
 
-  numberOfResource1: 1024,
-  numberOfResource2: 2048,
+  numberOfResource1: 100,
+  numberOfResource2: 100,
 
   numberOfAutoAttack1: 50,
 

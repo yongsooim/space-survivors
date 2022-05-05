@@ -69,8 +69,8 @@ class AutoAttack1Pool {
       // bullet is not disabled and remain time is not expired
       this.objectPool[tempIterator].remainTime -= (delta * 1000) / 60
       this.objectPool[tempIterator].y -= consts.autoAttack1Speed
-      sab.autoAttack1PositionsArr[iteratorDouble] = this.objectPool[tempIterator].x
-      sab.autoAttack1PositionsArr[iteratorDouble + 1] = this.objectPool[tempIterator].y
+      sab.autoAttack1PositionsArr.x[tempIterator] = this.objectPool[tempIterator].x
+      sab.autoAttack1PositionsArr.y[tempIterator] = this.objectPool[tempIterator].y
     }
   }
 }
