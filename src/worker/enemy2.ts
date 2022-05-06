@@ -1,7 +1,7 @@
 import consts from '../type/const'
 import { Isa, Filter } from './workerGlobal'
 
-export declare class Enemy1Pool {
+export declare class Enemy2Pool {
   // for alias
   cursor: number
   pool: Box2D.b2Body[]
@@ -13,7 +13,7 @@ export declare class Enemy1Pool {
   gen(): void
 }
 let tempIterator = 0
-export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: Box2D.b2World, sa: Isa) => {
+export const createEnemy2Pool = (box2D: typeof Box2D & EmscriptenModule, world: Box2D.b2World, sa: Isa) => {
   const { b2_dynamicBody, b2BodyDef, b2PolygonShape, b2Vec2, getPointer, b2Filter } = box2D
 
   const square = new b2PolygonShape()
@@ -23,24 +23,23 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
   bd.set_type(b2_dynamicBody)
 
   const tempVec = new b2Vec2(0, 0)
-  let currentBody : Box2D.b2Body
+  let tempBody: Box2D.b2Body
 
-  class Enemy1Pool {
+  class Enemy2Pool {
     defaultFilter = new b2Filter();
 
     cursor = 0
-    pool = new Array<Box2D.b2Body>(consts.numberOfEnemy1)
+    pool = new Array<Box2D.b2Body>(consts.numberOfEnemy2)
     ptrToIdx: number[] = []
     disabledList: number[] = []
-    counter = 0
-    divide = 30
 
-    constructor () {
-      this.defaultFilter.categoryBits = Filter.Enemy1
-      this.defaultFilter.maskBits = Filter.AutoAttack1 | Filter.Enemy1 | Filter.Player | Filter.Flame | Filter.Enemy2
+    constructor() {
+      this.defaultFilter.categoryBits = Filter.Enemy2
+      this.defaultFilter.maskBits = Filter.AutoAttack1 | Filter.Enemy2 | Filter.Player | Filter.Flame | Filter.Enemy1
+      this.defaultFilter.groupIndex = 0
 
       // creating boxes
-      for (let i = 0; i < consts.numberOfEnemy1; i++) {
+      for (let i = 0; i < consts.numberOfEnemy2; i++) {
         this.pool[i] = world.CreateBody(bd)
         this.pool[i].CreateFixture(square, 1).SetFriction(0)
         this.pool[i].GetFixtureList().SetRestitution(0)
@@ -61,45 +60,39 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       }
     }
 
-    update () {
-      tempIterator = consts.numberOfEnemy1
+    update() {
+      tempIterator = consts.numberOfEnemy2
       while (tempIterator--) {
-        currentBody = this.pool[tempIterator]
-        if (currentBody.IsEnabled() === false) continue // skip already dead
+        tempBody = this.pool[tempIterator]
+        if (tempBody.IsEnabled() === false) continue // skip already dead
 
-        if (sa.enemy1Hps[tempIterator] <= 0) { // check dead
+        if (sa.enemy2Hps[tempIterator] <= 0) { // check dead
           Atomics.add(sa.kills, 0, 1)
-          currentBody.SetEnabled(false)
+          tempBody.SetEnabled(false)
           this.disabledList.push(tempIterator)
           continue
         }
 
-        // update position in sab of alives
-        sa.enemy1Positions.x[tempIterator] = currentBody.GetPosition().x
-        sa.enemy1Positions.y[tempIterator] = currentBody.GetPosition().y
+        // update position of alives
+        sa.enemy2Positions.x[tempIterator] = tempBody.GetPosition().x
+        sa.enemy2Positions.y[tempIterator] = tempBody.GetPosition().y
 
         // update velocity of alives
-        this.counter++
-        if(this.counter >= this.divide){
-          this.counter = 0
-        }
-        if(tempIterator % this.divide === this.counter){
-          tempVec.Set(sa.enemy1Directions.x[tempIterator], sa.enemy1Directions.y[tempIterator])
-          currentBody.SetLinearVelocity(tempVec)
-        }
+        tempVec.Set(sa.enemy2Directions.x[tempIterator], sa.enemy2Directions.y[tempIterator])
+        tempBody.SetLinearVelocity(tempVec)
       }
     }
 
-    disableByPtr (ptr: number) {
-      sa.autoAttack1RemainTimes[this.ptrToIdx[ptr]] = 0 // only substraction could be in race condition with this... need atomics?
+    disableByPtr(ptr: number) {
+      sa.autoAttack1RemainTimes[this.ptrToIdx[ptr]] = 0
       this.pool[this.ptrToIdx[ptr]].SetEnabled(false)
     }
 
-    getIndex (body: Box2D.b2Body) {
+    getIndex(body: Box2D.b2Body) {
       return this.ptrToIdx[getPointer(body)]
     }
 
-    gen () {
+    gen() {
       if (this.disabledList.length > 0) {
         const genIndex = this.disabledList.pop() as number
         const spawnDistance = Math.random() * 10 + consts.spawnSize / 2
@@ -107,17 +100,18 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
         const spawnDiffX = Math.cos(spawnAngle) * spawnDistance
         const spawnDiffY = Math.sin(spawnAngle) * spawnDistance
 
-        tempVec.Set(sa.playerPosition.x[0] + spawnDiffX, sa.playerPosition.y[0] + spawnDiffY)
-        sa.enemy1Positions.x[genIndex] = tempVec.x
-        sa.enemy1Positions.y[genIndex] = tempVec.y
+        tempVec.x = sa.playerPosition.x[0] + spawnDiffX
+        tempVec.y = sa.playerPosition.y[0] + spawnDiffY
+        sa.enemy2Positions.x[genIndex] = tempVec.x
+        sa.enemy2Positions.y[genIndex] = tempVec.y
 
         this.pool[genIndex].SetTransform(tempVec, 0)
         this.pool[genIndex].SetEnabled(true)
-        sa.enemy1Hps[genIndex] = 10
+        sa.enemy2Hps[genIndex] = 10
       }
     }
   }
 
-  const enemy1pool = new Enemy1Pool()
-  return enemy1pool
+  const enemy2pool = new Enemy2Pool()
+  return enemy2pool
 }

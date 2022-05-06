@@ -8,26 +8,25 @@ import sab from '../worker/sabManage'
 import { Vector } from '../class/Vector'
 import { keyboard, Keys } from '../input/keyboard'
 import { viewport } from '../viewport/viewport'
-import { aaPool } from '../weapon/autoAttack1'
 import { initEmitter, emitter } from './fire-emit'
-import { worker1fire, worker1flame } from '../worker/worker1master'
+import { worker1fire, worker1flame, worker1missile } from '../worker/worker1master'
 import { explosion } from './explosion'
 import { sound } from '@pixi/sound'
 
 class Player extends Container {
-  level = 0;
-  speed = 350;
-  vector = new Vector(0, 0);
-  positionVector = new Vector(0, 0);
+  level = 0
+  speed = 350
+  vector = new Vector(0, 0)
+  positionVector = new Vector(0, 0)
 
-  playerSprite = new PIXI.Sprite(textures.ship1);
+  playerSprite = new PIXI.Sprite(textures.ship1)
   constructor () {
     super()
     this.position.set(0)
     this.playerSprite.position.set(0)
     this.playerSprite.scale.set(0.2, 0.2)
-    // this.playerSprite.rotation = Math.PI;
-    // this.playerSprite.cacheAsBitmap = true;
+    // this.playerSprite.rotation = Math.PI
+    // this.playerSprite.cacheAsBitmap = true
     this.playerSprite.anchor.set(0.5)
     this.playerSprite.zIndex = 999
     this.addChild(this.playerSprite)
@@ -35,7 +34,7 @@ class Player extends Container {
 
   init () {
     initEmitter()
-    // explosion.init;
+    // explosion.init
   }
 
   update (delta: number) {
@@ -43,20 +42,20 @@ class Player extends Container {
 
     if (this.vector.size >= 0.3) {
       if ((Math.PI * 7) / 8 <= this.vector.toAngle() && this.vector.toAngle() < (Math.PI * 9) / 8) {
-        // console.log("left rotate wing");
+        // console.log('left rotate wing')
       } else if (this.vector.toAngle() <= Math.PI / 8 || this.vector.toAngle() > (Math.PI * 15) / 8) {
-        // console.log("right rotate wing");
+        // console.log('right rotate wing')
       }
     }
   }
 
   fire () {
-    // aaPool.fire(this.x, this.y)
     worker1fire()
   }
 
   flame () {
     worker1flame()
+    worker1missile()
     sound.volume('flamewav', 0.4)
     sound.play('flamewav')
     emitter.maxLifetime = 0.5

@@ -2,12 +2,12 @@ import * as PIXI from 'pixi.js'
 import consts from '../type/const'
 import { viewportContainer } from '../viewport/viewport'
 import { app } from '../main'
-import { sound } from '@pixi/sound';
+import { sound } from '@pixi/sound'
 
 class DamageTextPool {
-  cursor = 0;
-  pool: PIXI.Text[] = [];
-  hitpool: PIXI.Text[] = [];
+  cursor = 0
+  pool: PIXI.Text[] = []
+  hitpool: PIXI.Text[] = []
 
   constructor () {
     for (let i = 0; i < consts.numberOfDamageText; i++) {
@@ -116,11 +116,11 @@ function handleVisibilityChange () {
   } else {
     // console.log('show')
     // damageTextPool.hitpool.forEach((v, i, a) => {
-    //  a[i].alpha = 1;
-    // });
+    //  a[i].alpha = 1
+    // })
     // damageTextPool.pool.forEach((v, i, a) => {
-    //  a[i].alpha = 1;
-    // });
+    //  a[i].alpha = 1
+    // })
   }
 }
 

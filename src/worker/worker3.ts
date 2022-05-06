@@ -1,13 +1,13 @@
 // this worker calculates the interaction between resource and player
 
-import Box2DFactory from "box2d-wasm"; // ....
-import consts from "../type/const";
-import { SabSet } from "./sabManage";
+import Box2DFactory from 'box2d-wasm' // ....
+import consts from '../type/const'
+import { SabSet } from './sabManage'
 
 // timer for loop
-let loopInterval = 0;
+let loopInterval = 0
 
-let running = false;
+let running = false
 
 /** Interface of shared array */
 export declare interface Isa {
@@ -28,134 +28,133 @@ export declare interface Isa {
   exp: Int32Array;
   resource2Rotations: Float64Array
 }
-export let sa: Isa;
+export let sa: Isa
 
 onmessage = (ev) => {
-  if (ev.data.cmd === "stop") {
-    running = false;
+  if (ev.data.cmd === 'stop') {
+    running = false
     // pause
-  } else if (ev.data.cmd === "start") {
-    running = true;
-  } else if (ev.data.cmd === "close") {
-    running = false;
-    self.close();
-  } else if (ev.data.cmd === "generate") {
-  } else if (ev.data.cmd === "init") {
-    const sab = ev.data.sab as SabSet;
+  } else if (ev.data.cmd === 'start') {
+    running = true
+  } else if (ev.data.cmd === 'close') {
+    running = false
+    self.close()
+  } else if (ev.data.cmd === 'generate') {
+  } else if (ev.data.cmd === 'init') {
+    const sab = ev.data.sab as SabSet
     sa = {
       // setting shared arrays
       playerPosition: {
         x: new Float64Array(sab.playerPosition.x),
-        y: new Float64Array(sab.playerPosition.y),
+        y: new Float64Array(sab.playerPosition.y)
       },
       resource1Positions: {
         x: new Float64Array(sab.resource1Positions.x),
-        y: new Float64Array(sab.resource1Positions.y),
+        y: new Float64Array(sab.resource1Positions.y)
       },
       resource1RemainTimes: new Int32Array(sab.resource1RemainTimes),
       resource2Positions: {
         x: new Float64Array(sab.resource2Positions.x),
-        y: new Float64Array(sab.resource2Positions.y),
+        y: new Float64Array(sab.resource2Positions.y)
       },
       resource2RemainTimes: new Int32Array(sab.resource2RemainTimes),
       exp: new Int32Array(sab.exp),
-      resource2Rotations: new Float64Array(sab.resource2Rotations),
+      resource2Rotations: new Float64Array(sab.resource2Rotations)
 
-    };
-    init();
+    }
+    init()
   }
-};
+}
 
-function init() {
+function init () {
   for (let i = 0; i < consts.numberOfResource1; i++) {
-    sa.resource1Positions.x[i] = (Math.random() - 0.5) * consts.spawnSize;
-    sa.resource1Positions.y[i] = (Math.random() - 0.5) * consts.spawnSize;
+    sa.resource1Positions.x[i] = (Math.random() - 0.5) * consts.spawnSize
+    sa.resource1Positions.y[i] = (Math.random() - 0.5) * consts.spawnSize
   }
 
   for (let i = 0; i < consts.numberOfResource2; i++) {
-    sa.resource2Positions.x[i] = (Math.random() - 0.5) * consts.spawnSize;
-    sa.resource2Positions.y[i] = (Math.random() - 0.5) * consts.spawnSize;
+    sa.resource2Positions.x[i] = (Math.random() - 0.5) * consts.spawnSize
+    sa.resource2Positions.y[i] = (Math.random() - 0.5) * consts.spawnSize
     sa.resource2Rotations[i] = Math.random() * Math.PI * 2
   }
 }
 
-let tempIterator;
+let tempIterator
 
-const counter = 0;
-let lastExecuted = Date.now();
-let delta = 0;
-let now = Date.now();
-let stepTime = 0;
+const counter = 0
+let lastExecuted = Date.now()
+let delta = 0
+let now = Date.now()
+let stepTime = 0
 
-let tempPlayerPosX = 0;
-let tempPlayerPosY = 0;
-let diffX = 0;
-let diffY = 0;
-let distance = 0;
+let tempPlayerPosX = 0
+let tempPlayerPosY = 0
+let diffX = 0
+let diffY = 0
+let distance = 0
 
 const loop = () => {
-  if (running === false) return;
+  if (running === false) return
 
-  tempPlayerPosX = sa.playerPosition.x[0];
-  tempPlayerPosY = sa.playerPosition.y[0];
+  tempPlayerPosX = sa.playerPosition.x[0]
+  tempPlayerPosY = sa.playerPosition.y[0]
 
   for (let i = counter; i < consts.numberOfResource1; i++) {
-    sa.resource1RemainTimes[i] -= delta;
-    if (sa.resource1RemainTimes[i] <= 0) continue;
-    diffX = tempPlayerPosX - sa.resource1Positions.x[i];
-    diffY = tempPlayerPosY - sa.resource1Positions.y[i];
-    distance = Math.sqrt(diffX ** 2 + diffY ** 2);
-  
+    sa.resource1RemainTimes[i] -= delta
+    if (sa.resource1RemainTimes[i] <= 0) continue
+    diffX = tempPlayerPosX - sa.resource1Positions.x[i]
+    diffY = tempPlayerPosY - sa.resource1Positions.y[i]
+    distance = Math.sqrt(diffX ** 2 + diffY ** 2)
+
     if (distance < consts.getRange) {
-      sa.resource1RemainTimes[i] = 0;
-      sa.exp[0] += 1;
-      postMessage({ cmd: "get" });
+      sa.resource1RemainTimes[i] = 0
+      sa.exp[0] += 1
+      postMessage({ cmd: 'get' })
     } else if (distance < consts.magnetRange) {
-      sa.resource1Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000;
-      sa.resource1Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000;
+      sa.resource1Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000
+      sa.resource1Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000
     }
   }
-  
+
   for (let i = counter; i < consts.numberOfResource2; i++) {
-    sa.resource2RemainTimes[i] -= delta;
-    if (sa.resource2RemainTimes[i] <= 0) continue;
-    diffX = tempPlayerPosX - sa.resource2Positions.x[i];
-    diffY = tempPlayerPosY - sa.resource2Positions.y[i];
-    distance = Math.sqrt(diffX * diffX + diffY * diffY);
-  
+    sa.resource2RemainTimes[i] -= delta
+    if (sa.resource2RemainTimes[i] <= 0) continue
+    diffX = tempPlayerPosX - sa.resource2Positions.x[i]
+    diffY = tempPlayerPosY - sa.resource2Positions.y[i]
+    distance = Math.sqrt(diffX * diffX + diffY * diffY)
 
     sa.resource2Rotations[i] += 0.02
 
     if (distance < consts.getRange) {
-      sa.resource2RemainTimes[i] = 0;
-      sa.exp[0] += 1;
-      postMessage({ cmd: "get" });
+      sa.resource2RemainTimes[i] = 0
+      sa.exp[0] += 1
+      postMessage({ cmd: 'get' })
     } else if (distance < consts.magnetRange) {
-      sa.resource2Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000;
-      sa.resource2Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000;
+      sa.resource2Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000
+      sa.resource2Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000
     }
   }
 
-  now = Date.now();
-  delta = now - lastExecuted;
+  now = Date.now()
+  delta = now - lastExecuted
 
   if (delta > consts.worker3Interval + 5) {
     if (delta > 500) {
-      stepTime = 500;
+      stepTime = 500
     } else {
-      stepTime = delta;
+      stepTime = delta
     }
   } else {
-    stepTime = consts.worker3Interval;
+    stepTime = consts.worker3Interval
   }
 
-  lastExecuted = now;
-};
+  lastExecuted = now
+}
 
 setTimeout(() => {
-  loopInterval = setInterval(loop, consts.worker3Interval);
-}, 1000);
+  loopInterval = setInterval(loop, consts.worker3Interval)
+}, 1000)
 
-postMessage("ready");
+postMessage('ready')
 
-export default Worker;
+export default Worker

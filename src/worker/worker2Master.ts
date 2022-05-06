@@ -1,6 +1,5 @@
 import Worker from './worker2?worker'
 import sab from './sabManage'
-import { aaPool } from '../weapon/autoAttack1'
 import { channel12 } from './channel'
 import { sound } from '@pixi/sound'
 import { player } from '../player/player'

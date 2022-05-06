@@ -1,15 +1,9 @@
 // this worker calculates collision between enemy and player
+// and calculates (subtract) remain time of objects
 
 import consts from '../type/const'
 import { SabSet } from './sabManage'
 
-let life: Int32Array
-let lock: Int32Array
-
-const lastExecuted = Date.now()
-const delta = 0
-const now = 0
-const stepTime = 0
 let running = false
 
 let port: MessagePort
@@ -18,10 +12,8 @@ let loopInterval: number
 
 let tempIterator = 0
 
-console.log('worker2')
-
 /** Interface of shared array */
-export declare interface Isa {
+declare interface Isa {
   playerPosition: {
     x: Float64Array,
     y: Float64Array,
@@ -35,10 +27,29 @@ export declare interface Isa {
     y: Float64Array,
   }
   enemy1Hps: Int32Array,
+  enemy2Positions: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  enemy2Directions: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  enemy2Hps: Int32Array,
+  enemy3Positions: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  enemy3Directions: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  enemy3Hps: Int32Array,
   autoAttack1Positions: {
     x: Float64Array,
     y: Float64Array,
   }
+  autoAttack1RemainTimes: Int32Array
   life: Int32Array,
 }
 
@@ -72,10 +83,30 @@ onmessage = (ev) => {
         y: new Float64Array(tempSab.enemy1Directions.y)
       },
       enemy1Hps: new Int32Array(tempSab.enemy1Hps),
+      enemy2Positions: {
+        x: new Float64Array(tempSab.enemy2Positions.x),
+        y: new Float64Array(tempSab.enemy2Positions.y)
+      },
+      enemy2Directions: {
+        x: new Float64Array(tempSab.enemy2Directions.x),
+        y: new Float64Array(tempSab.enemy2Directions.y)
+      },
+      enemy2Hps: new Int32Array(tempSab.enemy2Hps),
+      enemy3Positions: {
+        x: new Float64Array(tempSab.enemy3Positions.x),
+        y: new Float64Array(tempSab.enemy3Positions.y)
+      },
+      enemy3Directions: {
+        x: new Float64Array(tempSab.enemy3Directions.x),
+        y: new Float64Array(tempSab.enemy3Directions.y)
+      },
+      enemy3Hps: new Int32Array(tempSab.enemy3Hps),
       autoAttack1Positions: {
         x: new Float64Array(tempSab.autoAttack1Positions.x),
         y: new Float64Array(tempSab.autoAttack1Positions.y)
       },
+
+      autoAttack1RemainTimes: new Int32Array(tempSab.autoAttack1RemainTimes),
       life: new Int32Array(tempSab.life)
 
     }
@@ -85,26 +116,24 @@ onmessage = (ev) => {
   }
 }
 
-let playerX = 0; let playerY = 0
-let enemyX = 0; let enemyY = 0
-let diffX = 0; let diffY = 0
-let directionX = 0; let directionY = 0
+let playerX = 0, enemyX = 0, diffX = 0, directionX = 0
+let playerY = 0, enemyY = 0, diffY = 0, directionY = 0
 let distance = 0
 
 const divide = 30
 let count = 0
 const calc = () => {
   if (running === false) return
-
   count++
-  if (count === divide) {
+  if (count >= divide) {
     count = 0
   }
 
-  tempIterator = consts.numberOfEnemy1
   playerX = sa.playerPosition.x[0]
   playerY = sa.playerPosition.y[0]
-  for (tempIterator = count; tempIterator < consts.numberOfEnemy1; tempIterator += divide) {
+
+  tempIterator = consts.numberOfEnemy1
+  while (tempIterator--) {
     if (sa.enemy1Hps[tempIterator] <= 0) continue // skip dead enemy
 
     enemyX = sa.enemy1Positions.x[tempIterator]
@@ -113,15 +142,101 @@ const calc = () => {
     diffY = playerY - enemyY
     distance = Math.sqrt(diffX ** 2 + diffY ** 2)
 
-    if (distance < 2) {
-      self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
-    }
-
     directionX = (consts.enemy1speed * diffX) / distance
     directionY = (consts.enemy1speed * diffY) / distance
 
     sa.enemy1Directions.x[tempIterator] = directionX
     sa.enemy1Directions.y[tempIterator] = directionY
+
+  }
+
+  for (let i = count; i < consts.numberOfEnemy1; i += divide) {
+    if (distance < 2) {
+      enemyX = sa.enemy1Positions.x[i]
+      enemyY = sa.enemy1Positions.y[i]
+      diffX = playerX - enemyX
+      diffY = playerY - enemyY
+      distance = Math.sqrt(diffX ** 2 + diffY ** 2)
+
+      self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+    }
+  }
+
+  tempIterator = consts.numberOfEnemy2
+  while (tempIterator--) {
+    if (sa.enemy2Hps[tempIterator] <= 0) continue // skip dead enemy
+
+    enemyX = sa.enemy2Positions.x[tempIterator]
+    enemyY = sa.enemy2Positions.y[tempIterator]
+    diffX = playerX - enemyX
+    diffY = playerY - enemyY
+    distance = Math.sqrt(diffX ** 2 + diffY ** 2)
+
+    directionX = (consts.enemy2speed * diffX) / distance
+    directionY = (consts.enemy2speed * diffY) / distance
+
+    sa.enemy2Directions.x[tempIterator] = directionX
+    sa.enemy2Directions.y[tempIterator] = directionY
+
+    if (count % divide === 0) {
+      if (distance < 2) {
+        self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+      }
+    }
+  }
+
+  for (let i = count; i < consts.numberOfEnemy2; i += divide) {
+    if (distance < 2) {
+      enemyX = sa.enemy2Positions.x[i]
+      enemyY = sa.enemy2Positions.y[i]
+      diffX = playerX - enemyX
+      diffY = playerY - enemyY
+      distance = Math.sqrt(diffX ** 2 + diffY ** 2)
+
+      self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+    }
+  }
+
+  tempIterator = consts.numberOfEnemy3
+  while (tempIterator--) {
+    if (sa.enemy3Hps[tempIterator] <= 0) continue // skip dead enemy
+
+    enemyX = sa.enemy3Positions.x[tempIterator]
+    enemyY = sa.enemy3Positions.y[tempIterator]
+    diffX = playerX - enemyX
+    diffY = playerY - enemyY
+    distance = Math.sqrt(diffX ** 2 + diffY ** 2)
+
+    directionX = (consts.enemy3speed * diffX) / distance
+    directionY = (consts.enemy3speed * diffY) / distance
+
+    sa.enemy3Directions.x[tempIterator] = directionX
+    sa.enemy3Directions.y[tempIterator] = directionY
+
+    if (count % divide === 0) {
+      if (distance < 2) {
+        self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+      }
+    }
+  }
+
+  for (let i = count; i < consts.numberOfEnemy3; i += divide) {
+    if (distance < 2) {
+      enemyX = sa.enemy3Positions.x[i]
+      enemyY = sa.enemy3Positions.y[i]
+      diffX = playerX - enemyX
+      diffY = playerY - enemyY
+      distance = Math.sqrt(diffX ** 2 + diffY ** 2)
+
+      self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+    }
+  }
+
+  tempIterator = consts.numberOfAutoAttack1
+  while (tempIterator--) { // should it be atomic? maybe?
+    if (sa.autoAttack1RemainTimes[tempIterator] > 0) {
+      sa.autoAttack1RemainTimes[tempIterator] -= consts.worker2Interval
+    }
   }
 }
 

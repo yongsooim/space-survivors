@@ -11,14 +11,12 @@ import { app } from '../main'
 import { sound } from '@pixi/sound'
 const worker3 = new Worker()
 
-
 worker3.onmessage = (ev) => {
   if (ev.data.cmd === 'get') {
     sound.volume('pickup', 0.2)
     sound.play('pickup')
   }
 }
-
 
 const resource1container = new PIXI.ParticleContainer(
   consts.numberOfResource1,
@@ -47,12 +45,11 @@ resource2container.interactiveChildren = false
 resource2container.sortableChildren = false
 resource2container.interactive = false
 
-
 let tempIterator = 0
 
 export function worker3init () {
   let resource1sprites
-  
+
   tempIterator = consts.numberOfResource1
   while (tempIterator--) {
     resource1sprites = new PIXI.Sprite(textures.particles[Math.floor(Math.random() * 15.9)])
@@ -76,7 +73,7 @@ export function worker3init () {
     resource2container.addChild(resource2sprite)
   }
 
-  worker3.postMessage({cmd: 'init', sab: sab})
+  worker3.postMessage({ cmd: 'init', sab: sab })
 
   tempIterator = consts.numberOfResource1
   while (tempIterator--) {

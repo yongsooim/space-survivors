@@ -46,5 +46,5 @@ const counting = () => {
 }
 
 // some more calcuation after post beat done?
-
+postMessage('ready')
 export { }

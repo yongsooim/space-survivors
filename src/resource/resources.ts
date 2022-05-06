@@ -21,8 +21,9 @@ import loop from '../asset/loop.wav'
 import loop2 from '../asset/loop2.wav'
 import bass from '../asset/bass.wav'
 import * as PIXI from 'pixi.js'
-import { sound } from '@pixi/sound'
+import { sound, SoundLoader } from '@pixi/sound'
 import { app } from '../main'
+
 
 sound.add('kick', kick)
 sound.add('hihat', hihat)
@@ -57,19 +58,19 @@ export const resources: PIXI.IAddOptions[] = [
   { name: 'char', url: charPng },
   { name: 'fire', url: fireWav },
   { name: 'fireWav', url: fireWav },
-  { name: 'kick', url: kick },
-  { name: 'hihat', url: hihat },
-  { name: 'snare', url: snare },
+  { name: 'kick', url: kick  },
+  { name: 'hihat', url: hihat  },
+  { name: 'snare', url: snare  },
   { name: 'loop', url: loop },
-  { name: 'bass', url: bass },
+  { name: 'bass', url: bass  },
   { name: 'particle', url: particlePng },
   { name: 'particles', url: particlesPng },
   { name: 'shot', url: shotWav },
-  { name: 'playerhitwav', url: playerhitwav },
-  { name: 'pickup', url: pickupWav },
+  { name: 'playerhitwav', url: playerhitwav  },
+  { name: 'pickup', url: pickupWav  },
   { name: 'firePng', url: firePng },
   { name: 'loop2', url: loop2 },
-  { name: 'enemyhitwav', url: enemyhitwav },
-  { name: 'flamewav', url: flamewav },
-  
+  { name: 'enemyhitwav', url: enemyhitwav  },
+  { name: 'flamewav', url: flamewav  }
+
 ]
