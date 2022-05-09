@@ -1,4 +1,5 @@
 import consts from '../type/const'
+import { ptrToInfo } from './ptrToInfo'
 import { Isa, Filter } from './workerGlobal'
 
 export declare class Enemy2Pool {
@@ -17,7 +18,7 @@ export const createEnemy2Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
   const { b2_dynamicBody, b2BodyDef, b2PolygonShape, b2Vec2, getPointer, b2Filter } = box2D
 
   const square = new b2PolygonShape()
-  square.SetAsBox(0.8, 0.6)
+  square.SetAsBox(0.5, 0.5)
 
   const bd = new b2BodyDef()
   bd.set_type(b2_dynamicBody)
@@ -41,7 +42,7 @@ export const createEnemy2Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       // creating boxes
       for (let i = 0; i < consts.numberOfEnemy2; i++) {
         this.pool[i] = world.CreateBody(bd)
-        this.pool[i].CreateFixture(square, 1).SetFriction(0)
+        this.pool[i].CreateFixture(square, 1.5).SetFriction(0)
         this.pool[i].GetFixtureList().SetRestitution(0)
         this.pool[i].GetFixtureList().SetFilterData(this.defaultFilter)
 
@@ -55,6 +56,10 @@ export const createEnemy2Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
         this.pool[i].SetEnabled(false)
 
         this.ptrToIdx[getPointer(this.pool[i])] = i
+        ptrToInfo[getPointer(this.pool[i])] = {
+          category: 'enemy',
+          type: 'enemy2'
+        }
 
         this.disabledList.push(i)
       }

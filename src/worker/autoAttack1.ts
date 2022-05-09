@@ -1,4 +1,5 @@
 import consts from '../type/const'
+import { ptrToInfo } from './ptrToInfo'
 import { Filter, Isa } from './workerGlobal'
 
 export declare class AutoAttack1Pool {
@@ -50,6 +51,13 @@ export const createAutoAttack1Pool = (box2D: typeof Box2D & EmscriptenModule, wo
         this.pool[i].SetEnabled(false)
 
         this.ptrToIdx[getPointer(this.pool[i])] = i
+        ptrToInfo[getPointer(this.pool[i])] = {
+          category: 'weapon',
+          type: 'autoAttack1',
+          attribute: 'bullet',
+          damage : 5
+        }
+
       }
     }
 

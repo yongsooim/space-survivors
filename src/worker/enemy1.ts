@@ -1,4 +1,5 @@
 import consts from '../type/const'
+import { ptrToInfo } from './ptrToInfo'
 import { Isa, Filter } from './workerGlobal'
 
 export declare class Enemy1Pool {
@@ -56,7 +57,10 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
         this.pool[i].SetEnabled(false)
 
         this.ptrToIdx[getPointer(this.pool[i])] = i
-
+        ptrToInfo[getPointer(this.pool[i])] = {
+          category: 'enemy',
+          type: 'enemy1'
+        }
         this.disabledList.push(i)
       }
     }
@@ -64,29 +68,22 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
     update () {
       tempIterator = consts.numberOfEnemy1
       while (tempIterator--) {
-        currentBody = this.pool[tempIterator]
-        if (currentBody.IsEnabled() === false) continue // skip already dead
+        currentBody = this.pool[tempIterator];
+        if (currentBody.IsEnabled() === false) continue; // skip already dead
 
         if (sa.enemy1Hps[tempIterator] <= 0) { // check dead
-          Atomics.add(sa.kills, 0, 1)
-          currentBody.SetEnabled(false)
-          this.disabledList.push(tempIterator)
-          continue
+          Atomics.add(sa.kills, 0, 1);
+          currentBody.SetEnabled(false);
+          this.disabledList.push(tempIterator);
+          continue;
         }
 
         // update position in sab of alives
-        sa.enemy1Positions.x[tempIterator] = currentBody.GetPosition().x
-        sa.enemy1Positions.y[tempIterator] = currentBody.GetPosition().y
+        sa.enemy1Positions.x[tempIterator] = currentBody.GetPosition().x;
+        sa.enemy1Positions.y[tempIterator] = currentBody.GetPosition().y;
 
-        // update velocity of alives
-        this.counter++
-        if(this.counter >= this.divide){
-          this.counter = 0
-        }
-        if(tempIterator % this.divide === this.counter){
-          tempVec.Set(sa.enemy1Directions.x[tempIterator], sa.enemy1Directions.y[tempIterator])
-          currentBody.SetLinearVelocity(tempVec)
-        }
+        tempVec.Set(sa.enemy1Directions.x[tempIterator], sa.enemy1Directions.y[tempIterator]);
+        currentBody.SetLinearVelocity(tempVec);
       }
     }
 

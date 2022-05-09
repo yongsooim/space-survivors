@@ -14,7 +14,7 @@ const enemy1container = new PIXI.ParticleContainer(
     rotation: false,
     uvs: false,
     tint: false,
-    alpha: true,
+    alpha: false,
     scale: false,
     position: true
   },
@@ -30,7 +30,7 @@ const enemy2container = new PIXI.ParticleContainer(
     rotation: false,
     uvs: false,
     tint: false,
-    alpha: true,
+    alpha: false,
     scale: false,
     position: true
   },
@@ -74,7 +74,7 @@ const flame1container = new PIXI.ParticleContainer(
     rotation: true,
     uvs: false,
     tint: false,
-    alpha: true,
+    alpha: false,
     scale: false,
     position: true
   },
@@ -90,7 +90,7 @@ const missile1container = new PIXI.ParticleContainer(
     rotation: true,
     uvs: false,
     tint: false,
-    alpha: true,
+    alpha: false,
     scale: false,
     position: true
   },
@@ -110,8 +110,8 @@ while (tempIterator--) {
   tempSprite = new PIXI.Sprite(enemy1)
   tempSprite.scale.set(0.2)
   tempSprite.anchor.set(0.5)
-  tempSprite.position.set(0)
-  tempSprite.alpha = 0
+  tempSprite.position.set(consts.nowhere)
+  tempSprite.alpha = 0.8
   tempSprite.cacheAsBitmapResolution = 1
   tempSprite.cacheAsBitmap = true
   enemy1container.addChild(tempSprite)
@@ -126,8 +126,8 @@ while (tempIterator--) {
   tempSprite = new PIXI.Sprite(enemy2)
   tempSprite.scale.set(0.2)
   tempSprite.anchor.set(0.5)
-  tempSprite.position.set(0)
-  tempSprite.alpha = 0
+  tempSprite.position.set(consts.nowhere)
+  tempSprite.alpha = 0.8
   tempSprite.cacheAsBitmapResolution = 1
   tempSprite.cacheAsBitmap = true
   enemy2container.addChild(tempSprite)
@@ -143,8 +143,8 @@ while (tempIterator--) {
   tempSprite = new PIXI.Sprite(enemy2)
   tempSprite.scale.set(0.2)
   tempSprite.anchor.set(0.5)
-  tempSprite.position.set(0)
-  tempSprite.alpha = 0
+  tempSprite.position.set(consts.nowhere)
+  tempSprite.alpha = 0.8
   tempSprite.cacheAsBitmapResolution = 1
   tempSprite.cacheAsBitmap = true
   enemy3container.addChild(tempSprite)
@@ -185,7 +185,6 @@ while (tempIterator--) {
   flame1container.addChild(tempSprite)
 }
 
-
 missile1container.interactiveChildren = false
 missile1container.sortableChildren = false
 missile1container.interactive = false
@@ -215,30 +214,20 @@ export const renderUpdate = () => {
   tempIterator = consts.numberOfEnemy1
   while (tempIterator--) {
     if (sab.enemy1HpsArr[tempIterator] <= 0) {
-      enemy1container.children[tempIterator].alpha = 0
+      //enemy1container.children[tempIterator].alpha = 0
     } else {
       enemy1container.children[tempIterator].position.set(sab.enemy1PositionsArr.x[tempIterator], sab.enemy1PositionsArr.y[tempIterator])
-      enemy1container.children[tempIterator].alpha = 0.8
+      //enemy1container.children[tempIterator].alpha = 0.8
     }
   }
 
   tempIterator = consts.numberOfEnemy2
   while (tempIterator--) {
     if (sab.enemy2HpsArr[tempIterator] <= 0 ) {
-      enemy2container.children[tempIterator].alpha = 0
+      //enemy2container.children[tempIterator].alpha = 0
     } else {
       enemy2container.children[tempIterator].position.set(sab.enemy2PositionsArr.x[tempIterator], sab.enemy2PositionsArr.y[tempIterator])
-      enemy2container.children[tempIterator].alpha = 0.8
-    }
-  }
-  
-  tempIterator = consts.numberOfEnemy3
-  while (tempIterator--) {
-    if (sab.enemy3HpsArr[tempIterator] <= 0 ) {
-      enemy3container.children[tempIterator].alpha = 0
-    } else {
-      enemy3container.children[tempIterator].position.set(sab.enemy3PositionsArr.x[tempIterator], sab.enemy3PositionsArr.y[tempIterator])
-      //enemy3container.children[tempIterator].alpha = 0.8
+      //enemy2container.children[tempIterator].alpha = 0.8
     }
   }
   
@@ -252,13 +241,14 @@ export const renderUpdate = () => {
     autoAttack1container.children[tempIterator].alpha = 1
   }
 
-  tempIterator = consts.numberOfFlame1
-  while (tempIterator--) {
-    if (sab.flame1RemainTimesArr[tempIterator] <= 0) {
-      flame1container.children[tempIterator].alpha = 0
-      continue
-    }
-    flame1container.children[tempIterator].position.set(sab.flame1PositionsArr.x[tempIterator], sab.flame1PositionsArr.y[tempIterator])
-    //flame1container.children[tempIterator].alpha = 1
-  }
+  
+  //tempIterator = consts.numberOfFlame1
+  //while (tempIterator--) {
+  //  if (sab.flame1RemainTimesArr[tempIterator] <= 0) {
+  //    flame1container.children[tempIterator].alpha = 0
+  //    continue
+  //  }
+  //  flame1container.children[tempIterator].position.set(sab.flame1PositionsArr.x[tempIterator], sab.flame1PositionsArr.y[tempIterator])
+  //  //flame1container.children[tempIterator].alpha = 1
+  //}
 }

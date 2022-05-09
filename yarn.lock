@@ -467,6 +467,11 @@
   resolved "https://registry.yarnpkg.com/@pixi/ticker/-/ticker-6.3.0.tgz#0438efd9abbd74eab59be7361bac47553c25e4cb"
   integrity sha512-cEqyQgM5entsi+h85fUnESBzNc/yMRG/mqsfAr7/KraP7bmCcn3MYVuTycRMkRbuNPjC1NIpqkqiOaxzgAUGPw==
 
+"@pixi/tilemap@^3.2.2":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@pixi/tilemap/-/tilemap-3.2.2.tgz#8327e5d7007a90be640a0b1eb9943a1e405b57e4"
+  integrity sha512-svdmMyJP63vdae3t66tCmE8IWeO/6lD1xXU+5gzfxqxJS5seTp2bm8mQok2c8PF0O6l/NYlLz6BRklOuEuHboQ==
+
 "@pixi/utils@6.3.0", "@pixi/utils@^6.3.0":
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/@pixi/utils/-/utils-6.3.0.tgz#74703e1593b3f7462165adcfaf41c62ce303829c"
@@ -3360,6 +3365,11 @@ pixi-console@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/pixi-console/-/pixi-console-3.2.1.tgz#b3db49332f37e9723d2b406ffb1d55177738178d"
   integrity sha512-UiCslPZrAglvfOjjj04w/nLJyacr+nET3iG+DLiS7LygiN+BhPR3BNn1B1g7L2YaslfHM0C6yB7jQOWHWYXtUQ==
+
+pixi-cull@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/pixi-cull/-/pixi-cull-2.2.0.tgz#6adeaf137db91c22e9f087a8719e1e15090ac0b1"
+  integrity sha512-Ngg9GbflBemRm2ASI3lqnMtARYJUx8n+71XzQzG8jexHVadnNZ/mdqYBUcdIpUITk5P5LW5tCJFn0QWgYMYeFw==
 
 pixi-heaven@^0.3.1:
   version "0.3.1"

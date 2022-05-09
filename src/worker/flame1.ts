@@ -1,4 +1,5 @@
 import consts from '../type/const'
+import { ptrToInfo } from './ptrToInfo'
 import { Filter, Isa } from './workerGlobal'
 
 export declare class Flame1Pool {
@@ -19,7 +20,7 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
   flame1Filter.groupIndex = 0
 
   const square = new b2PolygonShape()
-  square.SetAsBox(0.8, 0.6)
+  square.SetAsBox(0.6, 0.8)
 
   const bd = new b2BodyDef()
   bd.set_type(b2_dynamicBody)
@@ -50,6 +51,13 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
         this.pool[i].SetEnabled(false)
 
         this.ptrToIdx[getPointer(this.pool[i])] = i
+        ptrToInfo[getPointer(this.pool[i])] = {
+          category: 'weapon',
+          type: 'flame1',
+          attribute: 'splash',
+          damage: 8
+        }
+
       }
     }
 
@@ -59,6 +67,10 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       tempIterator = consts.numberOfFlame1
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue // skip dead
+        if( sa.flame1RemainTimes[tempIterator] <= 0){
+          this.pool[tempIterator].SetEnabled(false)
+          continue
+        }
         sa.flame1Positions.x[tempIterator] = this.pool[tempIterator].GetPosition().x
         sa.flame1Positions.y[tempIterator] = this.pool[tempIterator].GetPosition().y
       }
@@ -83,7 +95,7 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       sa.flame1Positions.x[this.cursor] = tempPlayerPosX
       sa.flame1Positions.y[this.cursor] = tempPlayerPosY
       this.pool[this.cursor].SetTransform(tempVec, 0)
-      sa.flame1RemainTimes[this.cursor] = 500
+      sa.flame1RemainTimes[this.cursor] = 400
 
       tempVec.Set(0, consts.flame1Speed)
       this.pool[this.cursor].SetLinearVelocity(tempVec)

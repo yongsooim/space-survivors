@@ -11,15 +11,15 @@ class DamageTextPool {
 
   constructor () {
     for (let i = 0; i < consts.numberOfDamageText; i++) {
-      const temp = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center', dropShadow: true, strokeThickness: 2 })
-      temp.scale.set(0.09)
+      const temp = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 15, fill: 0xffffff, align: 'center', dropShadow: true, strokeThickness: 1 })
+      temp.scale.set(0.07)
       temp.anchor.set(0.5)
       this.pool.push(temp)
     }
 
     for (let i = 0; i < consts.numberOfDamageText; i++) {
-      const temp = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xff0000, align: 'center', dropShadow: true, strokeThickness: 2 })
-      temp.scale.set(0.09)
+      const temp = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 15, fill: 0xff0000, align: 'center', dropShadow: true, strokeThickness: 1 })
+      temp.scale.set(0.07)
       temp.anchor.set(0.5)
       this.hitpool.push(temp)
     }
@@ -29,7 +29,7 @@ class DamageTextPool {
     this.cursor++
     if (this.cursor >= consts.numberOfDamageText) this.cursor = 0
 
-    sound.volume('enemyhitwav', 0.5)
+    //sound.volume('enemyhitwav', 0.5)
 
     sound.play('enemyhitwav')
     const currentCursor = this.cursor

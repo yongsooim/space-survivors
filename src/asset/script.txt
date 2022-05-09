@@ -1,0 +1,5 @@
+magick mogrify -transparent "#000000" bg.png
+magick mogrify -transparent "#0B0900" bg.png
+magick mogrify -transparent "#00020B" bg.png
+magick mogrify -transparent "#0B0000" bg.png
+

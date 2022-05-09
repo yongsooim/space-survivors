@@ -20,6 +20,7 @@ export declare interface Isa {
     y: Float64Array;
   };
   resource1RemainTimes: Int32Array;
+  resource1Sleep: Int32Array;
   resource2Positions: {
     x: Float64Array;
     y: Float64Array;
@@ -53,6 +54,7 @@ onmessage = (ev) => {
         y: new Float64Array(sab.resource1Positions.y)
       },
       resource1RemainTimes: new Int32Array(sab.resource1RemainTimes),
+      resource1Sleep: new Int32Array(sab.resource1Sleep),
       resource2Positions: {
         x: new Float64Array(sab.resource2Positions.x),
         y: new Float64Array(sab.resource2Positions.y)
@@ -68,13 +70,13 @@ onmessage = (ev) => {
 
 function init () {
   for (let i = 0; i < consts.numberOfResource1; i++) {
-    sa.resource1Positions.x[i] = (Math.random() - 0.5) * consts.spawnSize
-    sa.resource1Positions.y[i] = (Math.random() - 0.5) * consts.spawnSize
+    sa.resource1Positions.x[i] = (Math.random() - 0.5) * consts.resource1SpawnSize
+    sa.resource1Positions.y[i] = (Math.random() - 0.5) * consts.resource1SpawnSize
   }
 
   for (let i = 0; i < consts.numberOfResource2; i++) {
-    sa.resource2Positions.x[i] = (Math.random() - 0.5) * consts.spawnSize
-    sa.resource2Positions.y[i] = (Math.random() - 0.5) * consts.spawnSize
+    sa.resource2Positions.x[i] = (Math.random() - 0.5) * consts.resource2SpawnSize
+    sa.resource2Positions.y[i] = (Math.random() - 0.5) * consts.resource2SpawnSize
     sa.resource2Rotations[i] = Math.random() * Math.PI * 2
   }
 }
@@ -106,14 +108,21 @@ const loop = () => {
     diffY = tempPlayerPosY - sa.resource1Positions.y[i]
     distance = Math.sqrt(diffX ** 2 + diffY ** 2)
 
+    if (distance < consts.magnetRange) {
+      sa.resource1Sleep[i] = 0;
+      sa.resource1Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000;
+      sa.resource1Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000;
+      postMessage({ cmd: 'wakeup', index: i });
+    }
+
     if (distance < consts.getRange) {
+      sa.resource1Positions.x[i] = consts.nowhere
+      sa.resource1Positions.y[i] = consts.nowhere
+
       sa.resource1RemainTimes[i] = 0
       sa.exp[0] += 1
-      postMessage({ cmd: 'get' })
-    } else if (distance < consts.magnetRange) {
-      sa.resource1Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000
-      sa.resource1Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000
-    }
+      postMessage({ cmd: 'get', index: i });
+    } 
   }
 
   for (let i = counter; i < consts.numberOfResource2; i++) {
@@ -125,14 +134,20 @@ const loop = () => {
 
     sa.resource2Rotations[i] += 0.02
 
+    if (distance < consts.magnetRange) {
+      sa.resource2Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000;
+      sa.resource2Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000;
+      postMessage({ cmd: 'wakeup2', index: i });
+    }
+
     if (distance < consts.getRange) {
+      sa.resource2Positions.x[i] = consts.nowhere
+      sa.resource2Positions.y[i] = consts.nowhere
+
       sa.resource2RemainTimes[i] = 0
       sa.exp[0] += 1
-      postMessage({ cmd: 'get' })
-    } else if (distance < consts.magnetRange) {
-      sa.resource2Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000
-      sa.resource2Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000
-    }
+      postMessage({ cmd: 'get', index: i });
+    } 
   }
 
   now = Date.now()

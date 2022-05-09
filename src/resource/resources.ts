@@ -6,10 +6,13 @@ import uiPng from '../asset/ui.png'
 import charPng from '../asset/char.png'
 import particlePng from '../asset/particle.png'
 import particlesPng from '../asset/particles.png'
-import playerhitwav from '../asset/playerhit.wav'
+import playerhit from '../asset/playerhit.wav'
 import enemyhitwav from '../asset/enemyhit.wav'
 import flamewav from '../asset/flame.wav'
+import explosion from '../asset/explosion.wav'
+import enemyhit from '../asset/enemyhit.wav'
 import firePng from '../asset/fire.png'
+import levelup from '../asset/levelup.wav'
 
 import fireWav from '../asset/Laser_Shoot9.wav'
 import pickupWav from '../asset/pickup.wav'
@@ -33,9 +36,12 @@ sound.add('snare', snare)
 sound.add('bass', bass)
 sound.add('shot', shotWav)
 sound.add('pickup', pickupWav)
-sound.add('playerhit', playerhitwav)
+sound.add('playerhit', playerhit)
 sound.add('enemyhitwav', enemyhitwav)
 sound.add('flamewav', flamewav)
+sound.add('explosion', explosion)
+sound.add('enemyhit', enemyhit)
+sound.add('levelup', levelup)
 
 export const resourcePaths = {
   shipPng,
@@ -66,11 +72,14 @@ export const resources: PIXI.IAddOptions[] = [
   { name: 'particle', url: particlePng },
   { name: 'particles', url: particlesPng },
   { name: 'shot', url: shotWav },
-  { name: 'playerhitwav', url: playerhitwav  },
+  { name: 'playerhit', url: playerhit  },
   { name: 'pickup', url: pickupWav  },
   { name: 'firePng', url: firePng },
   { name: 'loop2', url: loop2 },
   { name: 'enemyhitwav', url: enemyhitwav  },
-  { name: 'flamewav', url: flamewav  }
+  { name: 'flamewav', url: flamewav  },
+  { name: 'explosion', url: explosion  },
+  { name: 'enemyhit', url: enemyhit  },
+  { name: 'levelup', url: levelup  },
 
 ]

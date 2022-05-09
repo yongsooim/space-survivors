@@ -12,7 +12,7 @@ export const explosion = new particles.Emitter(viewportContainer, {
     max: 0.2
   },
   frequency: 0.008,
-  emitterLifetime: 0.31,
+  emitterLifetime: 0.2,
   maxParticles: 1000,
   addAtBack: false,
   pos: {
@@ -44,11 +44,11 @@ export const explosion = new particles.Emitter(viewportContainer, {
           list: [
             {
               time: 0,
-              value: 10
+              value: 3
             },
             {
               time: 1,
-              value: 5
+              value: 1
             }
           ]
         }
@@ -61,11 +61,11 @@ export const explosion = new particles.Emitter(viewportContainer, {
           list: [
             {
               time: 0,
-              value: 0.01
+              value: 0.003
             },
             {
               time: 1,
-              value: 0.03
+              value: 0.01
             }
           ]
         },
@@ -109,7 +109,7 @@ export const explosion = new particles.Emitter(viewportContainer, {
         data: {
           x: 0,
           y: 0,
-          radius: 0.1,
+          radius: 0.01,
           innerRadius: 0,
           affectRotation: false
         }
@@ -228,7 +228,7 @@ class ExplosionPool {
               data: {
                 x: 0,
                 y: 0,
-                radius: 0.1,
+                radius: 0.05,
                 innerRadius: 0,
                 affectRotation: false
               }

@@ -6,12 +6,12 @@ import { player } from '../player/player'
 import { damageTextPool } from '../ui/damageText'
 
 const worker2 = new Worker()
-sound.volume('playerhit', 0.2)
 worker2.onmessage = (ev) => {
   if (ev.data.cmd === 'ready') {
     worker2.postMessage({ cmd: 'init', sab: sab }, [channel12.port2])
   } else if (ev.data.cmd === 'hitText') {
     Atomics.sub(sab.lifeArr, 0, 3)
+    sound.volume('playerhit', 0.1);  
     sound.play('playerhit')
     damageTextPool.playerhit(ev.data.x, ev.data.y, 3)
 

@@ -1,12 +1,12 @@
 import * as particles from '@pixi/particle-emitter'
 import firePng from '../asset/fire.png'
 import particlePng from '../asset/particle.png'
-import { viewport, viewportContainer } from '../viewport/viewport'
+import { viewport, viewportContainer, viewportEmitterContainer } from '../viewport/viewport'
 import { player } from './player'
 
 export let emitter : particles.Emitter
 export const initEmitter = () => {
-  emitter = new particles.Emitter(viewportContainer, {
+  emitter = new particles.Emitter(viewportEmitterContainer, {
     lifetime: {
       min: 0.05,
       max: 0.1

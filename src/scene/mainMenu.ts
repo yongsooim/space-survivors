@@ -34,6 +34,8 @@ class MainMenu extends PIXI.Container {
       this.count = 0
       this.pressText.visible = !this.pressText.visible
     }
+
+    // check loading
   };
 
   exit = () => {

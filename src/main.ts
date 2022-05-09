@@ -59,7 +59,6 @@ app.loader.onError.add((e) => {
 app.loader.add(resources).load(() => {
   // initStat()
 
-  bgInit()
   initViewport()
 
   mainMenu.init()
@@ -79,6 +78,7 @@ app.loader.add(resources).load(() => {
     if (count >= 180 && worker1Ready && started === false) {
       started = true
       mainMenu.exit()
+      bgInit()
 
       addText()
       player.init()
@@ -87,7 +87,7 @@ app.loader.add(resources).load(() => {
         .wheel({ percent: 0, smooth: 10, trackpadPinch: false })
         //.wheel({ percent: 0, smooth: 10, trackpadPinch: true })
         .setZoom(20)
-        .clampZoom({ minScale: 1, maxScale: 500 })
+        .clampZoom({ minScale: 1, maxScale: 1000 })
         .follow(player)
       viewportContainer.addChild(player)
       worker2start()
@@ -139,7 +139,3 @@ document.addEventListener('scroll',(e) => {
     e.preventDefault()
   },false
 )
-
-window.onwheel = function (e) { // for prevent trackpad pinch?
-  e.preventDefault();
-};

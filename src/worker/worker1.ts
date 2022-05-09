@@ -10,6 +10,9 @@ import { createFlame1Pool, Flame1Pool } from './flame1'
 import { SabSet } from './sabManage'
 import { Isa, Filter } from './workerGlobal'
 import { enemy1 } from '../resource/spriteManage'
+import { ptrToInfo } from './ptrToInfo'
+import { worker1check } from './worker1master'
+
 /** shared arrays in worker1 */
 
 /** shared arrays */
@@ -26,6 +29,15 @@ let enemy3Pool: Enemy3Pool
 let autoAttack1Pool: AutoAttack1Pool
 let flame1Pool: Flame1Pool
 let missile1Pool: Flame1Pool
+
+
+export interface Info {
+  category : string,
+  type : string, 
+  attribute : string, 
+  damage? : number
+}
+
 
 onmessage = (ev) => {
   if (ev.data.cmd === 'stop') {
@@ -156,7 +168,7 @@ const tempVec = new b2Vec2(0, 0)
 
 export const playerFilter = new b2Filter()
 playerFilter.categoryBits = Filter.Player
-playerFilter.maskBits = Filter.Enemy1
+playerFilter.maskBits = Filter.Enemy1 | Filter.Enemy2
 
 square.SetAsBox(0.6, 0.6)
 const playerBody = world.CreateBody(bd)
@@ -185,109 +197,87 @@ contactListener.BeginContact = (contact) => {
   contact = wrapPointer(contact as number, b2Contact)
   const fixA = contact.GetFixtureA()
   const fixB = contact.GetFixtureB()
-  let bodyBullet
+  const bodyA = fixA.GetBody()
+  const bodyB = fixB.GetBody()
+  const ptrA = getPointer(bodyA)
+  const ptrB = getPointer(bodyB)
+  const infoA = ptrToInfo[ptrA]
+  const infoB = ptrToInfo[ptrB]
+
+  let bodyWeapon
   let bodyEnemy
+  let infoWeapon 
+  let infoEnemy 
 
-  if (fixA.GetFilterData().categoryBits === Filter.AutoAttack1 || fixB.GetFilterData().categoryBits === Filter.AutoAttack1) {
-    contact.SetEnabled(false)
-    if (fixA.GetFilterData().categoryBits === Filter.AutoAttack1) {
-      bodyBullet = fixA.GetBody()
-      bodyEnemy = fixB.GetBody()
-    } else if (fixB.GetFilterData().categoryBits === Filter.AutoAttack1) {
-      bodyBullet = fixB.GetBody()
-      bodyEnemy = fixA.GetBody()
-    } else {
-      return
-    }
-
-    bodyBullet.GetFixtureList().SetFilterData(usedBulletFilter)
-
-    disableRequest.push(bodyBullet)
-
-    if (bodyEnemy.GetFixtureList().GetFilterData().categoryBits === Filter.Enemy1) {
-      const tempIndex = enemy1Pool.getIndex(bodyEnemy)
-      if (sa.enemy1Hps[tempIndex] > 0) {
-        // knock back
-        tempVec.Set(-30 * sa.enemy1Directions.x[tempIndex], -30 * sa.enemy1Directions.y[tempIndex])
-        bodyEnemy.ApplyLinearImpulse(tempVec, center, true)
-        // bodyEnemy.ApplyForce(tempVec, center, false)
-
-        Atomics.sub(sa.enemy1Hps, tempIndex, 5) // damage dealt
-        postMessage({
-          cmd: 'damage',
-          x: bodyBullet.GetPosition().x,
-          y: bodyBullet.GetPosition().y,
-          enemyX: bodyEnemy.GetPosition().x,
-          enemyY: bodyEnemy.GetPosition().y,
-          damage: 5
-        })
-      }
-    } else if (bodyEnemy.GetFixtureList().GetFilterData().categoryBits === Filter.Enemy2) {
-      const tempIndex = enemy2Pool.getIndex(bodyEnemy)
-      if (sa.enemy2Hps[tempIndex] > 0) {
-        // knock back
-        tempVec.Set(-30 * sa.enemy2Directions.x[tempIndex], -30 * sa.enemy2Directions.y[tempIndex])
-        bodyEnemy.ApplyLinearImpulse(tempVec, center, true)
-        // bodyEnemy.ApplyForce(tempVec, center, false)
-
-        Atomics.sub(sa.enemy2Hps, tempIndex, 5) // damage dealt
-        postMessage({
-          cmd: 'damage',
-          x: bodyBullet.GetPosition().x,
-          y: bodyBullet.GetPosition().y,
-          enemyX: bodyEnemy.GetPosition().x,
-          enemyY: bodyEnemy.GetPosition().y,
-          damage: 5
-        })
-      }
-    }
-
+  if (infoA.category === "weapon" && infoB.category === "enemy") {
+    bodyWeapon = bodyA;
+    bodyEnemy = bodyB;
+    infoWeapon = infoA
+    infoEnemy = infoB
+  } else if (infoA.category === "enemy" && infoB.category === "weapon") {
+    bodyWeapon = bodyB;
+    bodyEnemy = bodyA;
+    infoWeapon = infoB
+    infoEnemy = infoA
+  } else {
+    return
   }
 
-  if (fixA.GetFilterData().categoryBits === Filter.Flame || fixB.GetFilterData().categoryBits === Filter.Flame) {
+  if(infoWeapon.attribute === 'bullet') {
+    bodyWeapon.GetFixtureList().SetFilterData(usedBulletFilter)
+    disableRequest.push(bodyWeapon)
+  }
 
-    if (fixA.GetFilterData().categoryBits === Filter.Flame) {
-      bodyBullet = fixA.GetBody()
-      bodyEnemy = fixB.GetBody()
-    } else if (fixB.GetFilterData().categoryBits === Filter.Flame) {
-      bodyBullet = fixB.GetBody()
-      bodyEnemy = fixA.GetBody()
-    } else {
-      return
-    }
+  let enemyDirectionsX
+  let enemyDirectionsY
+  let enemyHps
+  let tempIndex
 
-    // disableRequest.push(bodyBullet);
+  if(infoEnemy.type === 'enemy1'){
+    enemyDirectionsX = sa.enemy1Directions.x
+    enemyDirectionsY = sa.enemy1Directions.y
+    enemyHps = sa.enemy1Hps
+    tempIndex = enemy1Pool.ptrToIdx[getPointer(bodyEnemy)]
+  } else if (infoEnemy.type === 'enemy2'){
+    enemyDirectionsX = sa.enemy2Directions.x
+    enemyDirectionsY = sa.enemy2Directions.y
+    enemyHps = sa.enemy2Hps
+    tempIndex = enemy2Pool.ptrToIdx[getPointer(bodyEnemy)]
+  } else {
+    return
+  }
 
-    if (bodyEnemy.GetFixtureList().GetFilterData().categoryBits === Filter.Enemy1) {
-      const tempIndex = enemy1Pool.getIndex(bodyEnemy)
-      if (sa.enemy1Hps[tempIndex] > 0) {
-        Atomics.sub(sa.enemy1Hps, tempIndex, 8) // damage dealt
-        postMessage({
-          cmd: 'damage',
-          x: bodyBullet.GetPosition().x,
-          y: bodyBullet.GetPosition().y,
-          enemyX: bodyEnemy.GetPosition().x,
-          enemyY: bodyEnemy.GetPosition().y,
-          damage: 8
-        })
-      }
-    } else   if (bodyEnemy.GetFixtureList().GetFilterData().categoryBits === Filter.Enemy2) {
-      const tempIndex = enemy2Pool.getIndex(bodyEnemy)
-      if (sa.enemy2Hps[tempIndex] > 0) {
-        Atomics.sub(sa.enemy2Hps, tempIndex, 8) // damage dealt
-        postMessage({
-          cmd: 'damage',
-          x: bodyBullet.GetPosition().x,
-          y: bodyBullet.GetPosition().y,
-          enemyX: bodyEnemy.GetPosition().x,
-          enemyY: bodyEnemy.GetPosition().y,
-          damage: 8
-        })
+    if (enemyHps[tempIndex] > 0) {
+      // knock back
+      if(infoWeapon.attribute === 'bullet') {
+        tempVec.Set(-30 * enemyDirectionsX[tempIndex], -30 * enemyDirectionsY[tempIndex]);
+        bodyEnemy.ApplyLinearImpulse(tempVec, center, true);
+        // bodyEnemy.ApplyForce(tempVec, center, false)
       }
 
+      Atomics.sub(enemyHps, tempIndex, infoWeapon.damage?infoWeapon.damage:0) // damage dealt
+      postMessage({
+        cmd: 'damage',
+        x: bodyWeapon.GetPosition().x,
+        y: bodyWeapon.GetPosition().y,
+        enemyX: bodyEnemy.GetPosition().x,
+        enemyY: bodyEnemy.GetPosition().y,
+        damage: infoWeapon.damage?infoWeapon.damage:0
+      })
+  
+      if(enemyHps[tempIndex] <= 0){ // check dead
+        postMessage({
+          cmd: 'dead',
+          enemyX: bodyEnemy.GetPosition().x,
+          enemyY: bodyEnemy.GetPosition().y,
+        })  
+      }
     }
   }
-}
+
+
+
+
 contactListener.EndContact = () => { }
 contactListener.PostSolve = () => { }
 contactListener.PreSolve = () => { }
@@ -305,9 +295,10 @@ function loop() {
 
   tempVec.Set(sa.playerPosition.x[0], sa.playerPosition.y[0])
   playerBody.SetTransform(tempVec, 0)
+  ptrToInfo[getPointer(playerBody)] = {
+    category : 'player'
+  }
 
-
-  // port.postMessage(0)
 
   // update shared memory buffer
   enemy1Pool.update()
@@ -318,7 +309,7 @@ function loop() {
   //missile1Pool.update()
 
 
-  world.Step(stepTime, 8, 3)
+  world.Step(consts.worker1Interval, 8, 3)
 
   for (let i = 0; i < disableRequest.length; i++) {
     if (disableRequest[i].GetFixtureList().GetFilterData().categoryBits === Filter.AutoAttack1) {
@@ -328,28 +319,29 @@ function loop() {
   }
   disableRequest = []
 
+  port.postMessage(0)
+
   // request for calculate to worker2
   // maybe try async calculation...
 
   // calculate elapsed and determine the interval to next step
-  now = Date.now()
-  delta = now - lastExecuted
-  lastExecuted = now
+  //now = Date.now()
+  //delta = now - lastExecuted
+  //lastExecuted = now
+//
+  //if (delta > consts.worker1Interval + 5) {
+  //  if (delta > 500) {
+  //    stepTime = 500
+  //  } else {
+  //    stepTime = delta
+  //  }
+  //} else {
+  //  stepTime = consts.worker1Interval
+  //}
 
-  if (delta > consts.worker1Interval + 5) {
-    if (delta > 500) {
-      stepTime = 500
-    } else {
-      stepTime = delta
-    }
-  } else {
-    stepTime = consts.worker1Interval
-  }
-
-  if (counter % 1 === 0) {
+  if (counter % 10 === 0) {
     enemy1Pool.gen()
     enemy2Pool.gen()
-    enemy3Pool.gen()
   }
 }
 

@@ -30,6 +30,8 @@ export const aa = new PIXI.Texture(proj, new PIXI.Rectangle(4 * 8, 0 * 8, 8, 8))
 
 export const textures = {
   ship1: new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(1 * 8, 2 * 8, 8, 8)),
+  ship1Left: new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(0 * 8, 2 * 8, 8, 8)),
+  ship1Right: new PIXI.Texture(baseTextures.ship, new PIXI.Rectangle(2 * 8, 2 * 8, 8, 8)),
   particle: new PIXI.Texture(baseTextures.particle),
   particles: [
     new PIXI.Texture(baseTextures.particles, new PIXI.Rectangle(256 * 0, 256 * 0, 256, 256)),
@@ -52,7 +54,15 @@ export const textures = {
   char1: new PIXI.Texture(baseTextures.char, new PIXI.Rectangle(0 * 8, 0 * 8, 8, 8)),
 
   ui1: new PIXI.Texture(baseTextures.ui, new PIXI.Rectangle(11 * 8, 0 * 8, 13, 13)),
-  fire: new PIXI.Texture(baseTextures.fire)
+  fire: new PIXI.Texture(baseTextures.fire),
+
+  bgs : [
+    new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 0, 256 * 0, 128, 256)),
+    new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 1, 256 * 0, 128, 256)),
+    new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 2, 256 * 0, 128, 256)),
+    new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 1, 256 * 1, 128, 256)),
+    new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 2, 256 * 1, 128, 256)),
+  ]
 }
 
 export const sprites = {

@@ -19,17 +19,33 @@ class Player extends Container {
   vector = new Vector(0, 0)
   positionVector = new Vector(0, 0)
 
-  playerSprite = new PIXI.Sprite(textures.ship1)
+  playerSpriteCenter = new PIXI.Sprite(textures.ship1)
+  playerSpriteLeft = new PIXI.Sprite(textures.ship1Left)
+  playerSpriteRight = new PIXI.Sprite(textures.ship1Right)
   constructor () {
     super()
     this.position.set(0)
-    this.playerSprite.position.set(0)
-    this.playerSprite.scale.set(0.2, 0.2)
+    this.playerSpriteCenter.position.set(0)
+    this.playerSpriteCenter.scale.set(0.2, 0.2)
+    this.playerSpriteCenter.anchor.set(0.5)
+
+    this.playerSpriteLeft.position.set(0)
+    this.playerSpriteLeft.scale.set(0.2, 0.2)
+    this.playerSpriteLeft.visible = false
+    this.playerSpriteLeft.anchor.set(0.5)
+
+    this.playerSpriteRight.position.set(0)
+    this.playerSpriteRight.scale.set(0.2, 0.2)
+    this.playerSpriteRight.visible = false
+    this.playerSpriteRight.anchor.set(0.5)
+
     // this.playerSprite.rotation = Math.PI
     // this.playerSprite.cacheAsBitmap = true
-    this.playerSprite.anchor.set(0.5)
-    this.playerSprite.zIndex = 999
-    this.addChild(this.playerSprite)
+    this.playerSpriteCenter.zIndex = 999
+
+    this.addChild(this.playerSpriteCenter)
+    this.addChild(this.playerSpriteLeft)
+    this.addChild(this.playerSpriteRight)
   }
 
   init () {
@@ -40,13 +56,22 @@ class Player extends Container {
   update (delta: number) {
     this.checkInput(delta)
 
-    if (this.vector.size >= 0.3) {
-      if ((Math.PI * 7) / 8 <= this.vector.toAngle() && this.vector.toAngle() < (Math.PI * 9) / 8) {
-        // console.log('left rotate wing')
-      } else if (this.vector.toAngle() <= Math.PI / 8 || this.vector.toAngle() > (Math.PI * 15) / 8) {
-        // console.log('right rotate wing')
-      }
-    }
+    //if (this.vector.size >= 0.3) {
+    //  if ((Math.PI * 7) / 8 <= this.vector.toAngle() && this.vector.toAngle() < (Math.PI * 9) / 8) {
+    //    this.playerSpriteLeft.visible = true;
+    //    this.playerSpriteCenter.visible = false;
+    //    this.playerSpriteRight.visible = false;
+    //  } else if (Math.abs(this.vector.toAngle()) <= Math.PI / 8) {
+    //    this.playerSpriteLeft.visible = false;
+    //    this.playerSpriteCenter.visible = false;
+    //    this.playerSpriteRight.visible = true;
+    //  } else {
+    //    this.playerSpriteLeft.visible = false;
+    //    this.playerSpriteCenter.visible = true;
+    //    this.playerSpriteRight.visible = false;
+    //  }
+    //}
+
   }
 
   fire () {
@@ -65,9 +90,9 @@ class Player extends Container {
   }
 
   hit () {
-    this.playerSprite.tint = 0xff0000
+    this.playerSpriteCenter.tint = 0xff0000
     setTimeout(() => {
-      this.playerSprite.tint = 0xffffff
+      this.playerSpriteCenter.tint = 0xffffff
     }, 350)
   }
 
@@ -116,6 +141,19 @@ class Player extends Container {
 
     this.position.x += this.vector.x * delta * consts.playerSpeed
     this.position.y += this.vector.y * delta * consts.playerSpeed
+
+
+    if(this.position.x >= consts.mapSize){
+      this.position.x = consts.mapSize
+    } else if(this.position.x <= -consts.mapSize){
+      this.position.x = -consts.mapSize
+    }
+
+    if(this.position.y >= consts.mapSize){
+      this.position.y = consts.mapSize
+    } else if(this.position.y <= -consts.mapSize){
+      this.position.y = -consts.mapSize
+    }
 
     sab.playerPositionArr.x[0] = this.x
     sab.playerPositionArr.y[0] = this.y

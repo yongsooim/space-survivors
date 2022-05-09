@@ -3,6 +3,9 @@ import { app } from '../main'
 import { viewport, viewportContainer } from '../viewport/viewport'
 import sab from '../worker/sabManage'
 import { sprites, textures } from '../resource/spriteManage'
+import { player } from '../player/player'
+import { requiredExp } from '../player/levelTable'
+import { sound } from '@pixi/sound'
 
 const resourceText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' })
 const infoText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' })
@@ -49,7 +52,13 @@ export const addText = () => {
   app.stage.addChild(ui)
 
   app.ticker.add(() => {
-    resourceText.text = (`Killed :${sab.killArr[0]}, Exp : ${sab.expArr[0]}/100\nTime: ${sab.timerArr[0]}, Life: ${sab.lifeArr[0]}`)
+
+    if(sab.expArr[0] >= requiredExp[player.level]){
+      player.level++
+      sound.play('levelup')
+    }
+
+    resourceText.text = (`Killed:${sab.killArr[0]}, Lv:${player.level}, Exp:${sab.expArr[0]}/${requiredExp[player.level]}\nTime: ${sab.timerArr[0]}, Life: ${sab.lifeArr[0]}`)
     resourceText.position.set(app.view.width / 2, 30)
     infoText.position.set(app.view.width / 2, app.view.height - 30)
     char1.position.set(0, app.view.height)

@@ -49,7 +49,13 @@ declare interface Isa {
     x: Float64Array,
     y: Float64Array,
   }
-  autoAttack1RemainTimes: Int32Array
+  autoAttack1RemainTimes: Int32Array,
+  
+  flame1Positions: {
+    x: Float64Array,
+    y: Float64Array,
+  }
+  flame1RemainTimes: Int32Array
   life: Int32Array,
 }
 
@@ -61,7 +67,7 @@ onmessage = (ev) => {
     clearInterval(loopInterval)
   } else if (ev.data.cmd === 'start') {
     running = true
-    loopInterval = setInterval(calc, consts.worker2Interval)
+    //loopInterval = setInterval(calc, consts.worker2Interval)
   } else if (ev.data.cmd === 'close') {
     running = false
     clearInterval(loopInterval)
@@ -107,6 +113,12 @@ onmessage = (ev) => {
       },
 
       autoAttack1RemainTimes: new Int32Array(tempSab.autoAttack1RemainTimes),
+      flame1Positions: {
+        x: new Float64Array(tempSab.flame1Positions.x),
+        y: new Float64Array(tempSab.flame1Positions.y)
+      },
+
+      flame1RemainTimes: new Int32Array(tempSab.flame1RemainTimes),
       life: new Int32Array(tempSab.life)
 
     }
@@ -148,17 +160,10 @@ const calc = () => {
     sa.enemy1Directions.x[tempIterator] = directionX
     sa.enemy1Directions.y[tempIterator] = directionY
 
-  }
-
-  for (let i = count; i < consts.numberOfEnemy1; i += divide) {
-    if (distance < 2) {
-      enemyX = sa.enemy1Positions.x[i]
-      enemyY = sa.enemy1Positions.y[i]
-      diffX = playerX - enemyX
-      diffY = playerY - enemyY
-      distance = Math.sqrt(diffX ** 2 + diffY ** 2)
-
-      self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+    if(tempIterator % 30 === count){
+      if (distance < 2) {
+        self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
+      }
     }
   }
 
@@ -178,59 +183,14 @@ const calc = () => {
     sa.enemy2Directions.x[tempIterator] = directionX
     sa.enemy2Directions.y[tempIterator] = directionY
 
-    if (count % divide === 0) {
+    if(tempIterator % 30 === count){
       if (distance < 2) {
-        self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+        self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
       }
     }
   }
 
-  for (let i = count; i < consts.numberOfEnemy2; i += divide) {
-    if (distance < 2) {
-      enemyX = sa.enemy2Positions.x[i]
-      enemyY = sa.enemy2Positions.y[i]
-      diffX = playerX - enemyX
-      diffY = playerY - enemyY
-      distance = Math.sqrt(diffX ** 2 + diffY ** 2)
 
-      self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
-    }
-  }
-
-  tempIterator = consts.numberOfEnemy3
-  while (tempIterator--) {
-    if (sa.enemy3Hps[tempIterator] <= 0) continue // skip dead enemy
-
-    enemyX = sa.enemy3Positions.x[tempIterator]
-    enemyY = sa.enemy3Positions.y[tempIterator]
-    diffX = playerX - enemyX
-    diffY = playerY - enemyY
-    distance = Math.sqrt(diffX ** 2 + diffY ** 2)
-
-    directionX = (consts.enemy3speed * diffX) / distance
-    directionY = (consts.enemy3speed * diffY) / distance
-
-    sa.enemy3Directions.x[tempIterator] = directionX
-    sa.enemy3Directions.y[tempIterator] = directionY
-
-    if (count % divide === 0) {
-      if (distance < 2) {
-        self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
-      }
-    }
-  }
-
-  for (let i = count; i < consts.numberOfEnemy3; i += divide) {
-    if (distance < 2) {
-      enemyX = sa.enemy3Positions.x[i]
-      enemyY = sa.enemy3Positions.y[i]
-      diffX = playerX - enemyX
-      diffY = playerY - enemyY
-      distance = Math.sqrt(diffX ** 2 + diffY ** 2)
-
-      self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
-    }
-  }
 
   tempIterator = consts.numberOfAutoAttack1
   while (tempIterator--) { // should it be atomic? maybe?
@@ -238,6 +198,13 @@ const calc = () => {
       sa.autoAttack1RemainTimes[tempIterator] -= consts.worker2Interval
     }
   }
+  tempIterator = consts.numberOfFlame1
+  while (tempIterator--) { // should it be atomic? maybe?
+    if (sa.flame1RemainTimes[tempIterator] > 0) {
+      sa.flame1RemainTimes[tempIterator] -= consts.worker2Interval
+    }
+  }
+
 }
 
 postMessage({ cmd: 'ready' })

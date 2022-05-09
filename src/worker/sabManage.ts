@@ -128,6 +128,9 @@ export class SabSet {
   resource1RemainTimes = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfResource1);
   resource1RemainTimesArr = new Int32Array(this.resource1RemainTimes);
 
+  resource1Sleep = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfResource1);
+  resource1SleepArr = new Int32Array(this.resource1Sleep);
+
   resource2Positions = {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2)
@@ -141,6 +144,13 @@ export class SabSet {
   
   resource2RemainTimes = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfResource2);
   resource2RemainTimesArr = new Int32Array(this.resource2RemainTimes);
+
+  constructor(){
+
+    for(let i = 0 ; i < consts.numberOfResource1 ; i++){
+      this.resource1SleepArr[i] = 1
+    }
+  }
 }
 
 const sab = new SabSet()

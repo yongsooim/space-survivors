@@ -33,7 +33,11 @@ worker1.onmessage = (ev: any) => {
     worker1.postMessage({ cmd: 'start' })
   } else if (ev.data.cmd === 'damage') {
     damageTextPool.show((ev.data.x + ev.data.enemyX) / 2, (ev.data.y + ev.data.enemyY) / 2, ev.data.damage)
+    //explosionPool.show(ev.data.enemyX, ev.data.enemyY)
+  } else if (ev.data.cmd === 'dead') {
     explosionPool.show(ev.data.enemyX, ev.data.enemyY)
+    sound.play('explosion')
+
   }
 }
 
