@@ -1,8 +1,8 @@
 const consts = {
-  numberOfEnemy1: 1024,
+  numberOfEnemy1: 2000,
   enemy1speed: 0.0018,
   
-  numberOfEnemy2: 512,
+  numberOfEnemy2: 3000,
   enemy2speed: 0.003,
   
   numberOfEnemy3: 256,

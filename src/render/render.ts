@@ -251,4 +251,15 @@ export const renderUpdate = () => {
   //  flame1container.children[tempIterator].position.set(sab.flame1PositionsArr.x[tempIterator], sab.flame1PositionsArr.y[tempIterator])
   //  //flame1container.children[tempIterator].alpha = 1
   //}
+
+  tempIterator = consts.numberOfMissile1
+  while (tempIterator--) {
+    if (sab.missile1RemainTimesArr[tempIterator] <= 0) {
+      missile1container.children[tempIterator].alpha = 0
+      continue
+    }
+    missile1container.children[tempIterator].position.set(sab.missile1PositionsArr.x[tempIterator], sab.missile1PositionsArr.y[tempIterator])
+    //flame1container.children[tempIterator].alpha = 1
+  }
+
 }

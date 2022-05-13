@@ -61,7 +61,7 @@ onmessage = (ev) => {
   } else if (ev.data.cmd === 'flame') {
     flame1Pool.fire()
   } else if (ev.data.cmd === 'missile') {
-    //missile1Pool.fire()
+    missile1Pool.fire()
   } else if (ev.data.cmd === 'init') {
     const tempSab = ev.data.sab as SabSet
 
@@ -339,7 +339,11 @@ function loop() {
   //  stepTime = consts.worker1Interval
   //}
 
-  if (counter % 10 === 0) {
+  if (counter % 1 === 0) {
+    enemy1Pool.gen()
+    enemy2Pool.gen()
+    enemy1Pool.gen()
+    enemy2Pool.gen()
     enemy1Pool.gen()
     enemy2Pool.gen()
   }

@@ -99,7 +99,7 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
     gen () {
       if (this.disabledList.length > 0) {
         const genIndex = this.disabledList.pop() as number
-        const spawnDistance = Math.random() * 10 + consts.spawnSize / 2
+        const spawnDistance = Math.random() * 30 + consts.spawnSize / 2
         const spawnAngle = Math.random() * Math.PI * 2
         const spawnDiffX = Math.cos(spawnAngle) * spawnDistance
         const spawnDiffY = Math.sin(spawnAngle) * spawnDistance
