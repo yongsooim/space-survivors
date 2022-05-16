@@ -40,7 +40,7 @@ class Player extends Container {
     this.playerSpriteRight.anchor.set(0.5)
 
     // this.playerSprite.rotation = Math.PI
-    // this.playerSprite.cacheAsBitmap = true
+    // this.playerSprite.cacheAsBitmap = false
     this.playerSpriteCenter.zIndex = 999
 
     this.addChild(this.playerSpriteCenter)
@@ -56,7 +56,7 @@ class Player extends Container {
   update (delta: number) {
     this.checkInput(delta)
 
-    //if (this.vector.size >= 0.3) {
+    // if (this.vector.size >= 0.3) {
     //  if ((Math.PI * 7) / 8 <= this.vector.toAngle() && this.vector.toAngle() < (Math.PI * 9) / 8) {
     //    this.playerSpriteLeft.visible = true;
     //    this.playerSpriteCenter.visible = false;
@@ -70,8 +70,7 @@ class Player extends Container {
     //    this.playerSpriteCenter.visible = true;
     //    this.playerSpriteRight.visible = false;
     //  }
-    //}
-
+    // }
   }
 
   fire () {
@@ -142,16 +141,15 @@ class Player extends Container {
     this.position.x += this.vector.x * delta * consts.playerSpeed
     this.position.y += this.vector.y * delta * consts.playerSpeed
 
-
-    if(this.position.x >= consts.mapSize){
+    if (this.position.x >= consts.mapSize) {
       this.position.x = consts.mapSize
-    } else if(this.position.x <= -consts.mapSize){
+    } else if (this.position.x <= -consts.mapSize) {
       this.position.x = -consts.mapSize
     }
 
-    if(this.position.y >= consts.mapSize){
+    if (this.position.y >= consts.mapSize) {
       this.position.y = consts.mapSize
-    } else if(this.position.y <= -consts.mapSize){
+    } else if (this.position.y <= -consts.mapSize) {
       this.position.y = -consts.mapSize
     }
 

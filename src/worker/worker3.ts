@@ -98,6 +98,13 @@ let distance = 0
 const loop = () => {
   if (running === false) return
 
+  const postContent = {
+    wakeup1List: [] as any,
+    get1List: [],
+    wakeup2List : [],
+    get2List : []
+  }
+
   tempPlayerPosX = sa.playerPosition.x[0]
   tempPlayerPosY = sa.playerPosition.y[0]
 

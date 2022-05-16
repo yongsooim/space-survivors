@@ -11,7 +11,7 @@ worker2.onmessage = (ev) => {
     worker2.postMessage({ cmd: 'init', sab: sab }, [channel12.port2])
   } else if (ev.data.cmd === 'hitText') {
     Atomics.sub(sab.lifeArr, 0, 3)
-    sound.volume('playerhit', 0.1);  
+    sound.volume('playerhit', 0.1)
     sound.play('playerhit')
     damageTextPool.playerhit(ev.data.x, ev.data.y, 3)
 

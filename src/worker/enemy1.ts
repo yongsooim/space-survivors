@@ -68,22 +68,23 @@ export const createEnemy1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
     update () {
       tempIterator = consts.numberOfEnemy1
       while (tempIterator--) {
-        currentBody = this.pool[tempIterator];
-        if (currentBody.IsEnabled() === false) continue; // skip already dead
+        currentBody = this.pool[tempIterator]
+        if (currentBody.IsEnabled() === false) continue // skip already dead
 
         if (sa.enemy1Hps[tempIterator] <= 0) { // check dead
-          Atomics.add(sa.kills, 0, 1);
-          currentBody.SetEnabled(false);
-          this.disabledList.push(tempIterator);
-          continue;
+          Atomics.add(sa.kills, 0, 1)
+          currentBody.SetEnabled(false)
+          this.disabledList.push(tempIterator)
+          continue
         }
 
         // update position in sab of alives
-        sa.enemy1Positions.x[tempIterator] = currentBody.GetPosition().x;
-        sa.enemy1Positions.y[tempIterator] = currentBody.GetPosition().y;
+        sa.enemy1Positions.x[tempIterator] = currentBody.GetPosition().x
+        sa.enemy1Positions.y[tempIterator] = currentBody.GetPosition().y
 
-        tempVec.Set(sa.enemy1Directions.x[tempIterator], sa.enemy1Directions.y[tempIterator]);
-        currentBody.SetLinearVelocity(tempVec);
+        // update direction of enemy towards player
+        tempVec.Set(sa.enemy1Directions.x[tempIterator], sa.enemy1Directions.y[tempIterator])
+        currentBody.SetLinearVelocity(tempVec)
       }
     }
 

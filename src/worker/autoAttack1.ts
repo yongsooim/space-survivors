@@ -55,9 +55,8 @@ export const createAutoAttack1Pool = (box2D: typeof Box2D & EmscriptenModule, wo
           category: 'weapon',
           type: 'autoAttack1',
           attribute: 'bullet',
-          damage : 5
+          damage: 5
         }
-
       }
     }
 
@@ -65,7 +64,7 @@ export const createAutoAttack1Pool = (box2D: typeof Box2D & EmscriptenModule, wo
       tempIterator = consts.numberOfAutoAttack1
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue // skip dead
-        if(sa.autoAttack1RemainTimes[tempIterator] <= 0) {
+        if (sa.autoAttack1RemainTimes[tempIterator] <= 0) {
           this.pool[tempIterator].SetEnabled(false)
           continue
         }

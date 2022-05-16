@@ -42,7 +42,6 @@ export function beatInit () {
         player.fire()
       }, 60)
 
-
       break
 
     case 0o1:
@@ -103,7 +102,6 @@ export function beatInit () {
 
     case 0o14:
 
-
       break
 
     case 0o15:
@@ -138,7 +136,7 @@ export function beatInit () {
       break
 
     case 0o24:
-      
+
       break
 
     case 0o25:
@@ -194,8 +192,8 @@ export function beatInit () {
       }, 60)
 
       break
-    case 0o43: 
-    player.fire()
+    case 0o43:
+      player.fire()
       setTimeout(() => {
         player.fire()
       }, 60)
@@ -203,23 +201,23 @@ export function beatInit () {
       break
 
     case 0o44:
-      break;
-    case 0o45: 
-    player.fire()
+      break
+    case 0o45:
+      player.fire()
       setTimeout(() => {
         player.fire()
       }, 60)
 
       break
-    case 0o46: 
-    player.fire()
+    case 0o46:
+      player.fire()
       setTimeout(() => {
         player.fire()
       }, 60)
 
       break
-    case 0o47: 
-    player.fire()
+    case 0o47:
+      player.fire()
       setTimeout(() => {
         player.fire()
       }, 60)
@@ -337,7 +335,6 @@ export function beatInit () {
     }
 
     // use counter for sychro actions
-
 
     playBeat(beatCounter)
 

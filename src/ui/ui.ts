@@ -52,8 +52,7 @@ export const addText = () => {
   app.stage.addChild(ui)
 
   app.ticker.add(() => {
-
-    if(sab.expArr[0] >= requiredExp[player.level]){
+    if (sab.expArr[0] >= requiredExp[player.level]) {
       player.level++
       sound.play('levelup')
     }

@@ -22,7 +22,6 @@ const enemy1container = new PIXI.ParticleContainer(
   true
 )
 
-
 const enemy2container = new PIXI.ParticleContainer(
   consts.numberOfEnemy2,
   {
@@ -82,7 +81,6 @@ const flame1container = new PIXI.ParticleContainer(
   true
 )
 
-
 const missile1container = new PIXI.ParticleContainer(
   consts.numberOfMissile1,
   {
@@ -98,7 +96,6 @@ const missile1container = new PIXI.ParticleContainer(
   true
 )
 
-
 let tempSprite
 
 enemy1container.interactiveChildren = false
@@ -113,7 +110,7 @@ while (tempIterator--) {
   tempSprite.position.set(consts.nowhere)
   tempSprite.alpha = 0.8
   tempSprite.cacheAsBitmapResolution = 1
-  tempSprite.cacheAsBitmap = true
+  tempSprite.cacheAsBitmap = false
   enemy1container.addChild(tempSprite)
 }
 
@@ -129,10 +126,9 @@ while (tempIterator--) {
   tempSprite.position.set(consts.nowhere)
   tempSprite.alpha = 0.8
   tempSprite.cacheAsBitmapResolution = 1
-  tempSprite.cacheAsBitmap = true
+  tempSprite.cacheAsBitmap = false
   enemy2container.addChild(tempSprite)
 }
-
 
 enemy3container.interactiveChildren = false
 enemy3container.sortableChildren = false
@@ -146,7 +142,7 @@ while (tempIterator--) {
   tempSprite.position.set(consts.nowhere)
   tempSprite.alpha = 0.8
   tempSprite.cacheAsBitmapResolution = 1
-  tempSprite.cacheAsBitmap = true
+  tempSprite.cacheAsBitmap = false
   enemy3container.addChild(tempSprite)
 }
 
@@ -163,7 +159,7 @@ while (tempIterator--) {
   tempSprite.alpha = 0
 
   tempSprite.cacheAsBitmapResolution = 1
-  tempSprite.cacheAsBitmap = true
+  tempSprite.cacheAsBitmap = false
   autoAttack1container.addChild(tempSprite)
 }
 
@@ -181,7 +177,7 @@ while (tempIterator--) {
   tempSprite.position.set(0)
   tempSprite.alpha = 0
   tempSprite.cacheAsBitmapResolution = 1
-  tempSprite.cacheAsBitmap = true
+  tempSprite.cacheAsBitmap = false
   flame1container.addChild(tempSprite)
 }
 
@@ -199,7 +195,7 @@ while (tempIterator--) {
   tempSprite.position.set(0)
   tempSprite.alpha = 0
   tempSprite.cacheAsBitmapResolution = 1
-  tempSprite.cacheAsBitmap = true
+  tempSprite.cacheAsBitmap = false
   missile1container.addChild(tempSprite)
 }
 
@@ -214,23 +210,23 @@ export const renderUpdate = () => {
   tempIterator = consts.numberOfEnemy1
   while (tempIterator--) {
     if (sab.enemy1HpsArr[tempIterator] <= 0) {
-      //enemy1container.children[tempIterator].alpha = 0
+      // enemy1container.children[tempIterator].alpha = 0
     } else {
       enemy1container.children[tempIterator].position.set(sab.enemy1PositionsArr.x[tempIterator], sab.enemy1PositionsArr.y[tempIterator])
-      //enemy1container.children[tempIterator].alpha = 0.8
+      // enemy1container.children[tempIterator].alpha = 0.8
     }
   }
 
   tempIterator = consts.numberOfEnemy2
   while (tempIterator--) {
-    if (sab.enemy2HpsArr[tempIterator] <= 0 ) {
-      //enemy2container.children[tempIterator].alpha = 0
+    if (sab.enemy2HpsArr[tempIterator] <= 0) {
+      // enemy2container.children[tempIterator].alpha = 0
     } else {
       enemy2container.children[tempIterator].position.set(sab.enemy2PositionsArr.x[tempIterator], sab.enemy2PositionsArr.y[tempIterator])
-      //enemy2container.children[tempIterator].alpha = 0.8
+      // enemy2container.children[tempIterator].alpha = 0.8
     }
   }
-  
+
   tempIterator = consts.numberOfAutoAttack1
   while (tempIterator--) {
     if (sab.autoAttack1RemainTimesArr[tempIterator] <= 0) {
@@ -241,16 +237,15 @@ export const renderUpdate = () => {
     autoAttack1container.children[tempIterator].alpha = 1
   }
 
-  
-  //tempIterator = consts.numberOfFlame1
-  //while (tempIterator--) {
+  // tempIterator = consts.numberOfFlame1
+  // while (tempIterator--) {
   //  if (sab.flame1RemainTimesArr[tempIterator] <= 0) {
   //    flame1container.children[tempIterator].alpha = 0
   //    continue
   //  }
   //  flame1container.children[tempIterator].position.set(sab.flame1PositionsArr.x[tempIterator], sab.flame1PositionsArr.y[tempIterator])
   //  //flame1container.children[tempIterator].alpha = 1
-  //}
+  // }
 
   tempIterator = consts.numberOfMissile1
   while (tempIterator--) {
@@ -259,7 +254,6 @@ export const renderUpdate = () => {
       continue
     }
     missile1container.children[tempIterator].position.set(sab.missile1PositionsArr.x[tempIterator], sab.missile1PositionsArr.y[tempIterator])
-    //flame1container.children[tempIterator].alpha = 1
+    // flame1container.children[tempIterator].alpha = 1
   }
-
 }

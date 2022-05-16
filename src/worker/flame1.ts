@@ -57,7 +57,6 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
           attribute: 'splash',
           damage: 8
         }
-
       }
     }
 
@@ -67,7 +66,7 @@ export const createFlame1Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       tempIterator = consts.numberOfFlame1
       while (tempIterator--) {
         if (this.pool[tempIterator].IsEnabled() === false) continue // skip dead
-        if( sa.flame1RemainTimes[tempIterator] <= 0){
+        if (sa.flame1RemainTimes[tempIterator] <= 0) {
           this.pool[tempIterator].SetEnabled(false)
           continue
         }

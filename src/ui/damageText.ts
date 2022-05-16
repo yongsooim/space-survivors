@@ -29,7 +29,7 @@ class DamageTextPool {
     this.cursor++
     if (this.cursor >= consts.numberOfDamageText) this.cursor = 0
 
-    //sound.volume('enemyhitwav', 0.5)
+    // sound.volume('enemyhitwav', 0.5)
 
     sound.play('enemyhitwav')
     const currentCursor = this.cursor

@@ -56,12 +56,12 @@ export const textures = {
   ui1: new PIXI.Texture(baseTextures.ui, new PIXI.Rectangle(11 * 8, 0 * 8, 13, 13)),
   fire: new PIXI.Texture(baseTextures.fire),
 
-  bgs : [
+  bgs: [
     new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 0, 256 * 0, 128, 256)),
     new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 1, 256 * 0, 128, 256)),
     new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 2, 256 * 0, 128, 256)),
     new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 1, 256 * 1, 128, 256)),
-    new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 2, 256 * 1, 128, 256)),
+    new PIXI.Texture(baseTextures.bg, new PIXI.Rectangle(126 * 2, 256 * 1, 128, 256))
   ]
 }
 

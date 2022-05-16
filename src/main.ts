@@ -85,7 +85,7 @@ app.loader.add(resources).load(() => {
       viewport
         .pinch({ noDrag: true })
         .wheel({ percent: 0, smooth: 10, trackpadPinch: false })
-        //.wheel({ percent: 0, smooth: 10, trackpadPinch: true })
+        // .wheel({ percent: 0, smooth: 10, trackpadPinch: true })
         .setZoom(20)
         .clampZoom({ minScale: 1, maxScale: 1000 })
         .follow(player)
@@ -135,7 +135,7 @@ function handleVisibilityChange () {
 
 document.addEventListener(visibilityChange as string, handleVisibilityChange, false)
 
-document.addEventListener('scroll',(e) => {
-    e.preventDefault()
-  },false
+document.addEventListener('scroll', (e) => {
+  e.preventDefault()
+}, false
 )

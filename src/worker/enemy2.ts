@@ -34,7 +34,7 @@ export const createEnemy2Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
     ptrToIdx: number[] = []
     disabledList: number[] = []
 
-    constructor() {
+    constructor () {
       this.defaultFilter.categoryBits = Filter.Enemy2
       this.defaultFilter.maskBits = Filter.AutoAttack1 | Filter.Enemy2 | Filter.Player | Filter.Flame | Filter.Enemy1
       this.defaultFilter.groupIndex = 0
@@ -65,7 +65,7 @@ export const createEnemy2Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       }
     }
 
-    update() {
+    update () {
       tempIterator = consts.numberOfEnemy2
       while (tempIterator--) {
         tempBody = this.pool[tempIterator]
@@ -88,16 +88,16 @@ export const createEnemy2Pool = (box2D: typeof Box2D & EmscriptenModule, world: 
       }
     }
 
-    disableByPtr(ptr: number) {
+    disableByPtr (ptr: number) {
       sa.autoAttack1RemainTimes[this.ptrToIdx[ptr]] = 0
       this.pool[this.ptrToIdx[ptr]].SetEnabled(false)
     }
 
-    getIndex(body: Box2D.b2Body) {
+    getIndex (body: Box2D.b2Body) {
       return this.ptrToIdx[getPointer(body)]
     }
 
-    gen() {
+    gen () {
       if (this.disabledList.length > 0) {
         const genIndex = this.disabledList.pop() as number
         const spawnDistance = Math.random() * 30 + consts.spawnSize / 2

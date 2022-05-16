@@ -20,6 +20,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT)
   }
+
   playerPositionArr = {
     x: new Float64Array(this.playerPosition.x),
     y: new Float64Array(this.playerPosition.y)
@@ -29,6 +30,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy1)
   }
+
   enemy1PositionsArr = {
     x: new Float64Array(this.enemy1Positions.x),
     y: new Float64Array(this.enemy1Positions.y)
@@ -46,6 +48,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy2),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy2)
   }
+
   enemy2PositionsArr = {
     x: new Float64Array(this.enemy2Positions.x),
     y: new Float64Array(this.enemy2Positions.y)
@@ -59,11 +62,11 @@ export class SabSet {
   enemy2Hps = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfEnemy2);
   enemy2HpsArr = new Int32Array(this.enemy2Hps);
 
-  
   enemy3Positions = {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy3),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfEnemy3)
   }
+
   enemy3PositionsArr = {
     x: new Float64Array(this.enemy3Positions.x),
     y: new Float64Array(this.enemy3Positions.y)
@@ -81,6 +84,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfAutoAttack1)
   }
+
   autoAttack1PositionsArr = {
     x: new Float64Array(this.autoAttack1Positions.x),
     y: new Float64Array(this.autoAttack1Positions.y)
@@ -102,7 +106,6 @@ export class SabSet {
   flame1RemainTimes = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfFlame1);
   flame1RemainTimesArr = new Int32Array(this.flame1RemainTimes);
 
-  
   missile1Positions = {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfMissile1),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfMissile1)
@@ -120,6 +123,7 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource1),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource1)
   }
+
   resource1PositionsArr = {
     x: new Float64Array(this.resource1Positions.x),
     y: new Float64Array(this.resource1Positions.y)
@@ -135,19 +139,20 @@ export class SabSet {
     x: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2),
     y: new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2)
   }
+
   resource2PositionsArr = {
     x: new Float64Array(this.resource2Positions.x),
     y: new Float64Array(this.resource2Positions.y)
   }
+
   resource2Rotations = new SharedArrayBuffer(Float64Array.BYTES_PER_ELEMENT * consts.numberOfResource2)
   resource2RotationsArr = new Float64Array(this.resource2Rotations)
-  
+
   resource2RemainTimes = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * consts.numberOfResource2);
   resource2RemainTimesArr = new Int32Array(this.resource2RemainTimes);
 
-  constructor(){
-
-    for(let i = 0 ; i < consts.numberOfResource1 ; i++){
+  constructor () {
+    for (let i = 0; i < consts.numberOfResource1; i++) {
       this.resource1SleepArr[i] = 1
     }
   }

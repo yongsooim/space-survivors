@@ -1,4 +1,4 @@
-export let ptrToInfo: Info[] = [] 
+export const ptrToInfo: Info[] = []
 
 declare interface Info {
   category : 'player' | 'enemy' | 'weapon',
@@ -7,14 +7,11 @@ declare interface Info {
   damage? : number
 }
 
-
-
 /*
 ptrToInfo[getPointer(this.pool[i])] = {
     category: 'enemy',
     type: 'enemy1'
   }
-
 
         ptrToInfo[getPointer(this.pool[i])] = {
           category: 'attack',
@@ -22,9 +19,5 @@ ptrToInfo[getPointer(this.pool[i])] = {
           attribute: 'bullet',
           damage : 5
         }
-
-        
-
-
 
   */

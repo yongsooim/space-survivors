@@ -13,6 +13,8 @@ import { enemy1 } from '../resource/spriteManage'
 import { ptrToInfo } from './ptrToInfo'
 import { worker1check } from './worker1master'
 
+console.log('this message shouldnt print twice')
+
 /** shared arrays in worker1 */
 
 /** shared arrays */
@@ -30,14 +32,12 @@ let autoAttack1Pool: AutoAttack1Pool
 let flame1Pool: Flame1Pool
 let missile1Pool: Flame1Pool
 
-
 export interface Info {
   category : string,
-  type : string, 
-  attribute : string, 
+  type : string,
+  attribute : string,
   damage? : number
 }
-
 
 onmessage = (ev) => {
   if (ev.data.cmd === 'stop') {
@@ -128,7 +128,7 @@ onmessage = (ev) => {
     enemy2Pool = createEnemy2Pool(box2D, world, sa)
     enemy3Pool = createEnemy3Pool(box2D, world, sa)
     autoAttack1Pool = createAutoAttack1Pool(box2D, world, sa)
-    //missile1Pool = createmissile1Pool(box2D, world, sa)
+    // missile1Pool = createmissile1Pool(box2D, world, sa)
     flame1Pool = createFlame1Pool(box2D, world, sa)
 
     postMessage({ cmd: 'ready' })
@@ -152,7 +152,6 @@ export const box2D = await Box2DFactory({
 })
 
 const { b2BodyDef, b2_dynamicBody, b2PolygonShape, b2Vec2, b2World, JSContactListener, wrapPointer, getPointer, b2Filter, b2Contact } = box2D
-
 
 const zero = new b2Vec2(0, 0)
 const center = new b2Vec2(0.5, 0.5)
@@ -186,9 +185,9 @@ usedBulletFilter.categoryBits = Filter.AutoAttack1
 usedBulletFilter.maskBits = 0
 
 let lastExecuted = Date.now()
-let delta = 0
-let now = 0
-let stepTime = 0
+const delta = 0
+const now = 0
+const stepTime = 0
 
 const contactListener = new JSContactListener()
 let disableRequest = [] as Box2D.b2Body[]
@@ -206,24 +205,24 @@ contactListener.BeginContact = (contact) => {
 
   let bodyWeapon
   let bodyEnemy
-  let infoWeapon 
-  let infoEnemy 
+  let infoWeapon
+  let infoEnemy
 
-  if (infoA.category === "weapon" && infoB.category === "enemy") {
-    bodyWeapon = bodyA;
-    bodyEnemy = bodyB;
+  if (infoA.category === 'weapon' && infoB.category === 'enemy') {
+    bodyWeapon = bodyA
+    bodyEnemy = bodyB
     infoWeapon = infoA
     infoEnemy = infoB
-  } else if (infoA.category === "enemy" && infoB.category === "weapon") {
-    bodyWeapon = bodyB;
-    bodyEnemy = bodyA;
+  } else if (infoA.category === 'enemy' && infoB.category === 'weapon') {
+    bodyWeapon = bodyB
+    bodyEnemy = bodyA
     infoWeapon = infoB
     infoEnemy = infoA
   } else {
     return
   }
 
-  if(infoWeapon.attribute === 'bullet') {
+  if (infoWeapon.attribute === 'bullet') {
     bodyWeapon.GetFixtureList().SetFilterData(usedBulletFilter)
     disableRequest.push(bodyWeapon)
   }
@@ -233,12 +232,12 @@ contactListener.BeginContact = (contact) => {
   let enemyHps
   let tempIndex
 
-  if(infoEnemy.type === 'enemy1'){
+  if (infoEnemy.type === 'enemy1') {
     enemyDirectionsX = sa.enemy1Directions.x
     enemyDirectionsY = sa.enemy1Directions.y
     enemyHps = sa.enemy1Hps
     tempIndex = enemy1Pool.ptrToIdx[getPointer(bodyEnemy)]
-  } else if (infoEnemy.type === 'enemy2'){
+  } else if (infoEnemy.type === 'enemy2') {
     enemyDirectionsX = sa.enemy2Directions.x
     enemyDirectionsY = sa.enemy2Directions.y
     enemyHps = sa.enemy2Hps
@@ -247,36 +246,33 @@ contactListener.BeginContact = (contact) => {
     return
   }
 
-    if (enemyHps[tempIndex] > 0) {
-      // knock back
-      if(infoWeapon.attribute === 'bullet') {
-        tempVec.Set(-30 * enemyDirectionsX[tempIndex], -30 * enemyDirectionsY[tempIndex]);
-        bodyEnemy.ApplyLinearImpulse(tempVec, center, true);
-        // bodyEnemy.ApplyForce(tempVec, center, false)
-      }
+  if (enemyHps[tempIndex] > 0) {
+    // knock back
+    if (infoWeapon.attribute === 'bullet') {
+      tempVec.Set(-30 * enemyDirectionsX[tempIndex], -30 * enemyDirectionsY[tempIndex])
+      bodyEnemy.ApplyLinearImpulse(tempVec, center, true)
+      // bodyEnemy.ApplyForce(tempVec, center, false)
+    }
 
-      Atomics.sub(enemyHps, tempIndex, infoWeapon.damage?infoWeapon.damage:0) // damage dealt
+    Atomics.sub(enemyHps, tempIndex, infoWeapon.damage ? infoWeapon.damage : 0) // damage dealt
+    postMessage({
+      cmd: 'damage',
+      x: bodyWeapon.GetPosition().x,
+      y: bodyWeapon.GetPosition().y,
+      enemyX: bodyEnemy.GetPosition().x,
+      enemyY: bodyEnemy.GetPosition().y,
+      damage: infoWeapon.damage ? infoWeapon.damage : 0
+    })
+
+    if (enemyHps[tempIndex] <= 0) { // check dead
       postMessage({
-        cmd: 'damage',
-        x: bodyWeapon.GetPosition().x,
-        y: bodyWeapon.GetPosition().y,
+        cmd: 'dead',
         enemyX: bodyEnemy.GetPosition().x,
-        enemyY: bodyEnemy.GetPosition().y,
-        damage: infoWeapon.damage?infoWeapon.damage:0
+        enemyY: bodyEnemy.GetPosition().y
       })
-  
-      if(enemyHps[tempIndex] <= 0){ // check dead
-        postMessage({
-          cmd: 'dead',
-          enemyX: bodyEnemy.GetPosition().x,
-          enemyY: bodyEnemy.GetPosition().y,
-        })  
-      }
     }
   }
-
-
-
+}
 
 contactListener.EndContact = () => { }
 contactListener.PostSolve = () => { }
@@ -289,16 +285,15 @@ const count = 0
 
 let counter = 0
 
-function loop() {
+function loop () {
   if (running === false) return
   counter++
 
   tempVec.Set(sa.playerPosition.x[0], sa.playerPosition.y[0])
   playerBody.SetTransform(tempVec, 0)
   ptrToInfo[getPointer(playerBody)] = {
-    category : 'player'
+    category: 'player'
   }
-
 
   // update shared memory buffer
   enemy1Pool.update()
@@ -306,10 +301,9 @@ function loop() {
   enemy3Pool.update()
   autoAttack1Pool.update()
   flame1Pool.update()
-  //missile1Pool.update()
+  // missile1Pool.update()
 
-
-  world.Step(consts.worker1Interval, 8, 3)
+  world.Step(consts.worker1Interval, 10, 4)
 
   for (let i = 0; i < disableRequest.length; i++) {
     if (disableRequest[i].GetFixtureList().GetFilterData().categoryBits === Filter.AutoAttack1) {
@@ -325,25 +319,21 @@ function loop() {
   // maybe try async calculation...
 
   // calculate elapsed and determine the interval to next step
-  //now = Date.now()
-  //delta = now - lastExecuted
-  //lastExecuted = now
-//
-  //if (delta > consts.worker1Interval + 5) {
+  // now = Date.now()
+  // delta = now - lastExecuted
+  // lastExecuted = now
+  //
+  // if (delta > consts.worker1Interval + 5) {
   //  if (delta > 500) {
   //    stepTime = 500
   //  } else {
   //    stepTime = delta
   //  }
-  //} else {
+  // } else {
   //  stepTime = consts.worker1Interval
-  //}
+  // }
 
-  if (counter % 1 === 0) {
-    enemy1Pool.gen()
-    enemy2Pool.gen()
-    enemy1Pool.gen()
-    enemy2Pool.gen()
+  if (counter % 10 === 0) {
     enemy1Pool.gen()
     enemy2Pool.gen()
   }

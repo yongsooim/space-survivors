@@ -2,7 +2,7 @@
 // and calculates (subtract) remain time of objects
 
 import consts from '../type/const'
-import { SabSet } from './sabManage'
+import sab, { SabSet } from './sabManage'
 
 let running = false
 
@@ -50,7 +50,7 @@ declare interface Isa {
     y: Float64Array,
   }
   autoAttack1RemainTimes: Int32Array,
-  
+
   flame1Positions: {
     x: Float64Array,
     y: Float64Array,
@@ -67,7 +67,7 @@ onmessage = (ev) => {
     clearInterval(loopInterval)
   } else if (ev.data.cmd === 'start') {
     running = true
-    //loopInterval = setInterval(calc, consts.worker2Interval)
+    // loopInterval = setInterval(calc, consts.worker2Interval)
   } else if (ev.data.cmd === 'close') {
     running = false
     clearInterval(loopInterval)
@@ -128,8 +128,8 @@ onmessage = (ev) => {
   }
 }
 
-let playerX = 0, enemyX = 0, diffX = 0, directionX = 0
-let playerY = 0, enemyY = 0, diffY = 0, directionY = 0
+let playerX = 0; let enemyX = 0; let diffX = 0; let directionX = 0
+let playerY = 0; let enemyY = 0; let diffY = 0; let directionY = 0
 let distance = 0
 
 const divide = 30
@@ -160,10 +160,11 @@ const calc = () => {
     sa.enemy1Directions.x[tempIterator] = directionX
     sa.enemy1Directions.y[tempIterator] = directionY
 
-    if(tempIterator % 30 === count){
-      if (distance < 2) {
-        self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
-      }
+    if (tempIterator % 30 === count) {
+      sa.life[0] -= 3
+      // if (distance < 2) {
+      //  self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+      // }
     }
   }
 
@@ -183,14 +184,14 @@ const calc = () => {
     sa.enemy2Directions.x[tempIterator] = directionX
     sa.enemy2Directions.y[tempIterator] = directionY
 
-    if(tempIterator % 30 === count){
-      if (distance < 2) {
-        self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 });
-      }
+    if (tempIterator % 30 === count) {
+      sa.life[0] -= 3
+
+      // if (distance < 2) {
+      //  self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
+      // }
     }
   }
-
-
 
   tempIterator = consts.numberOfAutoAttack1
   while (tempIterator--) { // should it be atomic? maybe?
@@ -204,7 +205,6 @@ const calc = () => {
       sa.flame1RemainTimes[tempIterator] -= consts.worker2Interval
     }
   }
-
 }
 
 postMessage({ cmd: 'ready' })

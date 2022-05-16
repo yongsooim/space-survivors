@@ -12,12 +12,12 @@ import { app } from '../main'
 import { sound } from '@pixi/sound'
 const worker3 = new Worker()
 
-
 worker3.onmessage = (ev) => {
   if (ev.data.cmd === 'get') {
     sound.volume('pickup', 0.2)
     sound.play('pickup')
   } else if (ev.data.cmd === 'ready') {
+    // ready
   }
 }
 
@@ -63,9 +63,8 @@ export function worker3init () {
     resource1sprites.position.x = consts.nowhere
     resource1sprites.position.y = consts.nowhere
     resource1sprites.tint = 0x964b00
-    resource1sprites.cacheAsBitmap = true
+    resource1sprites.cacheAsBitmap = false
     resource1container.addChild(resource1sprites)
-    
   }
 
   let resource2sprite
@@ -75,10 +74,9 @@ export function worker3init () {
     resource2sprite.scale.set(0.1)
     resource2sprite.anchor.set(0.5)
     resource2sprite.rotation = Math.random() * Math.PI * 2
-    resource2sprite.cacheAsBitmap = true
+    resource2sprite.cacheAsBitmap = false
     resource2container.addChild(resource2sprite)
   }
-
 
   tempIterator = consts.numberOfResource1
   while (tempIterator--) {
@@ -90,7 +88,6 @@ export function worker3init () {
     sab.resource2RemainTimesArr[tempIterator] = 20000000
   }
 
-
   tempIterator = consts.numberOfResource2
   while (tempIterator--) {
     resource2container.children[tempIterator].x = sab.resource2PositionsArr.x[tempIterator]
@@ -98,11 +95,11 @@ export function worker3init () {
     resource2container.children[tempIterator].alpha = 0.5
   }
 
-  worker3.addEventListener('message', (ev)=>{
-    if(ev.data.cmd === 'wakeup'){
-      resource1container.children[ev.data.index].position.set(sab.resource1PositionsArr.x[ev.data.index], sab.resource1PositionsArr.y[ev.data.index]);
-    } else if(ev.data.cmd === 'wakeup2'){
-      resource2container.children[ev.data.index].position.set(sab.resource2PositionsArr.x[ev.data.index], sab.resource2PositionsArr.y[ev.data.index]);
+  worker3.addEventListener('message', (ev) => {
+    if (ev.data.cmd === 'wakeup') {
+      resource1container.children[ev.data.index].position.set(sab.resource1PositionsArr.x[ev.data.index], sab.resource1PositionsArr.y[ev.data.index])
+    } else if (ev.data.cmd === 'wakeup2') {
+      resource2container.children[ev.data.index].position.set(sab.resource2PositionsArr.x[ev.data.index], sab.resource2PositionsArr.y[ev.data.index])
     }
   })
 

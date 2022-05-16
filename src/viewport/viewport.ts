@@ -3,6 +3,7 @@ import { player } from '../player/player'
 import { app } from '../main'
 import { keyboard, Keys } from '../input/keyboard'
 import { Container } from 'pixi.js'
+import * as PIXI from 'pixi.js'
 
 // app.stage <- viewport <- viewportContainer
 
