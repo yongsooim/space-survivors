@@ -61,7 +61,7 @@ onmessage = (ev) => {
   } else if (ev.data.cmd === 'flame') {
     flame1Pool.fire()
   } else if (ev.data.cmd === 'missile') {
-    missile1Pool.fire()
+    // missile1Pool.fire()
   } else if (ev.data.cmd === 'init') {
     const tempSab = ev.data.sab as SabSet
 

@@ -1,14 +1,14 @@
-import * as PIXI from 'pixi.js'
-import { app } from '../main'
-import { viewport, viewportContainer } from '../viewport/viewport'
-import sab from '../worker/sabManage'
-import { sprites, textures } from '../resource/spriteManage'
-import { player } from '../player/player'
-import { requiredExp } from '../player/levelTable'
-import { sound } from '@pixi/sound'
+import * as PIXI from "pixi.js"
+import { app } from "../main"
+import { viewport, viewportContainer } from "../viewport/viewport"
+import sab from "../worker/sabManage"
+import { sprites, textures } from "../resource/spriteManage"
+import { player } from "../player/player"
+import { requiredExp } from "../player/levelTable"
+import { sound } from "@pixi/sound"
 
-const resourceText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' })
-const infoText = new PIXI.Text('', { fontFamily: 'Consolas', fontSize: 20, fill: 0xffffff, align: 'center' })
+const resourceText = new PIXI.Text("", { fontFamily: "Consolas", fontSize: 20, fill: 0xffffff, align: "center" })
+const infoText = new PIXI.Text("", { fontFamily: "Consolas", fontSize: 20, fill: 0xffffff, align: "center" })
 
 const uiScale = 1
 
@@ -23,12 +23,12 @@ ui1.interactive = true
 ui1.buttonMode = true
 char1.interactive = true
 
-char1.on('pointerdown', () => {
-  infoText.text = 'hi'
+char1.on("pointerdown", () => {
+  infoText.text = "hi"
 })
 
-ui1.on('pointerdown', () => {
-  infoText.text = 'bye'
+ui1.on("pointerdown", () => {
+  infoText.text = "bye"
 })
 
 export const addText = () => {
@@ -54,13 +54,23 @@ export const addText = () => {
   app.ticker.add(() => {
     if (sab.expArr[0] >= requiredExp[player.level]) {
       player.level++
-      sound.play('levelup')
+      sound.play("levelup")
     }
 
-    resourceText.text = (`Killed:${sab.killArr[0]}, Lv:${player.level}, Exp:${sab.expArr[0]}/${requiredExp[player.level]}\nTime: ${sab.timerArr[0]}, Life: ${sab.lifeArr[0]}`)
+    resourceText.text = `Killed:${sab.killArr[0]}, Lv:${player.level}, Exp:${sab.expArr[0]}/${requiredExp[player.level]}\nTime: ${sab.timerArr[0]}, Life: ${
+      player.life
+    }`
     resourceText.position.set(app.view.width / 2, 30)
     infoText.position.set(app.view.width / 2, app.view.height - 30)
     char1.position.set(0, app.view.height)
     ui1.position.set(app.view.width, app.view.height)
+
+    if (sab.lifeArr[0] < player.life) {
+      sound.volume("playerhit", 0.1)
+      sound.play("playerhit")
+      player.hit()
+
+      player.life = sab.lifeArr[0]
+    }
   })
 }

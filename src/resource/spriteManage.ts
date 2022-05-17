@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js'
-import { resourcePaths } from './resources'
+import { resourcePaths, resources } from './resources'
+import { app } from '../main'
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
+
 
 export const baseTextures = {
   ship: new PIXI.BaseTexture(resourcePaths.shipPng),

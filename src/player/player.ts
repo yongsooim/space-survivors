@@ -18,6 +18,8 @@ class Player extends Container {
   speed = 350
   vector = new Vector(0, 0)
   positionVector = new Vector(0, 0)
+  life = 10000
+  hitRedRemain = 0
 
   playerSpriteCenter = new PIXI.Sprite(textures.ship1)
   playerSpriteLeft = new PIXI.Sprite(textures.ship1Left)
@@ -54,6 +56,14 @@ class Player extends Container {
   }
 
   update (delta: number) {
+
+    this.hitRedRemain -= delta
+
+    if(this.hitRedRemain <= 0) {
+      this.hitRedRemain = 0
+      this.playerSpriteCenter.tint = 0xffffff
+    }
+
     this.checkInput(delta)
 
     // if (this.vector.size >= 0.3) {
@@ -90,9 +100,7 @@ class Player extends Container {
 
   hit () {
     this.playerSpriteCenter.tint = 0xff0000
-    setTimeout(() => {
-      this.playerSpriteCenter.tint = 0xffffff
-    }, 350)
+    this.hitRedRemain = 30
   }
 
   checkInput (delta: number) {

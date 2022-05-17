@@ -41,6 +41,7 @@ onmessage = (ev) => {
     running = false
     self.close()
   } else if (ev.data.cmd === 'generate') {
+    // to filled
   } else if (ev.data.cmd === 'init') {
     const sab = ev.data.sab as SabSet
     sa = {
@@ -98,11 +99,12 @@ let distance = 0
 const loop = () => {
   if (running === false) return
 
+  let isGet = false
+
   const postContent = {
-    wakeup1List: [] as any,
-    get1List: [],
-    wakeup2List : [],
-    get2List : []
+    cmd : 'move',
+    move1List: [],
+    move2List: []
   }
 
   tempPlayerPosX = sa.playerPosition.x[0]
@@ -115,21 +117,20 @@ const loop = () => {
     diffY = tempPlayerPosY - sa.resource1Positions.y[i]
     distance = Math.sqrt(diffX ** 2 + diffY ** 2)
 
-    if (distance < consts.magnetRange) {
-      sa.resource1Sleep[i] = 0;
-      sa.resource1Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000;
-      sa.resource1Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000;
-      postMessage({ cmd: 'wakeup', index: i });
-    }
-
     if (distance < consts.getRange) {
       sa.resource1Positions.x[i] = consts.nowhere
       sa.resource1Positions.y[i] = consts.nowhere
 
       sa.resource1RemainTimes[i] = 0
       sa.exp[0] += 1
-      postMessage({ cmd: 'get', index: i });
-    } 
+      postContent.move1List.push(i)
+      isGet = true
+    } else if (distance < consts.magnetRange) {
+      sa.resource1Sleep[i] = 0
+      sa.resource1Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000
+      sa.resource1Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000
+      postContent.move1List.push(i)
+    }
   }
 
   for (let i = counter; i < consts.numberOfResource2; i++) {
@@ -141,22 +142,37 @@ const loop = () => {
 
     sa.resource2Rotations[i] += 0.02
 
-    if (distance < consts.magnetRange) {
-      sa.resource2Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000;
-      sa.resource2Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000;
-      postMessage({ cmd: 'wakeup2', index: i });
-    }
-
     if (distance < consts.getRange) {
       sa.resource2Positions.x[i] = consts.nowhere
       sa.resource2Positions.y[i] = consts.nowhere
 
       sa.resource2RemainTimes[i] = 0
       sa.exp[0] += 1
-      postMessage({ cmd: 'get', index: i });
-    } 
+      postContent.move2List.push(i)
+      isGet = true
+    } else if (distance < consts.magnetRange) {
+      sa.resource2Positions.x[i] += (diffX * (consts.magnetRange - distance) * delta) / 1000
+      sa.resource2Positions.y[i] += (diffY * (consts.magnetRange - distance) * delta) / 1000
+      postContent.move2List.push(i)
+    }
   }
 
+  if(postContent.move1List.length === 0){
+    delete postContent.move1List
+  }
+
+  if(postContent.move2List.length === 0){
+    delete postContent.move2List
+  }
+
+  if(Object.keys(postContent).length !== 0) {
+    postMessage(postContent)
+  }
+
+  if(isGet) {
+    postMessage({cmd:'get'})
+  }
+  
   now = Date.now()
   delta = now - lastExecuted
 

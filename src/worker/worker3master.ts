@@ -13,11 +13,27 @@ import { sound } from '@pixi/sound'
 const worker3 = new Worker()
 
 worker3.onmessage = (ev) => {
-  if (ev.data.cmd === 'get') {
-    sound.volume('pickup', 0.2)
-    sound.play('pickup')
-  } else if (ev.data.cmd === 'ready') {
+  if (ev.data === "ready") {
     // ready
+  } else if(ev.data.cmd === 'move') {
+    
+    if(ev.data.move1List){
+      for(let i = 0 ; i < ev.data.move1List.length ; i++){
+        let index = ev.data.move1List[i]
+        resource1container.children[index].position.set(sab.resource1PositionsArr.x[index], sab.resource1PositionsArr.y[index])
+      }  
+    }
+    
+    if(ev.data.move2List){
+      for(let i = 0 ; i < ev.data.move2List.length ; i++){
+        let index = ev.data.move2List[i]
+        resource2container.children[index].position.set(sab.resource2PositionsArr.x[index], sab.resource2PositionsArr.y[index])
+      }
+    }
+
+  } else if(ev.data.cmd === 'get') {
+    sound.volume("pickup", 0.4)
+    sound.play("pickup")
   }
 }
 
@@ -37,7 +53,8 @@ resource1container.interactive = false
 const resource2container = new PIXI.ParticleContainer(
   consts.numberOfResource2,
   {
-    alpha: true,
+    alpha: false,
+    tint: false,
     position: true,
     rotation: true
   },
@@ -57,8 +74,10 @@ export function worker3init () {
 
   tempIterator = consts.numberOfResource1
   while (tempIterator--) {
+
+    
     resource1sprites = new PIXI.Sprite(textures.particles[Math.floor(Math.random() * 15.9)])
-    resource1sprites.scale.set(0.06)
+    resource1sprites.scale.set(0.04)
     resource1sprites.anchor.set(0.5)
     resource1sprites.position.x = consts.nowhere
     resource1sprites.position.y = consts.nowhere
@@ -94,14 +113,6 @@ export function worker3init () {
     resource2container.children[tempIterator].y = sab.resource2PositionsArr.y[tempIterator]
     resource2container.children[tempIterator].alpha = 0.5
   }
-
-  worker3.addEventListener('message', (ev) => {
-    if (ev.data.cmd === 'wakeup') {
-      resource1container.children[ev.data.index].position.set(sab.resource1PositionsArr.x[ev.data.index], sab.resource1PositionsArr.y[ev.data.index])
-    } else if (ev.data.cmd === 'wakeup2') {
-      resource2container.children[ev.data.index].position.set(sab.resource2PositionsArr.x[ev.data.index], sab.resource2PositionsArr.y[ev.data.index])
-    }
-  })
 
   tempIterator = consts.numberOfResource1
   while (tempIterator--) {

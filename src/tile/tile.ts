@@ -26,13 +26,14 @@ export const tileInit = () => {
       scale: false
     }
   )
-  for (let i = -50; i < 50; i++) {
-    for (let j = -50; j < 50; j++) {
+  for (let i = -20; i < 20; i++) {
+    for (let j = -30; j < 30; j++) {
       const tempSprite = PIXI.Sprite.from(textures.bgs[Math.floor(Math.random() * 4.99999)])
       tempSprite.scale.set(0.1)
       tempSprite.anchor.set(0.5)
       tempSprite.x = j * 12.8
       tempSprite.y = i * 25.6
+      tempSprite.alpha = 0.9
       tempSprite.cacheAsBitmap = true
       background.addChild(tempSprite)
     }

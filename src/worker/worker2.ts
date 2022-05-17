@@ -1,8 +1,8 @@
 // this worker calculates collision between enemy and player
 // and calculates (subtract) remain time of objects
 
-import consts from '../type/const'
-import sab, { SabSet } from './sabManage'
+import consts from "../type/const"
+import sab, { SabSet } from "./sabManage"
 
 let running = false
 
@@ -15,112 +15,111 @@ let tempIterator = 0
 /** Interface of shared array */
 declare interface Isa {
   playerPosition: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
   enemy1Positions: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
   enemy1Directions: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
-  enemy1Hps: Int32Array,
+  enemy1Hps: Int32Array
   enemy2Positions: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
   enemy2Directions: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
-  enemy2Hps: Int32Array,
+  enemy2Hps: Int32Array
   enemy3Positions: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
   enemy3Directions: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
-  enemy3Hps: Int32Array,
+  enemy3Hps: Int32Array
   autoAttack1Positions: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
-  autoAttack1RemainTimes: Int32Array,
+  autoAttack1RemainTimes: Int32Array
 
   flame1Positions: {
-    x: Float64Array,
-    y: Float64Array,
+    x: Float64Array
+    y: Float64Array
   }
   flame1RemainTimes: Int32Array
-  life: Int32Array,
+  life: Int32Array
 }
 
 export let sa: Isa
 
 onmessage = (ev) => {
-  if (ev.data.cmd === 'stop') {
+  if (ev.data.cmd === "stop") {
     running = false
     clearInterval(loopInterval)
-  } else if (ev.data.cmd === 'start') {
+  } else if (ev.data.cmd === "start") {
     running = true
     // loopInterval = setInterval(calc, consts.worker2Interval)
-  } else if (ev.data.cmd === 'close') {
+  } else if (ev.data.cmd === "close") {
     running = false
     clearInterval(loopInterval)
     self.close()
-  } else if (ev.data.cmd === 'init') {
+  } else if (ev.data.cmd === "init") {
     console.log(ev.data)
     const tempSab = ev.data.sab as SabSet
     sa = {
       playerPosition: {
         x: new Float64Array(tempSab.playerPosition.x),
-        y: new Float64Array(tempSab.playerPosition.y)
+        y: new Float64Array(tempSab.playerPosition.y),
       },
       enemy1Positions: {
         x: new Float64Array(tempSab.enemy1Positions.x),
-        y: new Float64Array(tempSab.enemy1Positions.y)
+        y: new Float64Array(tempSab.enemy1Positions.y),
       },
       enemy1Directions: {
         x: new Float64Array(tempSab.enemy1Directions.x),
-        y: new Float64Array(tempSab.enemy1Directions.y)
+        y: new Float64Array(tempSab.enemy1Directions.y),
       },
       enemy1Hps: new Int32Array(tempSab.enemy1Hps),
       enemy2Positions: {
         x: new Float64Array(tempSab.enemy2Positions.x),
-        y: new Float64Array(tempSab.enemy2Positions.y)
+        y: new Float64Array(tempSab.enemy2Positions.y),
       },
       enemy2Directions: {
         x: new Float64Array(tempSab.enemy2Directions.x),
-        y: new Float64Array(tempSab.enemy2Directions.y)
+        y: new Float64Array(tempSab.enemy2Directions.y),
       },
       enemy2Hps: new Int32Array(tempSab.enemy2Hps),
       enemy3Positions: {
         x: new Float64Array(tempSab.enemy3Positions.x),
-        y: new Float64Array(tempSab.enemy3Positions.y)
+        y: new Float64Array(tempSab.enemy3Positions.y),
       },
       enemy3Directions: {
         x: new Float64Array(tempSab.enemy3Directions.x),
-        y: new Float64Array(tempSab.enemy3Directions.y)
+        y: new Float64Array(tempSab.enemy3Directions.y),
       },
       enemy3Hps: new Int32Array(tempSab.enemy3Hps),
       autoAttack1Positions: {
         x: new Float64Array(tempSab.autoAttack1Positions.x),
-        y: new Float64Array(tempSab.autoAttack1Positions.y)
+        y: new Float64Array(tempSab.autoAttack1Positions.y),
       },
 
       autoAttack1RemainTimes: new Int32Array(tempSab.autoAttack1RemainTimes),
       flame1Positions: {
         x: new Float64Array(tempSab.flame1Positions.x),
-        y: new Float64Array(tempSab.flame1Positions.y)
+        y: new Float64Array(tempSab.flame1Positions.y),
       },
 
       flame1RemainTimes: new Int32Array(tempSab.flame1RemainTimes),
-      life: new Int32Array(tempSab.life)
-
+      life: new Int32Array(tempSab.life),
     }
     port = ev.ports[0]
 
@@ -128,8 +127,14 @@ onmessage = (ev) => {
   }
 }
 
-let playerX = 0; let enemyX = 0; let diffX = 0; let directionX = 0
-let playerY = 0; let enemyY = 0; let diffY = 0; let directionY = 0
+let playerX = 0
+let enemyX = 0
+let diffX = 0
+let directionX = 0
+let playerY = 0
+let enemyY = 0
+let diffY = 0
+let directionY = 0
 let distance = 0
 
 const divide = 30
@@ -161,10 +166,9 @@ const calc = () => {
     sa.enemy1Directions.y[tempIterator] = directionY
 
     if (tempIterator % 30 === count) {
-      sa.life[0] -= 3
-      // if (distance < 2) {
-      //  self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
-      // }
+      if (distance < 2) {
+        sa.life[0] -= 3
+      }
     }
   }
 
@@ -185,26 +189,26 @@ const calc = () => {
     sa.enemy2Directions.y[tempIterator] = directionY
 
     if (tempIterator % 30 === count) {
-      sa.life[0] -= 3
-
-      // if (distance < 2) {
-      //  self.postMessage({ cmd: 'hitText', x: (playerX + enemyX) / 2, y: (playerY + enemyY) / 2 })
-      // }
+      if (distance < 2) {
+        sa.life[0] -= 3
+      }
     }
   }
 
   tempIterator = consts.numberOfAutoAttack1
-  while (tempIterator--) { // should it be atomic? maybe?
+  while (tempIterator--) {
+    // should it be atomic? maybe?
     if (sa.autoAttack1RemainTimes[tempIterator] > 0) {
       sa.autoAttack1RemainTimes[tempIterator] -= consts.worker2Interval
     }
   }
   tempIterator = consts.numberOfFlame1
-  while (tempIterator--) { // should it be atomic? maybe?
+  while (tempIterator--) {
+    // should it be atomic? maybe?
     if (sa.flame1RemainTimes[tempIterator] > 0) {
       sa.flame1RemainTimes[tempIterator] -= consts.worker2Interval
     }
   }
 }
 
-postMessage({ cmd: 'ready' })
+postMessage({ cmd: "ready" })

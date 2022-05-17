@@ -13,9 +13,9 @@ worker2.onmessage = (ev) => {
     Atomics.sub(sab.lifeArr, 0, 3)
     sound.volume('playerhit', 0.1)
     sound.play('playerhit')
+    player.hit()
     damageTextPool.playerhit(ev.data.x, ev.data.y, 3)
 
-    player.hit()
   }
 }
 

@@ -5,6 +5,9 @@ import crossOriginIsolation from 'vite-plugin-cross-origin-isolation'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ['box2d-wasm']  // for prevent load twice..
+  },
   build: {
     chunkSizeWarningLimit: 4096
   },
