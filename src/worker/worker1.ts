@@ -12,6 +12,7 @@ import { Isa, Filter } from './workerGlobal'
 import { enemy1 } from '../resource/spriteManage'
 import { ptrToInfo } from './ptrToInfo'
 import { worker1check } from './worker1master'
+import { channel12 } from './channel'
 
 console.log('this message shouldnt print twice')
 
@@ -336,6 +337,7 @@ function loop () {
   if (counter % 10 === 0) {
     enemy1Pool.gen()
     enemy2Pool.gen()
+    //enemy3Pool.gen()
   }
 }
 

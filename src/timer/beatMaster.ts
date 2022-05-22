@@ -94,6 +94,7 @@ export function beatInit () {
       break
 
     case 0o12:
+      player.flame()
       player.fire()
       break
 
@@ -105,6 +106,7 @@ export function beatInit () {
       break
 
     case 0o15:
+      player.flame()
       player.fire()
       break
 
@@ -113,6 +115,7 @@ export function beatInit () {
       break
 
     case 0o17:
+      player.flame()
       player.fire()
       break
 
@@ -139,13 +142,15 @@ export function beatInit () {
 
       break
 
-    case 0o25:
+      player.flame()
+      case 0o25:
       break
 
     case 0o26:
       break
 
-    case 0o27:
+      player.flame()
+      case 0o27:
       break
 
     case 0o30:
@@ -153,7 +158,8 @@ export function beatInit () {
 
       break
 
-    case 0o31:
+      player.flame()
+      case 0o31:
       break
 
     case 0o32:
@@ -162,17 +168,20 @@ export function beatInit () {
     case 0o33:
       break
 
-    case 0o34:
+      player.flame()
+      case 0o34:
       break
 
     case 0o35:
       break
 
-    case 0o36:
+      player.flame()
+      case 0o36:
       break
 
     case 0o37:
 
+      player.flame()
       break
 
     case 0o40:
@@ -324,12 +333,16 @@ export function beatInit () {
 
       break
 
+    case 0o57: player.fire()
     case 0o74:
       break
+    case 0o57: player.fire()
     case 0o75:
       break
+    case 0o57: player.fire()
     case 0o76:
       break
+    case 0o57: player.fire()
     case 0o77:
       break
     }

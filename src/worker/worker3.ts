@@ -1,8 +1,9 @@
 // this worker calculates the interaction between resource and player
 
-import Box2DFactory from 'box2d-wasm' // ....
-import consts from '../type/const'
-import { SabSet } from './sabManage'
+import { generateEase } from "@pixi/particle-emitter/lib/ParticleUtils"
+import Box2DFactory from "box2d-wasm" // ....
+import consts from "../type/const"
+import { SabSet } from "./sabManage"
 
 // timer for loop
 let loopInterval = 0
@@ -12,64 +13,66 @@ let running = false
 /** Interface of shared array */
 export declare interface Isa {
   playerPosition: {
-    x: Float64Array;
-    y: Float64Array;
-  };
+    x: Float64Array
+    y: Float64Array
+  }
   resource1Positions: {
-    x: Float64Array;
-    y: Float64Array;
-  };
-  resource1RemainTimes: Int32Array;
-  resource1Sleep: Int32Array;
+    x: Float64Array
+    y: Float64Array
+  }
+  resource1RemainTimes: Int32Array
+  resource1Sleep: Int32Array
   resource2Positions: {
-    x: Float64Array;
-    y: Float64Array;
-  };
-  resource2RemainTimes: Int32Array;
-  exp: Int32Array;
+    x: Float64Array
+    y: Float64Array
+  }
+  resource2RemainTimes: Int32Array
+  exp: Int32Array
   resource2Rotations: Float64Array
 }
 export let sa: Isa
 
 onmessage = (ev) => {
-  if (ev.data.cmd === 'stop') {
+  console.log(ev)
+  if (ev.data.cmd === "stop") {
     running = false
     // pause
-  } else if (ev.data.cmd === 'start') {
+  } else if (ev.data.cmd === "start") {
     running = true
-  } else if (ev.data.cmd === 'close') {
+  } else if (ev.data.cmd === "close") {
     running = false
     self.close()
-  } else if (ev.data.cmd === 'generate') {
+  } else if (ev.data.cmd === "generate") {
     // to filled
-  } else if (ev.data.cmd === 'init') {
+  } else if (ev.data.cmd === "init") {
     const sab = ev.data.sab as SabSet
     sa = {
       // setting shared arrays
       playerPosition: {
         x: new Float64Array(sab.playerPosition.x),
-        y: new Float64Array(sab.playerPosition.y)
+        y: new Float64Array(sab.playerPosition.y),
       },
       resource1Positions: {
         x: new Float64Array(sab.resource1Positions.x),
-        y: new Float64Array(sab.resource1Positions.y)
+        y: new Float64Array(sab.resource1Positions.y),
       },
       resource1RemainTimes: new Int32Array(sab.resource1RemainTimes),
       resource1Sleep: new Int32Array(sab.resource1Sleep),
       resource2Positions: {
         x: new Float64Array(sab.resource2Positions.x),
-        y: new Float64Array(sab.resource2Positions.y)
+        y: new Float64Array(sab.resource2Positions.y),
       },
       resource2RemainTimes: new Int32Array(sab.resource2RemainTimes),
       exp: new Int32Array(sab.exp),
-      resource2Rotations: new Float64Array(sab.resource2Rotations)
-
+      resource2Rotations: new Float64Array(sab.resource2Rotations),
     }
     init()
+  } else if (ev.data.cmd === "gen") {
+    gen(ev.data.x, ev.data.y)
   }
 }
 
-function init () {
+function init() {
   for (let i = 0; i < consts.numberOfResource1; i++) {
     sa.resource1Positions.x[i] = (Math.random() - 0.5) * consts.resource1SpawnSize
     sa.resource1Positions.y[i] = (Math.random() - 0.5) * consts.resource1SpawnSize
@@ -83,6 +86,9 @@ function init () {
 }
 
 let tempIterator
+
+let resource1DisabledList: number[] = []
+let resource2DisabledList: number[] = []
 
 const counter = 0
 let lastExecuted = Date.now()
@@ -102,9 +108,9 @@ const loop = () => {
   let isGet = false
 
   const postContent = {
-    cmd : 'move',
+    cmd: "move",
     move1List: [],
-    move2List: []
+    move2List: [],
   }
 
   tempPlayerPosX = sa.playerPosition.x[0]
@@ -120,6 +126,7 @@ const loop = () => {
     if (distance < consts.getRange) {
       sa.resource1Positions.x[i] = consts.nowhere
       sa.resource1Positions.y[i] = consts.nowhere
+      resource1DisabledList.push(i)
 
       sa.resource1RemainTimes[i] = 0
       sa.exp[0] += 1
@@ -145,6 +152,7 @@ const loop = () => {
     if (distance < consts.getRange) {
       sa.resource2Positions.x[i] = consts.nowhere
       sa.resource2Positions.y[i] = consts.nowhere
+      resource2DisabledList.push(i)
 
       sa.resource2RemainTimes[i] = 0
       sa.exp[0] += 1
@@ -157,22 +165,27 @@ const loop = () => {
     }
   }
 
-  if(postContent.move1List.length === 0){
+  if(genList.length !== 0) {
+    postContent.move2List.push(genList)
+    genList = []
+  }
+
+  if (postContent.move1List.length === 0) {
     delete postContent.move1List
   }
 
-  if(postContent.move2List.length === 0){
+  if (postContent.move2List.length === 0) {
     delete postContent.move2List
   }
 
-  if(Object.keys(postContent).length !== 0) {
+  if (Object.keys(postContent).length !== 0) {
     postMessage(postContent)
   }
 
-  if(isGet) {
-    postMessage({cmd:'get'})
+  if (isGet) {
+    postMessage({ cmd: "get" })
   }
-  
+
   now = Date.now()
   delta = now - lastExecuted
 
@@ -193,6 +206,16 @@ setTimeout(() => {
   loopInterval = setInterval(loop, consts.worker3Interval)
 }, 1000)
 
-postMessage('ready')
+postMessage("ready")
 
+let genList = []
+function gen(x: number, y: number) {
+  if (resource2DisabledList.length != 0) {
+    let index = resource2DisabledList.pop()
+    sa.resource2Positions.x[index] = x
+    sa.resource2Positions.y[index] = y
+    sa.resource2RemainTimes[index] = 1000000
+    genList.push(index)
+  }
+}
 export default Worker

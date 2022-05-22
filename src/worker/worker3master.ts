@@ -136,6 +136,15 @@ export function worker3start () {
   }, 1000)
 }
 
+export function worker3gen (x: number, y: number) {
+  worker3.postMessage({ 
+    cmd: 'gen' ,
+    x: x,
+    y: y
+  })
+}
+
+
 window.onbeforeunload = function () {
   location.reload()
   document.location.reload()

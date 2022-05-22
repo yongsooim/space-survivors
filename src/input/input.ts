@@ -76,7 +76,7 @@ export class Input {
   update () {
     this.vector.x = touch.vector.x
     this.vector.y = touch.vector.y
-
+    
     keyboard.update()
 
     if (

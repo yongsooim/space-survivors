@@ -11,6 +11,7 @@ import { channel12 } from './channel'
 import { isMobile } from 'pixi.js'
 import firePng from '../asset/fire.png'
 import { explosion, explosionPool } from '../player/explosion'
+import { worker3gen, worker3init } from './worker3master'
 
 const worker1 = new Worker()
 
@@ -37,6 +38,7 @@ worker1.onmessage = (ev: any) => {
   } else if (ev.data.cmd === 'dead') {
     explosionPool.show(ev.data.enemyX, ev.data.enemyY)
     sound.play('explosion')
+    worker3gen(ev.data.enemyX, ev.data.enemyY)
   }
 }
 
