@@ -1,0 +1,13 @@
+
+무기와 적 기체에 대해 오브젝트 풀링 적용
+렌더러에서 불필요한 업데이트를 줄이기 위해 Update transform 시 position만 업데이트 하도록 함.
+사라져야할 객체는 파괴하거나 투명하게 하는 대신 화면에 보이지 않는 좌표로 이동
+
+
+환경 : worker 스크립트를 사용하기 위해 vite config에서 cross-origin-policy 설정
+netlify로 배포시 cross-origin-policy 설정하기 위해 web 빌드시 netlify.toml 파일 static 복사하도록 스크립트 작성
+
+
+vite.config.ts : Box2d-wasm 모듈에서 제공하는 Box2DFactory 를 사용하기 위해 wasm 파일의 파일명이 번들링시 hash 되지 않도록 static 복사
+
+
